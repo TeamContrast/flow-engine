@@ -5,11 +5,11 @@ controls a spring, as well as boost rings
 extends Area2D
 
 # how strong is the spring?
-export(float) var STRENGTH = 7
+@export var STRENGTH: float = 7
 # does the spring force the player to go in the direction it is facing?
-export(bool) var DIRECTED = false
+@export var DIRECTED: bool = false
 # add a scaling effect (usually for boost rings)
-export(bool) var ringScale = false
+@export var ringScale: bool = false
 
 var animation	# stores the animated sprite
 var sound		# stores the audio stream player
@@ -17,8 +17,8 @@ var scaling = 1	# stores the current scale of the spring
 
 func _ready():
 	# find the animation and sound nodes
-	animation = find_node("AnimatedSprite")
-	sound = find_node("AudioStreamPlayer")
+	animation = find_child("AnimatedSprite2D")
+	sound = find_child("AudioStreamPlayer")
 
 func _on_Area2D_area_entered(area):
 	
@@ -53,7 +53,7 @@ func _on_Area2D_area_entered(area):
 		area.stomping = false
 		
 		# set sonic's sprite rotation to Sonic's rotation
-		area.find_node("PlayerSprites").rotation = area.rotation
+		area.find_child("PlayerSprites").rotation = area.rotation
 		# reset sonic's rotation (this is typically how sonic works in the air)
 		area.rotation = 0
 		
@@ -67,5 +67,5 @@ func _on_Area2D_area_entered(area):
 func _process(_delta):
 	# set and lerp scale if ringScale is enabled
 	if ringScale:
-		scale = Vector2(scaling,scaling)
-		scaling = lerp(scaling,1,0.1)
+		scale = Vector2(scaling, scaling)
+		scaling = lerpf(scaling, 1.0, 0.1)

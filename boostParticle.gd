@@ -8,7 +8,7 @@ extends Node2D
 var initialVel = Vector2()
 var cVel = initialVel
 
-export(float) var boostValue = 2
+@export var boostValue: float = 2
 
 var player
 var boostBar
@@ -46,9 +46,9 @@ func _process(delta):
 		timer = 1
 		speed += delta*10
 
-	cVel = initialVel.linear_interpolate((player.position-position).normalized()*speed,timer)
+	cVel = initialVel.lerp((player.position-position).normalized()*speed,timer)
 	
-	position = oPos.linear_interpolate(player.position,timer)
+	position = oPos.lerp(player.position,timer)
 	
 	oPos += initialVel
 	

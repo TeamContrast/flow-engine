@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/stomping.wav-6bd05cb83021e16bf7ed4805a515bc89.sample"
+type="AudioStreamWAV"
+uid="uid://535v0e6so0vn"
+path="res://.godot/imported/stomping.wav-6bd05cb83021e16bf7ed4805a515bc89.sample"
 
 [deps]
 
 source_file="res://audio/SFX/stomping.wav"
-dest_files=[ "res://.import/stomping.wav-6bd05cb83021e16bf7ed4805a515bc89.sample" ]
+dest_files=["res://.godot/imported/stomping.wav-6bd05cb83021e16bf7ed4805a515bc89.sample"]
 
 [params]
 
@@ -17,5 +18,7 @@ force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=false
 edit/normalize=false
-edit/loop=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
 compress/mode=0
