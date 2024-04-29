@@ -3,10 +3,10 @@
 extends AudioStreamPlayer
 
 # the time, in seconds, to loop back to once the end is reached.
-@export var loopbackTime: float = 13.25
+export(float) var loopbackTime = 13.25
 
 # automatically play the track on startup
-@export var _autoPlay: bool = true
+export(bool) var _autoPlay = true
 
 # records whether or not the track is in the loopable 
 # section yet

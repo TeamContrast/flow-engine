@@ -5,7 +5,7 @@ pretty basic, but I'll probably update it a bit more later
 
 extends Area2D
 
-@export var boostParticle: PackedScene
+export(PackedScene) var boostParticle
 
 # is the egg pawn alive?
 var alive = true
@@ -48,7 +48,7 @@ func _on_EggPawn_area_entered(area):
 			area.velocity1.y = -5
 		if area.isAttacking():
 #			get_node("/root/Node2D/CanvasLayer/boostBar").changeBy(2)
-			var newNode = boostParticle.instantiate()
+			var newNode = boostParticle.instance()
 			newNode.position = position
 			newNode.boostValue = 2
 			get_node("/root/Node2D").add_child(newNode)

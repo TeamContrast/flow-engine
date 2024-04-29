@@ -11,133 +11,124 @@ Please be patient. :D
 extends Area2D
 
 # audio streams for Sonic's various sound effects
-@export var boost_sfx: AudioStream
-@export var stomp_sfx: AudioStream
-@export var stomp_land_sfx: AudioStream
+export(AudioStream) var boost_sfx
+export(AudioStream) var stomp_sfx
+export(AudioStream) var stomp_land_sfx
 
 # a reference to a bouncing ring prefab, so we can spawn a bunch of them when
 # sonic is hurt 
-@export var bounceRing: PackedScene
-@export var boostParticle: PackedScene
+export(PackedScene) var bounceRing
+export(PackedScene) var boostParticle
 
-## a list of particle systems for Sonic to control with his speed 
-## used for the confetti in the carnival level, or the falling leaves in leaf storm
-var parts = []
+# a list of particle systems for Sonic to control with his speed 
+# used for the confetti in the carnival level, or the falling leaves in leaf storm
+var parts = []	
 
-## a little text label attached to sonic for debugging
-@onready var text_label:RichTextLabel = $"Camera2D/RichTextLabel"
 
-## sonic's ground state. 0 means he's on the ground, and -1 means he's in the 
-## air. This is not a boolean because of legacy code and stuff.
-var state:int = -1
+var text_label	# a little text label attached to sonic for debugging
 
-## can the player shorten the jump (aka was this -1 (air) state initiated by a jump?)
-var canShort:bool = false 
+# sonic's ground state. 0 means he's on the ground, and -1 means he's in the 
+# air. This is not a boolean because of legacy code and stuff.
+var state = -1
+
+# can the player shorten the jump (aka was this -1 (air) state 
+# initiated by a jump?)
+var canShort = false 
 
 # a bunch of 
 
 # sonic's gravity
-@export var GRAVITY:float = 0.3 / 4
+export(float) var GRAVITY = 0.3 / 4
 # sonic's acceleration on his own
-@export var ACCELERATION:float = 0.15 / 4
+export(float) var ACCELERATION = 0.15 / 4
 # how much sonic decelerates when skidding.
-@export var SKID_ACCEL:float = 1
+export(float) var SKID_ACCEL = 1
 # sonic's acceleration in the air.
-@export var AIR_ACCEL:float = 0.1 / 4
+export(float) var AIR_ACCEL = 0.1 / 4
 # maximum speed under sonic's own power
-@export var MAX_SPEED:float = 20 / 2
+export(float) var MAX_SPEED = 20 / 2
 # the speed of sonic's boost. Generally just a tad higher than MAX_SPEED
-@export var BOOST_SPEED:float = 25 /2
+export(float) var BOOST_SPEED = 25 /2
 
 # used to dampen Sonic's movement a little bit. Basically poor man's friction
-@export var SPEED_DECAY:float = 0.2 /2 
+export(float,1) var SPEED_DECAY = 0.2 /2
 
 # what velocity should sonic jump at?
-@export var JUMP_VELOCITY:float = 3.5
+export(float) var JUMP_VELOCITY = 3.5
 # what is the Velocity that sonic should slow to when releasing the jump button?
-@export var JUMP_SHORT_LIMIT:float = 1.5
+export(float) var JUMP_SHORT_LIMIT = 1.5
 
 # how fast (in pixels per 1/120th of a second) should sonic stomp
-@export var STOMP_SPEED:float = 20 / 2
+export(float) var STOMP_SPEED = 20 / 2
 # what is the limit to Sonic's horizontal movement when stomping?
-@export var MAX_STOMP_XVEL:float = 2 / 2
+export(float) var MAX_STOMP_XVEL = 2 / 2
 
 
 # the speed at which the camera should typically follow sonic
-@export var DEFAULT_CAM_LAG:float = 20
+export(float) var DEFAULT_CAM_LAG = 20
 # the speed at which the camera should follow sonic when starting a boost
-@export var BOOST_CAM_LAG:float = 0
+export(float) var BOOST_CAM_LAG = 0
 # how fast the Boost lag should slide back to the default lag while boosting
-@export var CAM_LAG_SLIDE:float = 0.01 # (float,1)
+export(float,1) var CAM_LAG_SLIDE = 0.01
 
 # how long is Sonic's boost/stomp trail?
 var TRAIL_LENGTH = 40
 
 # state flags
-var crouching:bool = false
-var spindashing:bool = false
-var rolling:bool = false
-var grinding:bool = false
-var stomping:bool = false
-var boosting:bool = false
-var tricking:bool = false
+var crouching = false
+var spindashing = false
+var rolling = false
+var grinding = false
+var stomping = false
+var boosting = false
+var tricking = false
 
-var trickingCanStop:bool = false
+var trickingCanStop = false
 
 # flags and values for getting hurt
-var hurt:bool = false
+var hurt = false
 var invincible = 0
 
 # grinding values.
-## the origin position of the currently grinded rail 
-var grindPos:Vector2 = Vector2.ZERO
-### how far along the rail (in pixels) is sonic?
-var grindOffset:float = 0.0
-var grindCurve:Curve2D = null		# the curve that sonic is currently grinding on
+var grindPos = Vector2(0,0)	# the origin position of the currently grinded rail 
+var grindOffset = 0.0		# how far along the rail (in pixels) is sonic?
+var grindCurve = null		# the curve that sonic is currently grinding on
 var grindVel = 0.0			# the velocity along the grind rail at which sonic is currently moving
 var grindHeight = 16		# how high above the rail is the center of Sonic's sprite?
 
 # references to all the various raycasting nodes used for Sonic's collision with
 # the map
-@onready var LeftCast:RayCast2D = $"LeftCast"
-@onready var RightCast:RayCast2D = $"RightCast"
-@onready var LSideCast:RayCast2D = $"LSideCast"
-@onready var RSideCast:RayCast2D = $"RSideCast"
-@onready var LeftCastTop:RayCast2D = $"LeftCastTop"
-@onready var RightCastTop:RayCast2D = $"RightCastTop"
+var LeftCast
+var RightCast
+var LSideCast
+var RSideCast
+var LeftCastTop
+var RightCastTop
 
-## a reference to Sonic's physics collider
-@onready var collider:CollisionShape2D = $"playerCollider"
+# a reference to Sonic's physics collider
+var collider
 
 # sonic's sprites/renderers
-### sonic's sprite
-@onready var sprite1:AnimatedSprite2D = $"PlayerSprites"
-## the sprite that appears over sonic while boosting
-@onready var boostSprite:AnimatedSprite2D = $"BoostSprite"
-## the line renderer for boosting and stomping
-@onready var boostLine:Line2D = $"BoostLine"
+var sprite1		# sonic's sprite
+var boostSprite	# the sprite that appears over sonic while boosting
+var boostLine	# the line renderer for boosting and stomping
 
-@onready var boostBar	# holds a reference to the boost UI bar
-@onready var ringCounter	# holds a reference to the ring counter UI item
+var boostBar	# holds a reference to the boost UI bar
+var ringCounter	# holds a reference to the ring counter UI item
 
-## the audio stream player with the boost sound
-@onready var boostSound:AudioStreamPlayer = $"BoostSound"
-## the audio stream player with the rail grinding sound
-@onready var RailSound:AudioStreamPlayer = $"RailSound"
-## the audio stream player with the character's voices
-@onready var voiceSound:AudioStreamPlayer2D = $"Voice"
+var boostSound	# the audio stream player with the boost sound
+var RailSound	# the audio stream player with the rail grinding sound
+var voiceSound 	# the audio stream player with the character's voices
 
 # the minimum and maximum speed/pitch changes on the grinding sound
-var RAILSOUND_MINPITCH:float = 0.5
-var RAILSOUND_MAXPITCH:float = 2.0
+var RAILSOUND_MINPITCH = 0.5
+var RAILSOUND_MAXPITCH = 2.0
 
-## a reference to the scene's camera
-@onready var cam:Camera2D = $"Camera2D"
-## a reference to the particle node for griding
-@onready var grindParticles:GPUParticles2D = $"GrindParticles"
+var cam			# a reference to the scene's camera
+var grindParticles	# a reference to the particle node for griding
 
-var avgGPoint:Vector2 = Vector2.ZERO #average Ground position between the two foot raycasts
-var avgTPoint:Vector2 = Vector2.ZERO #average top position between the two head raycasts
+var avgGPoint = Vector2(0,0) #average Ground position between the two foot raycasts
+var avgTPoint = Vector2(0,0) #average top position between the two head raycasts
 var avgGRot = 0					# average ground rotation between the two foot raycasts
 var langle = 0					# the angle of the left foot raycast
 var rangle = 0					# the angle of the right foot raycast
@@ -145,25 +136,56 @@ var lRot = 0					# Sonic's rotation during the last frame
 var startpos = Vector2(0,0)		# the position at which sonic starts the level
 var startLayer = 0				# the layer on which sonic starts
 
-## sonic's current velocity
-var velocity1:Vector2 = Vector2.ZERO
+var velocity1 = Vector2(0,0)	# sonic's current velocity
 
-## the ground velocity
-var gVel:float = 0
-## the ground velocity during the previous frame
-var pgVel:float = 0
 
-var backLayer:bool = false	# whether or not sonic is currently on the "back" layer
+var gVel = 0	# the ground velocity
+var pgVel = 0	# the ground velocity during the previous frame
+
+var backLayer = false	# whether or not sonic is currently on the "back" layer
 
 func _ready():
+	
+	# get all the raycast nodes
+	LeftCast = find_node("LeftCast")
+	RightCast = find_node("RightCast")
+	LSideCast = find_node("LSideCast")
+	RSideCast = find_node("RSideCast")
+	LeftCastTop = find_node("LeftCastTop")
+	RightCastTop = find_node("RightCastTop")
+	
+	# get Sonic's collider
+	collider = find_node("playerCollider")
+	
 	# get the UI elements
 	boostBar = get_node("/root/Node2D/CanvasLayer/boostBar")
 	ringCounter = get_node("/root/Node2D/CanvasLayer/RingCounter")
 	
+	# get sonic's sprite
+	sprite1 = find_node("PlayerSprites")
+	
+	# get the particle system for grinding fx
+	grindParticles = find_node("GrindParticles")
+	
+	# get the visual elements for boosting
+	boostSprite = find_node("BoostSprite")
+	boostLine = find_node("BoostLine")
+	
+	# get the audio stream player nodes
+	boostSound = find_node("BoostSound")
+	RailSound = find_node("RailSound")
+	voiceSound = find_node("Voice")
+	
 	# put all child particle systems in parts except for the grind particles
 	for i in get_children():
-		if i is GPUParticles2D and not i == grindParticles:
+		if i is Particles2D and not i == grindParticles:
 			parts.append(i)
+	
+	# get the camera
+	cam = find_node("Camera2D")
+	
+	# get the debug label
+	text_label = find_node("RichTextLabel")
 	
 	# set the start position and layer
 	startpos = position
@@ -221,7 +243,7 @@ func boostControl():
 		boostSound.play()
 		
 		# set the camera smoothing to the initial boost lag
-		cam.set_position_smoothing_speed(BOOST_CAM_LAG)
+		cam.set_follow_smoothing(BOOST_CAM_LAG)
 		
 		# stop moving vertically as much if you are in the air (air boost)
 		if state == -1 and velocity1.x < ACCELERATION:
@@ -236,7 +258,7 @@ func boostControl():
 #			boostSound.play()
 		
 		# linearly interpolate the camera's "boost lag" back down to the normal (non-boost) value
-		cam.set_position_smoothing_speed(lerp(cam.get_position_smoothing_speed(),DEFAULT_CAM_LAG,CAM_LAG_SLIDE))
+		cam.set_follow_smoothing(lerp(cam.get_follow_smoothing(),DEFAULT_CAM_LAG,CAM_LAG_SLIDE))
 		
 		if grinding:
 			# apply boost to a grind
@@ -261,7 +283,7 @@ func boostControl():
 		boostBar.changeBy(-0.06)
 	else:
 		# the camera lag should be normal while not boosting
-		cam.set_position_smoothing_speed(DEFAULT_CAM_LAG)
+		cam.set_follow_smoothing(DEFAULT_CAM_LAG)
 		
 		# stop the boost sound, if it is playing
 		if boostSound.stream == boost_sfx:
@@ -385,7 +407,7 @@ func airProcess():
 		boostControl()
 	
 	# slowly slide Sonic's rotation back to zero as you fly through the air
-	sprite1.rotation = lerpf(sprite1.rotation, 0.0, 0.1)
+	sprite1.rotation = lerp(sprite1.rotation,0,0.1)
 	
 	# handle left and right sideways collision (respectively)
 	if LSideCast.is_colliding() and VecDist(LSideCast.get_collision_point(),position+velocity1) < 14 and velocity1.x < 0:
@@ -608,7 +630,7 @@ func _physics_process(_delta):
 				trickingCanStop = true
 			if sprite1.frame <= 0 and trickingCanStop:
 				tricking = false
-				var part = boostParticle.instantiate()
+				var part = boostParticle.instance()
 				part.position = position 
 				part.boostValue = 2
 				get_node("/root/Node2D").add_child(part)
@@ -620,23 +642,23 @@ func _physics_process(_delta):
 			trickingCanStop = false
 			voiceSound.play_effort()
 		
-		grindHeight = sprite1.sprite_frames.get_frame_texture(sprite1.animation, sprite1.frame).get_height() / 2
+		grindHeight = sprite1.frames.get_frame(sprite1.animation,sprite1.frame).get_height()/2
 		
 		grindOffset += grindVel
-		var dirVec = grindCurve.sample_baked(grindOffset + 1) - grindCurve.sample_baked(grindOffset)
+		var dirVec = grindCurve.interpolate_baked(grindOffset+1)-grindCurve.interpolate_baked(grindOffset)
 #		grindVel = velocity1.dot(dirVec)
 		rotation = dirVec.angle()
-		position = grindCurve.sample_baked(grindOffset) \
-			+ Vector2.UP * grindHeight*cos(rotation) + Vector2.RIGHT * grindHeight*sin(rotation) \
-			+ grindPos
+		position = grindCurve.interpolate_baked(grindOffset)\
+			+Vector2.UP*grindHeight*cos(rotation)+Vector2.RIGHT*grindHeight*sin(rotation)\
+			+grindPos
 		
 		RailSound.pitch_scale = lerp(RAILSOUND_MINPITCH,RAILSOUND_MAXPITCH,\
 			abs(grindVel)/BOOST_SPEED)
 		grindVel += sin(rotation)*GRAVITY
 		
 		if dirVec.length() < 0.5 or \
-			grindCurve.sample_baked(grindOffset-1) == \
-			grindCurve.sample_baked(grindOffset):
+			grindCurve.interpolate_baked(grindOffset-1) == \
+			grindCurve.interpolate_baked(grindOffset):
 			state = -1
 			grinding = false
 			tricking = false
@@ -681,28 +703,25 @@ func _physics_process(_delta):
 	if parts:
 		for i in parts:
 			i.process_material.direction = Vector3(velocity1.x,velocity1.y,0)
-			#i.process_material.initial_velocity = velocity1.length()*20
-			
+			i.process_material.initial_velocity = velocity1.length()*20
 			i.rotation = -rotation
 
-func setCollisionLayer(value:bool) -> void:
+func setCollisionLayer(value):
 	# shortcut to change the collision mask for every raycast node connected to
 	# sonic at the same time. Value is true for layer 1, false for layer 0
 	backLayer = value
-	
-	#c08oprkiua: All the layer_numbers have been bumped by 1
-	LeftCast.set_collision_mask_value(1,not backLayer)
-	LeftCast.set_collision_mask_value(2,backLayer)
-	RightCast.set_collision_mask_value(1,not backLayer)
-	RightCast.set_collision_mask_value(2,backLayer)
-	RSideCast.set_collision_mask_value(1,not backLayer)
-	RSideCast.set_collision_mask_value(2,backLayer)
-	LSideCast.set_collision_mask_value(1,not backLayer)
-	LSideCast.set_collision_mask_value(2,backLayer)
-	LeftCastTop.set_collision_mask_value(1,not backLayer)
-	LeftCastTop.set_collision_mask_value(2,backLayer)
-	RightCastTop.set_collision_mask_value(1,not backLayer)
-	RightCastTop.set_collision_mask_value(2,backLayer)
+	LeftCast.set_collision_mask_bit(0,not backLayer)
+	LeftCast.set_collision_mask_bit(1,backLayer)
+	RightCast.set_collision_mask_bit(0,not backLayer)
+	RightCast.set_collision_mask_bit(1,backLayer)
+	RSideCast.set_collision_mask_bit(0,not backLayer)
+	RSideCast.set_collision_mask_bit(1,backLayer)
+	LSideCast.set_collision_mask_bit(0,not backLayer)
+	LSideCast.set_collision_mask_bit(1,backLayer)
+	LeftCastTop.set_collision_mask_bit(0,not backLayer)
+	LeftCastTop.set_collision_mask_bit(1,backLayer)
+	RightCastTop.set_collision_mask_bit(0,not backLayer)
+	RightCastTop.set_collision_mask_bit(1,backLayer)
 
 func _flipLayer(_body):
 	# toggle between layers
@@ -783,11 +802,11 @@ func hurt_player():
 		
 		var t = 0
 		var angle = 101.25
-		var n:bool = false
+		var n = false
 		var speed = 4
 		
 		while t < min(ringCounter.ringCount,32):
-			var currentRing = bounceRing.instantiate()
+			var currentRing = bounceRing.instance()
 			currentRing.velocity1 = Vector2(-sin(angle)*speed,cos(angle)*speed)/2
 			currentRing.position = position
 			if n:

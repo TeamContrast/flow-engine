@@ -1,19 +1,19 @@
-@tool
 """
 This Script is used to generate a line of rings in a level. It includes 
 code to render circles where the rings will spawn.
 """
 
+tool
 extends Node2D
 
 ## the number of rings to spawn
-@export var count: int = 1
+export(int) var count = 1
 ## how much to offset each subsequent ring by 
-@export var offset: Vector2 = Vector2(30,0)
+export(Vector2) var offset = Vector2(30,0)
 ## the rotation applied to each subsequent displacement
-@export var rotationalOffset: float = 0
+export(float) var rotationalOffset = 0
 ## the scene containing the ring to spawn in the given locations
-@export var ringSource: PackedScene
+export(PackedScene) var ringSource
 
 # stores a list of positions at which to spawn rings
 var posList = []
@@ -27,25 +27,24 @@ func placeRings():
 # place rings once the script is run in play mode
 func _ready():
 	placeRings()
-	if not Engine.is_editor_hint():
+	if not Engine.editor_hint:
 		for i in posList:
-			var currentRing = ringSource.instantiate()
+			var currentRing = ringSource.instance()
 			currentRing.position = i
 			add_child(currentRing)
 
 
 # place ring circle hints inside the editor
 func _process(_delta):
-	if Engine.is_editor_hint():
+	if Engine.editor_hint:
 		var pposList = posList;
 		posList = []
 		placeRings()
 		if not pposList == posList:
-			#update()
-			queue_redraw()
+			update()
 
 # draw the circles for the rings
 func _draw():
-	if Engine.is_editor_hint():
+	if Engine.editor_hint:
 		for i in posList:
-			draw_circle(i,7,Color(0.6, 0.6, 1, 0.5))
+			draw_circle(i,7,Color(0.6,0.6,1,0.5))

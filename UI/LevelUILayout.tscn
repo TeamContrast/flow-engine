@@ -8,10 +8,10 @@
 
 [node name="Label" type="Label" parent="."]
 visible = false
-offset_left = 73.0
-offset_top = 31.0181
-offset_right = 149.0
-offset_bottom = 53.0181
+margin_left = 73.0
+margin_top = 31.0181
+margin_right = 149.0
+margin_bottom = 53.0181
 text = "000"
 align = 2
 valign = 1

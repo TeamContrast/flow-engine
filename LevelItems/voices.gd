@@ -1,9 +1,9 @@
 extends AudioStreamPlayer2D
 
 
-@export var hurt:Array[AudioStream] # (Array, AudioStream)
+export(Array, AudioStream) var hurt
 
-@export var effort:Array[AudioStream] # (Array, AudioStream)
+export(Array, AudioStream) var effort
 
 # Declare member variables here. Examples:
 # var a = 2

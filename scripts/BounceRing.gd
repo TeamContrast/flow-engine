@@ -22,12 +22,12 @@ var boostBar
 var collectionStartTimer = 120
 
 # represents the current velocity of the ring.
-@export var velocity1: Vector2 = Vector2(0,0)
+export(Vector2) var velocity1 = Vector2(0,0)
 
 
 func _ready():
 	# grab all the relevent nodes on startup
-	sprite = get_node("AnimatedSprite2D")
+	sprite = get_node("AnimatedSprite")
 	audio = get_node("AudioStreamPlayer")
 	downCast = get_node("DownCast")
 

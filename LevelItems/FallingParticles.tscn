@@ -6,7 +6,7 @@ _data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 0.0790698, 1 ), 0.0, 0.0, 0,
 [sub_resource type="CurveTexture" id=2]
 curve = SubResource( 1 )
 
-[sub_resource type="ParticleProcessMaterial" id=3]
+[sub_resource type="ParticlesMaterial" id=3]
 emission_shape = 2
 emission_box_extents = Vector3( 300, 300, 0 )
 flag_disable_z = true
@@ -24,7 +24,7 @@ scale_random = 1.0
 scale_curve = SubResource( 2 )
 color = Color( 0.533333, 0.905882, 0.0862745, 1 )
 
-[node name="GPUParticles2D" type="GPUParticles2D"]
+[node name="Particles2D" type="Particles2D"]
 amount = 50
 randomness = 1.0
 local_coords = false
