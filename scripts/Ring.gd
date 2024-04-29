@@ -17,7 +17,7 @@ var boostBar
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	sprite = get_node("AnimatedSprite")
+	sprite = get_node("AnimatedSprite2D")
 	audio = get_node("AudioStreamPlayer")
 
 # if the sprite has been collected, remove all visibility once the sparkle 

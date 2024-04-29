@@ -6,10 +6,10 @@
 [node name="boostBar" type="Control"]
 anchor_top = 1.0
 anchor_bottom = 1.0
-margin_left = 25.2035
-margin_top = -88.1752
-margin_right = 65.2035
-margin_bottom = -48.1752
+offset_left = 25.2035
+offset_top = -88.1752
+offset_right = 65.2035
+offset_bottom = -48.1752
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false

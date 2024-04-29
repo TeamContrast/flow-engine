@@ -5,7 +5,7 @@ flips sonic between the two available collision layers
 extends Area2D
 
 
-export(String, 'layer 0', 'layer 1', 'toggle') var function = 'layer 0'
+@export var function = 'layer 0' # (String, 'layer 0', 'layer 1', 'toggle')
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/16_V_SNC_030_b.wav-b0388efd45841b1ecf0bf122f71366fc.sample"
+type="AudioStreamWAV"
+uid="uid://cs2cadsrinwks"
+path="res://.godot/imported/16_V_SNC_030_b.wav-b0388efd45841b1ecf0bf122f71366fc.sample"
 
 [deps]
 
 source_file="res://audio/sonic/hurt/16_V_SNC_030_b.wav"
-dest_files=[ "res://.import/16_V_SNC_030_b.wav-b0388efd45841b1ecf0bf122f71366fc.sample" ]
+dest_files=["res://.godot/imported/16_V_SNC_030_b.wav-b0388efd45841b1ecf0bf122f71366fc.sample"]
 
 [params]
 
@@ -17,5 +18,7 @@ force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=false
 edit/normalize=false
-edit/loop=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
 compress/mode=0

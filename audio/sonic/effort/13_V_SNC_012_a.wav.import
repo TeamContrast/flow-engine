@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/13_V_SNC_012_a.wav-11bbbf0583b9dbfeef17c7d104bd7f4c.sample"
+type="AudioStreamWAV"
+uid="uid://xxjxi8uam1mf"
+path="res://.godot/imported/13_V_SNC_012_a.wav-11bbbf0583b9dbfeef17c7d104bd7f4c.sample"
 
 [deps]
 
 source_file="res://audio/sonic/effort/13_V_SNC_012_a.wav"
-dest_files=[ "res://.import/13_V_SNC_012_a.wav-11bbbf0583b9dbfeef17c7d104bd7f4c.sample" ]
+dest_files=["res://.godot/imported/13_V_SNC_012_a.wav-11bbbf0583b9dbfeef17c7d104bd7f4c.sample"]
 
 [params]
 
@@ -17,5 +18,7 @@ force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=false
 edit/normalize=false
-edit/loop=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
 compress/mode=0
