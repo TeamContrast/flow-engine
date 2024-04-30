@@ -1,0 +1,4 @@
+res://default_env.tres
+res://UI/LevelUILayout.tscn
+res://scripts/Player_v2.gd
+res://LevelItems/Player.tscn

@@ -1,8 +1,15 @@
 @tool
+<<<<<<< Updated upstream
 """
 This Script is used to generate a line of rings in a level. It includes 
 code to render circles where the rings will spawn.
 """
+=======
+
+##This Script is used to generate a line of rings in a level. It includes 
+##code to render circles where the rings will spawn.
+class_name RingGenerator
+>>>>>>> Stashed changes
 
 extends Node2D
 
@@ -15,14 +22,14 @@ extends Node2D
 ## the scene containing the ring to spawn in the given locations
 @export var ringSource: PackedScene
 
-# stores a list of positions at which to spawn rings
-var posList = []
+## stores a list of positions at which to spawn rings
+var posList:PackedVector2Array = []
 
-# Generates the positions for all rings and stores them in posList
+## Generates the positions for all rings and stores them in posList
 func placeRings():
-	posList.append(Vector2(0,0))
+	posList.append(Vector2.ZERO)
 	for i in range(1,count):
-		posList.append((posList[i-1])+offset.rotated(rotationalOffset*i))
+		posList.append((posList[i - 1]) + offset.rotated(rotationalOffset * i))
 
 # place rings once the script is run in play mode
 func _ready():
@@ -37,7 +44,11 @@ func _ready():
 # place ring circle hints inside the editor
 func _process(_delta):
 	if Engine.is_editor_hint():
+<<<<<<< Updated upstream
 		var pposList = posList;
+=======
+		var pposList:PackedVector2Array = posList;
+>>>>>>> Stashed changes
 		posList = []
 		placeRings()
 		if not pposList == posList:
