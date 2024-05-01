@@ -403,6 +403,7 @@ rotation = 2.26579
 [node name="AirRing12" parent="StageItems" instance=ExtResource("10")]
 position = Vector2(4079, -99.0001)
 rotation = 0.813018
+STRENGTH = 10.0
 
 [node name="BeginningStage" type="StaticBody2D" parent="StageItems"]
 position = Vector2(-3093.18, -28.5207)

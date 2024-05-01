@@ -460,14 +460,14 @@ animations = [{
 offsets = PackedFloat32Array(0, 0.0180723, 0.46988)
 colors = PackedColorArray(0.99295, 1, 0.871094, 1, 0.945313, 1, 0, 1, 1, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id="31"]
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_k6qco"]
 gradient = SubResource("30")
 
 [sub_resource type="Curve" id="32"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0899471, 1), 0.0, 0.0, 0, 0, Vector2(0.374359, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[sub_resource type="CurveTexture" id="33"]
+[sub_resource type="CurveTexture" id="CurveTexture_nbb86"]
 curve = SubResource("32")
 
 [sub_resource type="ParticleProcessMaterial" id="34"]
@@ -475,24 +475,22 @@ lifetime_randomness = 1.0
 direction = Vector3(0, -20, 0)
 spread = 76.15
 gravity = Vector3(0, 0, 0)
-scale_curve = SubResource("33")
-color_ramp = SubResource("31")
+scale_curve = SubResource("CurveTexture_nbb86")
+color_ramp = SubResource("GradientTexture2D_k6qco")
 
 [node name="Player" type="Area2D"]
-collision_layer = 4
-collision_mask = 4
 script = ExtResource("19")
 boost_sfx = ExtResource("17")
 stomp_sfx = ExtResource("16")
 stomp_land_sfx = ExtResource("18")
 bounceRing = ExtResource("55")
 boostParticle = ExtResource("57")
-GRAVITY = 0.2
 ACCELERATION = 0.05
-AIR_ACCEL = 0.05
 MAX_SPEED = 8.0
-BOOST_SPEED = 14.0
 SPEED_DECAY = 0.4
+BOOST_SPEED = 14.0
+GRAVITY = 0.2
+AIR_ACCEL = 0.05
 JUMP_VELOCITY = 5.5
 JUMP_SHORT_LIMIT = 0.25
 
