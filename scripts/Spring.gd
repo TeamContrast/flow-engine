@@ -4,37 +4,46 @@ controls a spring, as well as boost rings
 
 extends Area2D
 
-# how strong is the spring?
+## how strong is the spring?
 @export var STRENGTH: float = 7
-# does the spring force the player to go in the direction it is facing?
+## does the spring force the player to go in the direction it is facing?
 @export var DIRECTED: bool = false
-# add a scaling effect (usually for boost rings)
+## add a scaling effect (usually for boost rings)
 @export var ringScale: bool = false
 
-var animation	# stores the animated sprite
-var sound		# stores the audio stream player
-var scaling = 1	# stores the current scale of the spring
+## stores the animated sprite
+@onready var animation:AnimatedSprite2D = $"AnimatedSprite2D"
+## stores the audio stream player
+@onready var sound:AudioStreamPlayer = $"AudioStreamPlayer"
 
-func _ready():
-	# find the animation and sound nodes
-	animation = find_child("AnimatedSprite2D")
-	sound = find_child("AudioStreamPlayer")
+##How much the spring will expand when animating an activation
+var scaling:float = 2.0
+## The animation Tween 
+var anim:Tween
 
-func _on_Area2D_area_entered(area):
-	
+func animate() -> void:
+	anim = self.create_tween()
+	var scale_to:Vector2 = Vector2(scaling, scaling)
+	anim.tween_property(self, "scale", scale_to, 0.1)
+	anim.play()
+	await anim.finished
+	anim.stop()
+	anim.tween_property(self, "scale", Vector2(1.0, 1.0), 0.1)
+	anim.play()
+
+func _on_Area2D_area_entered(area) -> void:
 	# if the player collides with the spring
 	if area.name == "Player":
-		
 		# calculate what vector to launch Sonic in
-		var launchVector = Vector2(0,-STRENGTH).rotated(rotation)
+		var launchVector:Vector2 = Vector2(0, -STRENGTH).rotated(rotation)
 		
 		# calculate how fast sonic is moving perpendicularly to the spring
-		var sideVector = area.velocity1.dot(launchVector.normalized().rotated(PI/2))\
-				*launchVector.normalized().rotated(PI/2)
+		var sideVector:Vector2 = area.velocity1.dot(launchVector.normalized().rotated(PI / 2))\
+				*launchVector.normalized().rotated(PI / 2)
 		
 		# calculate the final vector to throw sonic in. Ignore sideVector if 
 		# the spring is directed
-		var finalVector = (Vector2.ZERO if DIRECTED else sideVector) + launchVector
+		var finalVector:Vector2 = (Vector2.ZERO if DIRECTED else sideVector) + launchVector
 		
 		# print out the values for debugging
 		print("sideVector: ",sideVector)
@@ -61,11 +70,5 @@ func _on_Area2D_area_entered(area):
 		animation.frame = 0
 		# play the spring sound
 		sound.play()
-		# scale the spring (only applies if "ringScale" is enabled)
-		scaling = 2
-
-func _process(_delta):
-	# set and lerp scale if ringScale is enabled
-	if ringScale:
-		scale = Vector2(scaling, scaling)
-		scaling = lerpf(scaling, 1.0, 0.1)
+		#scale the spring
+		animate()

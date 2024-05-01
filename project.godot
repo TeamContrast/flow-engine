@@ -82,6 +82,15 @@ jump={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="Ground_static"
+2d_physics/layer_2="loop_right"
+2d_physics/layer_3="loop_left"
+2d_physics/layer_5="enemies"
+2d_physics/layer_6="player"
+2d_physics/layer_7="rings"
+
 [physics]
 
 common/physics_fps=120

@@ -1,72 +1,35 @@
 [gd_scene load_steps=4 format=3 uid="uid://44fuy8v1ifes"]
 
-<<<<<<< Updated upstream
-[ext_resource path="res://sprites/UI/numbers.png" type="Texture2D" id=1]
-[ext_resource path="res://sprites/UI/RingCount.png" type="Texture2D" id=2]
-[ext_resource path="res://scripts/RingCountDisplay.gd" type="Script" id=3]
-=======
 [ext_resource type="Texture2D" uid="uid://bbtvesqtpdyda" path="res://sprites/UI/numbers.png" id="1"]
 [ext_resource type="Texture2D" uid="uid://c4hojltnn88p" path="res://sprites/UI/RingCount.png" id="2"]
 [ext_resource type="Script" path="res://scripts/RingCountDisplay.gd" id="3"]
->>>>>>> Stashed changes
 
 [node name="RingCounter" type="TextureRect"]
 offset_left = 30.0
 offset_top = 22.0
 offset_right = 87.0
 offset_bottom = 43.0
-<<<<<<< Updated upstream
-scale = Vector2( 2, 2 )
-texture = ExtResource( 2 )
-expand = true
-=======
 scale = Vector2(2, 2)
 texture = ExtResource("2")
 expand_mode = 1
->>>>>>> Stashed changes
 stretch_mode = 3
 script = ExtResource("3")
 
 [node name="Numbers" type="Control" parent="."]
-<<<<<<< Updated upstream
-=======
 anchors_preset = 0
->>>>>>> Stashed changes
 offset_left = 16.5
 offset_top = 2.75
 offset_right = 56.5
 offset_bottom = 42.75
-<<<<<<< Updated upstream
-scale = Vector2( 0.5, 0.5 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Digit 1" type="Control" parent="Numbers"]
-=======
 scale = Vector2(0.5, 0.5)
 
 [node name="Digit 1" type="Control" parent="Numbers"]
 clip_contents = true
 anchors_preset = 0
->>>>>>> Stashed changes
 offset_left = 5.16151
 offset_top = 0.00311279
 offset_right = 29.1615
 offset_bottom = 24.0031
-<<<<<<< Updated upstream
-clip_contents = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="TextureRect2" type="TextureRect" parent="Numbers/Digit 1"]
-offset_right = 132.0
-offset_bottom = 12.0
-custom_minimum_size = Vector2( 1, 1 )
-scale = Vector2( 2, 2 )
-texture = ExtResource( 1 )
-=======
 
 [node name="TextureRect2" type="TextureRect" parent="Numbers/Digit 1"]
 custom_minimum_size = Vector2(1, 1)
@@ -75,32 +38,15 @@ offset_right = 132.0
 offset_bottom = 12.0
 scale = Vector2(2, 2)
 texture = ExtResource("1")
->>>>>>> Stashed changes
 stretch_mode = 2
 
 [node name="Digit 2" type="Control" parent="Numbers"]
-<<<<<<< Updated upstream
-=======
 clip_contents = true
 anchors_preset = 0
->>>>>>> Stashed changes
 offset_left = 24.9796
 offset_top = 0.213333
 offset_right = 48.9796
 offset_bottom = 24.2133
-<<<<<<< Updated upstream
-clip_contents = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="TextureRect2" type="TextureRect" parent="Numbers/Digit 2"]
-offset_right = 132.0
-offset_bottom = 12.0
-custom_minimum_size = Vector2( 1, 1 )
-scale = Vector2( 2, 2 )
-texture = ExtResource( 1 )
-=======
 
 [node name="TextureRect2" type="TextureRect" parent="Numbers/Digit 2"]
 custom_minimum_size = Vector2(1, 1)
@@ -109,32 +55,15 @@ offset_right = 132.0
 offset_bottom = 12.0
 scale = Vector2(2, 2)
 texture = ExtResource("1")
->>>>>>> Stashed changes
 stretch_mode = 2
 
 [node name="Digit 3" type="Control" parent="Numbers"]
-<<<<<<< Updated upstream
-=======
 clip_contents = true
 anchors_preset = 0
->>>>>>> Stashed changes
 offset_left = 45.0079
 offset_top = -0.207108
 offset_right = 69.0079
 offset_bottom = 23.7929
-<<<<<<< Updated upstream
-clip_contents = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="TextureRect2" type="TextureRect" parent="Numbers/Digit 3"]
-offset_right = 132.0
-offset_bottom = 12.0
-custom_minimum_size = Vector2( 1, 1 )
-scale = Vector2( 2, 2 )
-texture = ExtResource( 1 )
-=======
 
 [node name="TextureRect2" type="TextureRect" parent="Numbers/Digit 3"]
 custom_minimum_size = Vector2(1, 1)
@@ -143,5 +72,4 @@ offset_right = 132.0
 offset_bottom = 12.0
 scale = Vector2(2, 2)
 texture = ExtResource("1")
->>>>>>> Stashed changes
 stretch_mode = 2

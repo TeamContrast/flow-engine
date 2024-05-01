@@ -1,15 +1,8 @@
 @tool
-<<<<<<< Updated upstream
-"""
-This Script is used to generate a line of rings in a level. It includes 
-code to render circles where the rings will spawn.
-"""
-=======
 
 ##This Script is used to generate a line of rings in a level. It includes 
 ##code to render circles where the rings will spawn.
 class_name RingGenerator
->>>>>>> Stashed changes
 
 extends Node2D
 
@@ -44,11 +37,7 @@ func _ready():
 # place ring circle hints inside the editor
 func _process(_delta):
 	if Engine.is_editor_hint():
-<<<<<<< Updated upstream
-		var pposList = posList;
-=======
 		var pposList:PackedVector2Array = posList;
->>>>>>> Stashed changes
 		posList = []
 		placeRings()
 		if not pposList == posList:

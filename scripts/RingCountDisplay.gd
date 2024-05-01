@@ -1,5 +1,5 @@
 ##controls the current ring count indicator
-class_name RingCounter
+class_name FlowRingCounter
 
 extends Control
 
@@ -29,7 +29,7 @@ func _process(_delta:float) -> void:
 	var place:int = 1
 	for i:TextureRect in digits:
 		# get the current value (0-9) of the current digit
-		var value = (ringCount / place) % 10
+		var value:int = (ringCount / place) % 10
 		
 		# update the place multiplier
 		place *= 10

@@ -1,19 +1,17 @@
-"""
-this script is for the bouncy-type rings that fly out of you when you get hit
-"""
-
 extends Area2D
 
+##this script is for the bouncy-type rings that fly out of you when you get hit
+class_name FlowBouncyRing
 
 # true if the ring has been collected 
-var collected = false
+var collected:bool = false
 
 # stores a reference to the raycast node
-var downCast
+@onready var downCast:RayCast2D = $"DownCast"
 # holds a reference to the AnimatedSprite node for the ring
-var sprite
+@onready var sprite:AnimatedSprite2D = $"AnimatedSprite2D"
 # holds a referene to the AudioStreamPlayer for the ring
-var audio
+@onready var audio:AudioStreamPlayer = $"AudioStreamPlayer"
 
 # holds a reference to the boost bar
 var boostBar
@@ -22,25 +20,16 @@ var boostBar
 var collectionStartTimer = 120
 
 # represents the current velocity of the ring.
-@export var velocity1: Vector2 = Vector2(0,0)
+@export var velocity1: Vector2 = Vector2.ZERO
 
-
-func _ready():
-	# grab all the relevent nodes on startup
-	sprite = get_node("AnimatedSprite2D")
-	audio = get_node("AudioStreamPlayer")
-	downCast = get_node("DownCast")
-
-
-func _process(_delta):
+func _process(_delta:float) -> void:
 	# make the sprite invisible once the ring has been collected and
 	# the sparkle animation is over
 	if collected and sprite.animation == "Sparkle" and \
 		sprite.frame >= 6:
 		visible = false
 
-func _physics_process(_delta):
-	
+func _physics_process(_delta:float) -> void:
 	# count down the timer
 	collectionStartTimer -= 1
 	
@@ -48,7 +37,7 @@ func _physics_process(_delta):
 		# bounce on relevent ground nodes
 		if downCast.is_colliding() and downCast.get_collision_point().y < position.y + 16:
 			velocity1.y *= -1
-			
+		
 		# add gravity
 		velocity1.y += 0.02
 		
@@ -63,8 +52,7 @@ func _physics_process(_delta):
 	if collectionStartTimer < -1080:
 		queue_free()
 
-func _on_Ring_area_entered(area):
-	
+func _on_Ring_area_entered(area:Area2D) -> void:
 	# if the ring hasn't been collected and the player collides...
 	if not collected and area.name == "Player" and collectionStartTimer <= 0:
 		collected = true					# set collected to true

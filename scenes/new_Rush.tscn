@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://cyuuigjv7kget"]
+
+[ext_resource type="PackedScene" uid="uid://bjrx5iv7xjob" path="res://UI/LevelUILayout.tscn" id="1_sbguy"]
+[ext_resource type="PackedScene" uid="uid://b1g7if77ai0ej" path="res://LevelItems/Player.tscn" id="1_ygp8w"]
+[ext_resource type="TileSet" uid="uid://djnx0tq8tvm78" path="res://tiles/leafStorm.tres" id="2_4tac7"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="CanvasLayer" parent="." instance=ExtResource("1_sbguy")]
+
+[node name="Player" parent="." instance=ExtResource("1_ygp8w")]
+collision_layer = 33
+collision_mask = 33
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = ExtResource("2_4tac7")
+format = 2
+layer_0/name = "Layer 1"
+layer_0/tile_data = PackedInt32Array(131070, 2, 0, 131071, 2, 0, 65536, 2, 0, 65537, 2, 0, 65538, 2, 0, 65539, 2, 0, 131069, 2, 0, 131068, 2, 0, -196610, 15, 268435456, -196611, 12, 268435456, -196612, 13, 268435456, -131075, 14, 268435456, -131076, 11, 268435456, -65540, 10, 268435456, -3, 9, 268435456, -4, 8, 268435456, 65534, 6, 268435456, 65533, 7, 268435456, 65532, 16, 268435456, -262146, 2, 131072, -262145, 2, 131072, -327680, 2, 131072, -262147, 2, 131072, -262148, 2, 131072, 65540, 2, 0, 65541, 2, 0, -196609, 15, 0, -262144, 12, 0, -196607, 11, 0, -196608, 14, 0, -262143, 13, 0, -131071, 10, 0)

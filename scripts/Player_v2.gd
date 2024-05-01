@@ -21,11 +21,7 @@ class_name RushPlayer2D
 
 ## a list of particle systems for Sonic to control with his speed 
 ## used for the confetti in the carnival level, or the falling leaves in leaf storm
-<<<<<<< Updated upstream
-var parts = []
-=======
 var parts:Array[GPUParticles2D] = []
->>>>>>> Stashed changes
 
 ## a little text label attached to sonic for debugging
 @onready var text_label:RichTextLabel = $"Camera2D/RichTextLabel"
@@ -37,43 +33,42 @@ var state:int = -1
 ## can the player shorten the jump (aka was this -1 (air) state initiated by a jump?)
 var canShort:bool = false 
 
-# a bunch of 
 
-# sonic's gravity
+## sonic's gravity
 @export var GRAVITY:float = 0.3 / 4
-# sonic's acceleration on his own
+## sonic's acceleration on his own
 @export var ACCELERATION:float = 0.15 / 4
-# how much sonic decelerates when skidding.
+## how much sonic decelerates when skidding.
 @export var SKID_ACCEL:float = 1
-# sonic's acceleration in the air.
+## sonic's acceleration in the air.
 @export var AIR_ACCEL:float = 0.1 / 4
-# maximum speed under sonic's own power
+## maximum speed under sonic's own power
 @export var MAX_SPEED:float = 20 / 2
-# the speed of sonic's boost. Generally just a tad higher than MAX_SPEED
+## the speed of sonic's boost. Generally just a tad higher than MAX_SPEED
 @export var BOOST_SPEED:float = 25 /2
 
-# used to dampen Sonic's movement a little bit. Basically poor man's friction
+## used to dampen Sonic's movement a little bit. Basically poor man's friction
 @export var SPEED_DECAY:float = 0.2 /2 
 
-# what velocity should sonic jump at?
+## what velocity should sonic jump at?
 @export var JUMP_VELOCITY:float = 3.5
-# what is the Velocity that sonic should slow to when releasing the jump button?
+## what is the Velocity that sonic should slow to when releasing the jump button?
 @export var JUMP_SHORT_LIMIT:float = 1.5
 
-# how fast (in pixels per 1/120th of a second) should sonic stomp
+## how fast (in pixels per 1/120th of a second) should sonic stomp
 @export var STOMP_SPEED:float = 20 / 2
-# what is the limit to Sonic's horizontal movement when stomping?
+## what is the limit to Sonic's horizontal movement when stomping?
 @export var MAX_STOMP_XVEL:float = 2 / 2
 
 
-# the speed at which the camera should typically follow sonic
+## the speed at which the camera should typically follow sonic
 @export var DEFAULT_CAM_LAG:float = 20
-# the speed at which the camera should follow sonic when starting a boost
+## the speed at which the camera should follow sonic when starting a boost
 @export var BOOST_CAM_LAG:float = 0
-# how fast the Boost lag should slide back to the default lag while boosting
+## how fast the Boost lag should slide back to the default lag while boosting
 @export var CAM_LAG_SLIDE:float = 0.01 # (float,1)
 
-# how long is Sonic's boost/stomp trail?
+## how long is Sonic's boost/stomp trail?
 var TRAIL_LENGTH:int = 40
 
 # state flags
@@ -89,29 +84,19 @@ var trickingCanStop:bool = false
 
 # flags and values for getting hurt
 var hurt:bool = false
-<<<<<<< Updated upstream
-var invincible = 0
-=======
 var invincible:int = 0
->>>>>>> Stashed changes
 
 # grinding values.
 ## the origin position of the currently grinded rail 
 var grindPos:Vector2 = Vector2.ZERO
 ### how far along the rail (in pixels) is sonic?
 var grindOffset:float = 0.0
-<<<<<<< Updated upstream
-var grindCurve:Curve2D = null		# the curve that sonic is currently grinding on
-var grindVel = 0.0			# the velocity along the grind rail at which sonic is currently moving
-var grindHeight = 16		# how high above the rail is the center of Sonic's sprite?
-=======
 ## the curve that sonic is currently grinding on
 var grindCurve:Curve2D = null
 ## the velocity along the grind rail at which sonic is currently moving
 var grindVel:float = 0.0
 ### how high above the rail is the center of Sonic's sprite?
 var grindHeight:float = 16
->>>>>>> Stashed changes
 
 # references to all the various raycasting nodes used for Sonic's collision with
 # the map
@@ -133,15 +118,10 @@ var grindHeight:float = 16
 ## the line renderer for boosting and stomping
 @onready var boostLine:Line2D = $"BoostLine"
 
-<<<<<<< Updated upstream
-@onready var boostBar	# holds a reference to the boost UI bar
-@onready var ringCounter	# holds a reference to the ring counter UI item
-=======
 ## holds a reference to the boost UI bar
 @onready var boostBar:Control
 ## holds a reference to the ring counter UI item
 @onready var ringCounter:TextureRect
->>>>>>> Stashed changes
 
 ## the audio stream player with the boost sound
 @onready var boostSound:AudioStreamPlayer = $"BoostSound"
@@ -150,14 +130,9 @@ var grindHeight:float = 16
 ## the audio stream player with the character's voices
 @onready var voiceSound:AudioStreamPlayer2D = $"Voice"
 
-<<<<<<< Updated upstream
-# the minimum and maximum speed/pitch changes on the grinding sound
-var RAILSOUND_MINPITCH:float = 0.5
-=======
 ## the minimum speed/pitch changes on the grinding sound
 var RAILSOUND_MINPITCH:float = 0.5
 ## the maximum speed/pitch changes on the grinding sound
->>>>>>> Stashed changes
 var RAILSOUND_MAXPITCH:float = 2.0
 
 ## a reference to the scene's camera
@@ -165,33 +140,22 @@ var RAILSOUND_MAXPITCH:float = 2.0
 ## a reference to the particle node for griding
 @onready var grindParticles:GPUParticles2D = $"GrindParticles"
 
-<<<<<<< Updated upstream
-var avgGPoint:Vector2 = Vector2.ZERO #average Ground position between the two foot raycasts
-var avgTPoint:Vector2 = Vector2.ZERO #average top position between the two head raycasts
-var avgGRot = 0					# average ground rotation between the two foot raycasts
-var langle = 0					# the angle of the left foot raycast
-var rangle = 0					# the angle of the right foot raycast
-var lRot = 0					# Sonic's rotation during the last frame
-var startpos = Vector2(0,0)		# the position at which sonic starts the level
-var startLayer = 0				# the layer on which sonic starts
-=======
 ##average Ground position between the two foot raycasts
 var avgGPoint:Vector2 = Vector2.ZERO 
 ##average top position between the two head raycasts
 var avgTPoint:Vector2 = Vector2.ZERO 
 ## average ground rotation between the two foot raycasts
-var avgGRot = 0
+var avgGRot:float = 0
 ## the angle of the left foot raycast
-var langle = 0
+var langle:float = 0
 ## the angle of the right foot raycast
-var rangle = 0
+var rangle:float = 0
 ## Sonic's rotation during the last frame
-var lRot = 0
+var lRot:float = 0
 ## the position at which sonic starts the level
 var startpos:Vector2 = Vector2.ZERO
 ## the layer on which sonic starts
-var startLayer = 0
->>>>>>> Stashed changes
+var startLayer:int = 0
 
 ## sonic's current velocity
 var velocity1:Vector2 = Vector2.ZERO
@@ -201,12 +165,8 @@ var gVel:float = 0
 ## the ground velocity during the previous frame
 var pgVel:float = 0
 
-<<<<<<< Updated upstream
-var backLayer:bool = false	# whether or not sonic is currently on the "back" layer
-=======
 ## whether or not sonic is currently on the "back" layer
 var backLayer:bool = false
->>>>>>> Stashed changes
 
 func _ready():
 	# get the UI elements
@@ -230,30 +190,30 @@ func _ready():
 	resetGame()
 
 ##Returns the given angle as an angle (in radians) between -PI and PI
-func limitAngle(ang):
+func limitAngle(ang:float) -> float:
 	var sign1:float = 1
 	if not ang == 0:
 		sign1 = ang / absf(ang)
 	ang = fmod(ang, PI * 2)
-	if abs(ang) > PI:
+	if absf(ang) > PI:
 		ang = (2 * PI - abs(ang)) * sign1 * -1
 	return ang
 
 ##returns the angle distance between rot1 and rot2, even over the 360deg
 ##mark (i.e. 350 and 10 will be 20 degrees apart)
-func angleDist(rot1,rot2):
+func angleDist(rot1:float, rot2:float) -> float:
 	rot1 = limitAngle(rot1)
 	rot2 = limitAngle(rot2)
 	if abs(rot1-rot2) > PI and rot1>rot2:
 		return abs(limitAngle(rot1)-(limitAngle(rot2)+PI*2))
 	elif abs(rot1-rot2) > PI and rot1 < rot2:
-		return abs((limitAngle(rot1)+PI*2)-(limitAngle(rot2)))
+		return absf((limitAngle(rot1) + PI * 2) - (limitAngle(rot2)))
 	else:
-		return abs(rot1-rot2)
+		return absf(rot1 - rot2)
 
 ##gets the distance between point vec1 and point vec2 (probably unnecessary)
-func VecDist(vec1,vec2) -> float:
-	return (vec1-vec2).length()
+func VecDist(vec1:Vector2, vec2:Vector2) -> float:
+	return (vec1 - vec2).length()
 
 ##Handles the boosting controls
 func boostControl():
@@ -276,7 +236,7 @@ func boostControl():
 		
 		# stop moving vertically as much if you are in the air (air boost)
 		if state == -1 and velocity1.x < ACCELERATION:
-			velocity1.x = BOOST_SPEED*(1 if sprite1.flip_h else -1)
+			velocity1.x = BOOST_SPEED * (1 if sprite1.flip_h else -1)
 			velocity1.y = 0
 		
 		voiceSound.play_effort()
@@ -337,7 +297,7 @@ func airProcess() -> void:
 	rangle = limitAngle(rangle)
 	
 	# calculate the average ground rotation (averaged between the points)
-	avgGRot = (langle+rangle)/2
+	avgGRot = (langle + rangle) / 2
 	
 	# set a default avgGPoint
 	avgGPoint = Vector2(-INF,-INF)
@@ -346,15 +306,17 @@ func airProcess() -> void:
 	# raycast cannot find a collider)
 	if (LeftCast.is_colliding() and RightCast.is_colliding()):
 		text_label.text += "Left & Right Collision"
-		var LeftCastPt = Vector2(
-			LeftCast.get_collision_point().x+cos(rotation)*8,
-			LeftCast.get_collision_point().y+sin(rotation)*8)
-		var RightCastPt = Vector2(
-			RightCast.get_collision_point().x-cos(rotation)*8,
-			RightCast.get_collision_point().y-sin(rotation)*8)
-		avgGPoint = \
-		LeftCastPt if VecDist(position,LeftCastPt) < VecDist(position,RightCastPt) \
-		else RightCastPt
+		var LeftCastPt:Vector2 = Vector2(
+			LeftCast.get_collision_point().x + cos(rotation) * 8,
+			LeftCast.get_collision_point().y + sin(rotation) * 8)
+		var RightCastPt:Vector2 = Vector2(
+			RightCast.get_collision_point().x - cos(rotation) * 8,
+			RightCast.get_collision_point().y - sin(rotation) * 8)
+		if VecDist(position,LeftCastPt) < VecDist(position,RightCastPt):
+			avgGPoint = LeftCastPt
+		else:
+			avgGPoint = RightCastPt
+		
 	elif LeftCast.is_colliding():
 		text_label.text += "Left Collision"
 		avgGPoint = Vector2(LeftCast.get_collision_point().x+cos(rotation)*8,LeftCast.get_collision_point().y+sin(rotation)*8)
@@ -376,13 +338,13 @@ func airProcess() -> void:
 		avgTPoint = Vector2(RightCastTop.get_collision_point().x-cos(rotation)*8,RightCastTop.get_collision_point().y-sin(rotation)*8)
 	
 	# handle collision with the ground
-	if abs(avgGPoint.y - position.y) < 21: #-velocity1.y
+	if absf(avgGPoint.y - position.y) < 21: #-velocity1.y
 	#if VecDist(avgGPoint,position) < 21:
 #		print("ground hit")
 		state = 0
 		rotation = avgGRot
 		sprite1.rotation = 0
-		gVel = sin(rotation)*(velocity1.y+0.5)+cos(rotation)*velocity1.x
+		gVel = sin(rotation) * (velocity1.y + 0.5) + cos(rotation) * velocity1.x
 		
 		# play the stomp sound if you were stomping
 		if stomping:
@@ -395,9 +357,11 @@ func airProcess() -> void:
 	
 	# air-based movement (using the arrow keys)
 	if Input.is_action_pressed("move right") and velocity1.x < 16:
-		velocity1 = Vector2(velocity1.x+AIR_ACCEL,velocity1.y)
+		#velocity1 = Vector2(velocity1.x + AIR_ACCEL,velocity1.y)
+		velocity1.x += AIR_ACCEL
 	elif Input.is_action_pressed("move left") and velocity1.x > -16:
-		velocity1 = Vector2(velocity1.x-AIR_ACCEL,velocity1.y)
+		#velocity1 = Vector2(velocity1.x - AIR_ACCEL, velocity1.y)
+		velocity1.x -= AIR_ACCEL 
 	
 	
 	### STOMPING CONTROLS ###
@@ -475,7 +439,7 @@ func gndProcess() -> void:
 	rangle = limitAngle(rangle)
 	
 	# calculate the average ground rotation
-	if abs(langle - rangle) < PI:
+	if absf(langle - rangle) < PI:
 		avgGRot = limitAngle((langle + rangle) / 2)
 	else:
 		avgGRot = limitAngle((langle + rangle + PI * 2) / 2)
@@ -485,7 +449,7 @@ func gndProcess() -> void:
 		avgGPoint = Vector2((LeftCast.get_collision_point().x+RightCast.get_collision_point().x)/2,(LeftCast.get_collision_point().y+RightCast.get_collision_point().y)/2)
 		#((acos(LeftCast.get_collision_normal().y/1)+PI)+(acos(RightCast.get_collision_normal().y/1)+PI))/2
 	elif LeftCast.is_colliding():
-		avgGPoint = Vector2(LeftCast.get_collision_point().x+cos(rotation)*8,LeftCast.get_collision_point().y+sin(rotation)*8)
+		avgGPoint = Vector2(LeftCast.get_collision_point().x+cos(rotation) * 8, LeftCast.get_collision_point().y+sin(rotation)*8)
 		avgGRot = langle
 	elif RightCast.is_colliding():
 		avgGPoint = Vector2(RightCast.get_collision_point().x-cos(rotation)*8,RightCast.get_collision_point().y-sin(rotation)*8)
@@ -541,7 +505,7 @@ func gndProcess() -> void:
 	velocity1 = Vector2(cos(rotation)*gVel,sin(rotation)*gVel)
 	
 	# enter the air state if you run off a ramp, or walk off a cliff, or something
-	if not VecDist(avgGPoint,position) < 21 or not (LeftCast.is_colliding() and RightCast.is_colliding()):
+	if not VecDist(avgGPoint, position) < 21 or not (LeftCast.is_colliding() and RightCast.is_colliding()):
 		state = -1
 		sprite1.rotation = rotation
 		rotation = 0
@@ -732,37 +696,28 @@ func _physics_process(_delta:float) -> void:
 			
 			i.rotation = -rotation
 
+##shortcut to change the collision mask for every raycast node connected to
+## sonic at the same time. Value is true for loop_right, false for loop_left
 func setCollisionLayer(value:bool) -> void:
-	# shortcut to change the collision mask for every raycast node connected to
-	# sonic at the same time. Value is true for layer 1, false for layer 0
 	backLayer = value
 	
-	#c08oprkiua: All the layer_numbers have been bumped by 1
-	LeftCast.set_collision_mask_value(1,not backLayer)
-	LeftCast.set_collision_mask_value(2,backLayer)
-	RightCast.set_collision_mask_value(1,not backLayer)
-	RightCast.set_collision_mask_value(2,backLayer)
-	RSideCast.set_collision_mask_value(1,not backLayer)
-	RSideCast.set_collision_mask_value(2,backLayer)
-	LSideCast.set_collision_mask_value(1,not backLayer)
-	LSideCast.set_collision_mask_value(2,backLayer)
-	LeftCastTop.set_collision_mask_value(1,not backLayer)
-	LeftCastTop.set_collision_mask_value(2,backLayer)
-	RightCastTop.set_collision_mask_value(1,not backLayer)
-	RightCastTop.set_collision_mask_value(2,backLayer)
+	for rays:RayCast2D in [LeftCast, RightCast, RSideCast, LSideCast, LeftCastTop, RightCastTop]:
+		rays.set_collision_mask_value(2, not backLayer)
+		rays.set_collision_mask_value(3, backLayer)
 
-func _flipLayer(_body) -> void:
+func FlipLayer(_body) -> void:
 	# toggle between layers
 	setCollisionLayer(not backLayer)
 
-func _layer0(area) -> void:
+## enables interaction with the "left loop" collision layer for Sonic
+func LeftLayerOn(area) -> void:
 	# explicitly set the collision layer to 0
-	print("layer0",area.name)
+	print("Left layer: ", area.name)
 	setCollisionLayer(false)
 
-func _layer1(area) -> void:
+func RightLayerOn(area) -> void:
 	# explicitly set the collision layer to 1
-	print("layer1", area.name)
+	print("Right Layer: ", area.name)
 	setCollisionLayer(true)
 
 func _on_DeathPlane_area_entered(area:Node) -> void:
@@ -820,16 +775,6 @@ func hurt_player() -> void:
 		
 		voiceSound.play_hurt()
 		
-<<<<<<< Updated upstream
-		var t = 0
-		var angle = 101.25
-		var n:bool = false
-		var speed = 4
-		
-		while t < min(ringCounter.ringCount,32):
-			var currentRing = bounceRing.instantiate()
-			currentRing.velocity1 = Vector2(-sin(angle)*speed,cos(angle)*speed)/2
-=======
 		var t:int = 0
 		var angle:float = 101.25
 		var n:bool = false
@@ -838,7 +783,6 @@ func hurt_player() -> void:
 		while t < min(ringCounter.ringCount, 32):
 			var currentRing = bounceRing.instantiate()
 			currentRing.velocity1 = Vector2(-sin(angle) * speed, cos(angle) * speed) / 2
->>>>>>> Stashed changes
 			currentRing.position = position
 			if n:
 				currentRing.velocity1.x *= -1

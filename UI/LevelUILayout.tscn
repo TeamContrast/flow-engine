@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bjrx5iv7xjob"]
 
-[ext_resource type="PackedScene" path="res://UI/BarUnit.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://bw6icxdhpsglk" path="res://UI/BarUnit.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://44fuy8v1ifes" path="res://UI/RingCounter.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://UI/boostBar.tscn" id="5"]
 
@@ -28,3 +28,7 @@ grow_vertical = 0
 [node name="Unit" parent="boostBar" instance=ExtResource("3")]
 visible = false
 anchors_preset = 0
+anchor_top = 0.0
+anchor_bottom = 0.0
+offset_top = 0.0
+offset_bottom = 8.0

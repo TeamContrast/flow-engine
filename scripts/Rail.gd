@@ -1,12 +1,11 @@
-"""
-the system for creating rails from curves in Godot
-"""
-
 extends Path2D
 
-# line holds a reference to the Line2D (line renderer) node
+##the system for creating rails from curves in Godot
+class_name FlowRail
+
+## holds a reference to the Line2D (line renderer) node
 @onready var line:Line2D = $"Line2D"
-# coll holds a reference to the collision polygon
+## holds a reference to the collision polygon
 @onready var coll:CollisionPolygon2D = $"Area2D/CollisionPolygon2D"
 
 
@@ -31,9 +30,9 @@ func _ready():
 	coll.polygon = fullCurve
 
 
-func _on_Area2D_area_entered(area):
+func _on_Area2D_area_entered(area:Area2D):
 	# if the player collides with this rail, call "_on_Railgrind" to let it
 	# know it should be grinding now.
 	
 	if area.name == "Player":
-		area._on_Railgrind(area,curve,global_position)
+		area._on_Railgrind(area, curve, global_position)

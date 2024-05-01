@@ -1,40 +1,42 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=6 format=3 uid="uid://3mb1clgjh6s7"]
 
-[ext_resource path="res://sprites/StageElements/BoostRing.png" type="Texture2D" id=1]
-[ext_resource path="res://audio/SFX/airBoostRing.wav" type="AudioStream" id=2]
-[ext_resource path="res://scripts/Spring.gd" type="Script" id=3]
+[ext_resource type="Texture2D" uid="uid://b6o01namct3ea" path="res://sprites/StageElements/BoostRing.png" id="1"]
+[ext_resource type="AudioStream" uid="uid://b1kckpfviktj1" path="res://audio/SFX/airBoostRing.wav" id="2"]
+[ext_resource type="Script" path="res://scripts/Spring.gd" id="3"]
 
-[sub_resource type="SpriteFrames" id=1]
-animations = [ {
-"frames": [ ExtResource( 1 ) ],
+[sub_resource type="SpriteFrames" id="1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1")
+}],
 "loop": true,
-"name": "default",
+"name": &"default",
 "speed": 5.0
-} ]
+}]
 
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 26.2442, 6.21687 )
+[sub_resource type="RectangleShape2D" id="2"]
+size = Vector2(52.4884, 12.4337)
 
 [node name="AirRing" type="Area2D"]
 light_mask = 0
-monitorable = false
 collision_layer = 7
 collision_mask = 7
-script = ExtResource( 3 )
+monitorable = false
+script = ExtResource("3")
 DIRECTED = true
 ringScale = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 light_mask = 0
-frames = SubResource( 1 )
-playing = true
+sprite_frames = SubResource("1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( -7.62939e-06, 6.32981 )
-shape = SubResource( 2 )
+position = Vector2(-7.62939e-06, 6.32981)
+shape = SubResource("2")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 2 )
+stream = ExtResource("2")
 volume_db = -3.176
 
 [connection signal="area_entered" from="." to="." method="_on_Area2D_area_entered"]

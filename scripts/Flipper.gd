@@ -1,24 +1,16 @@
-"""
-flips sonic between the two available collision layers
-"""
-
 extends Area2D
+##flips sonic between the two available collision layers
+class_name FlowLayerFlipper
 
+##The layer interaction that this LayerFlopper will trigger
+@export_enum("Left Layer","Right Layer", "Toggle") var layer:int
 
-@export var function = 'layer 0' # (String, 'layer 0', 'layer 1', 'toggle')
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass
-
-func _tripped(area):
+func _tripped(area:Area2D) -> void:
 	if area.name == 'Player':
-		if function == 'layer 0':
-			area._layer0(area)
-		if function == 'layer 1':
-			area._layer1(area)
-		if function == 'toggle':
-			area._flipLayer(area)
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+		match layer:
+			0:
+				area.LeftLayerOn(area)
+			1:
+				area.RightLayerOn(area)
+			2:
+				area.FlipLayer(area)

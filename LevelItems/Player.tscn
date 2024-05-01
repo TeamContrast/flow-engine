@@ -54,9 +54,9 @@
 [ext_resource type="Texture2D" uid="uid://cb830swd34s71" path="res://sprites/sonic/Sonic_run37.png" id="52"]
 [ext_resource type="AudioStream" uid="uid://df6lfljp8rctw" path="res://audio/SFX/rail.wav" id="53"]
 [ext_resource type="Texture2D" uid="uid://qx3rccsa1pk4" path="res://sprites/sonic/hurt.png" id="54"]
-[ext_resource type="PackedScene" path="res://LevelItems/BounceRing.tscn" id="55"]
+[ext_resource type="PackedScene" uid="uid://lx52svmfh7qd" path="res://LevelItems/BounceRing.tscn" id="55"]
 [ext_resource type="Texture2D" uid="uid://blq2ku4c3v1ir" path="res://sprites/sonic/railFlip.png" id="56"]
-[ext_resource type="PackedScene" path="res://BoostParticle.tscn" id="57"]
+[ext_resource type="PackedScene" uid="uid://ds1qcyx60i86b" path="res://BoostParticle.tscn" id="57"]
 [ext_resource type="Script" path="res://LevelItems/voices.gd" id="58"]
 [ext_resource type="AudioStream" uid="uid://64vwfvtlfbxg" path="res://audio/sonic/hurt/08_V_SNC_007_b.wav" id="59"]
 [ext_resource type="AudioStream" uid="uid://bap1vkexbx2ib" path="res://audio/sonic/effort/14_V_SNC_013_a.wav" id="60"]
@@ -487,15 +487,21 @@ stomp_sfx = ExtResource("16")
 stomp_land_sfx = ExtResource("18")
 bounceRing = ExtResource("55")
 boostParticle = ExtResource("57")
-SKID_ACCEL = 0.1
-JUMP_VELOCITY = 4.0
+GRAVITY = 0.2
+ACCELERATION = 0.05
+AIR_ACCEL = 0.05
+MAX_SPEED = 8.0
+BOOST_SPEED = 14.0
+SPEED_DECAY = 0.4
+JUMP_VELOCITY = 5.5
+JUMP_SHORT_LIMIT = 0.25
 
 [node name="playerCollider" type="CollisionShape2D" parent="."]
 shape = SubResource("1")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, -1.05945)
-zoom = Vector2(0.5, 0.5)
+zoom = Vector2(1.5, 1.5)
 position_smoothing_enabled = true
 position_smoothing_speed = 20.0
 drag_horizontal_enabled = true
@@ -516,7 +522,7 @@ scroll_active = false
 [node name="PlayerSprites" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("27")
 animation = &"idle"
-frame = 4
+autoplay = "idle"
 flip_h = true
 
 [node name="LeftCast" type="RayCast2D" parent="."]

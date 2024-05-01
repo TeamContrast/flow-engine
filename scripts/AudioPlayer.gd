@@ -3,21 +3,14 @@
 extends AudioStreamPlayer
 
 # the time, in seconds, to loop back to once the end is reached.
-@export var loopbackTime: float = 13.25
-
-# automatically play the track on startup
-@export var _autoPlay: bool = true
+@export var loopbackTime:float = 13.25
 
 # records whether or not the track is in the loopable 
 # section yet
-var loopbackFlag = false
+var loopbackFlag:bool = false
 
-# automatically play the track if "autoplay" is enabled
-func _ready():
-	if _autoPlay:
-		play(0)
 
-func _process(_delta):
+func _process(_delta:float) -> void:
 	# set the loopback flag if we are in the loopable section
 	if get_playback_position() > loopbackTime:
 		loopbackFlag = true
