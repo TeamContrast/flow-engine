@@ -239,7 +239,6 @@ func VecDist(vec1:Vector2, vec2:Vector2) -> float:
 ##Handles the boosting controls
 func boostControl():
 	if Input.is_action_just_pressed("boost") and boostBar.boostAmount > 0:
-		
 		# set boosting to true
 		boosting = true
 		
@@ -279,10 +278,10 @@ func boostControl():
 		elif (angleDist(velocity1.angle(), 0) < PI/3 or angleDist(velocity1.angle(), PI) < PI / 3):
 			# apply boost if you are in the air (and are not going straight up or down)
 			velocity1 = velocity1.normalized() * BOOST_SPEED
-		elif(state == CharStates.STATE_AIR and (not canShort)):
-			#apply a velocity if going straight up, but send Sonic forward a little
-			#and nerf the y velocity so he can't go flying into orbit
-			velocity1 += Vector2((1 if sprite1.flip_h else -1), GRAVITY)
+		elif state == CharStates.STATE_AIR and (not canShort):
+			#doing nothing here actually keeps Sonic from flying straight 
+			#up forever, problem solved lol
+			pass
 		else:
 			# if none of these situations fit, you shouldn't be boosting here!
 			boosting = false
@@ -381,11 +380,10 @@ func airProcess() -> void:
 		pass
 	
 	# air-based movement (using the arrow keys)
-	if Input.is_action_pressed("move right") and velocity1.x < 16:
-		#velocity1 = Vector2(velocity1.x + AIR_ACCEL,velocity1.y)
+	#Only let the player accelerate if they aren't already at max speed
+	if Input.is_action_pressed("move right") and velocity1.x < MAX_SPEED:
 		velocity1.x += AIR_ACCEL
-	elif Input.is_action_pressed("move left") and velocity1.x > -16:
-		#velocity1 = Vector2(velocity1.x - AIR_ACCEL, velocity1.y)
+	elif Input.is_action_pressed("move left") and velocity1.x > -MAX_SPEED:
 		velocity1.x -= AIR_ACCEL 
 	
 	
@@ -487,28 +485,32 @@ func gndProcess() -> void:
 	
 	if not rolling:
 		# handle rightward acceleration
-		if Input.is_action_pressed("move right") and gVel < MAX_SPEED:
-			gVel += ACCELERATION
+		var input_direction:float = Input.get_axis("move left", "move right")
+		
+		if input_direction > 0 and gVel < MAX_SPEED:
+			#Analog controls :nice:
+			gVel += ACCELERATION * input_direction 
 			# "skid" mechanic, to more quickly accelerate when reversing 
 			# (this makes Sonic feel more responsive)
 			if gVel < 0:
 				gVel += SKID_ACCEL
 		
 		# handle leftward acceleration
-		elif Input.is_action_pressed("move left") and gVel > -MAX_SPEED:
-			gVel -= ACCELERATION
+		elif input_direction < 0 and gVel > -MAX_SPEED:
+			#This works as a += because input_direction is negative
+			gVel += ACCELERATION * input_direction
 			
 			# "skid" mechanic (see rightward section)
 			if gVel > 0:
 				gVel -= SKID_ACCEL
-		else:
+		elif is_zero_approx(input_direction):
 			# general deceleration and stopping if no key is pressed
 			# declines at a constant rate
 			if not gVel == 0:
 				gVel -= SPEED_DECAY * (gVel / absf(gVel))
 			if absf(gVel) < SPEED_DECAY * 1.5:
 				gVel = 0
-	else:
+	elif rolling:
 		# general deceleration and stopping if no key is pressed
 		# declines at a constant rate
 		if not gVel == 0:

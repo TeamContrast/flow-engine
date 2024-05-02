@@ -259,7 +259,7 @@ func boostControl():
 			velocity.y = 0
 		
 		voiceSound.play_effort()
-		
+	
 	if Input.is_action_pressed("boost") and boosting and boostBar.boostAmount > 0:
 #		if boostSound.stream != boost_sfx:
 #			boostSound.stream = boost_sfx
@@ -274,15 +274,12 @@ func boostControl():
 		elif state == CharStates.STATE_GROUND:
 			# apply boost if you are on the ground
 			gVel = BOOST_SPEED * (1 if sprite1.flip_h else -1)
-		
 		elif (angleDist(velocity.angle(), 0) < PI/3 or angleDist(velocity.angle(), PI) < PI / 3):
 			# apply boost if you are in the air (and are not going straight up or down)
 			velocity = velocity.normalized() * BOOST_SPEED
 		elif(state == CharStates.STATE_AIR and (not canShort)):
-			#apply boost if going straight up, 
-			#but nerf the y velocity so Sonic can't go flying into orbit
-			#and send him forward just a lil
-			velocity = (velocity.normalized() * BOOST_SPEED) + Vector2(BOOST_SPEED * (1 if sprite1.flip_h else -1), BOOST_SPEED / GRAVITY)
+			#Do nothing, because that actually mimics what the Rush games did
+			pass
 		else:
 			# if none of these situations fit, you shouldn't be boosting here!
 			boosting = false
@@ -449,7 +446,7 @@ func gndProcess() -> void:
 				gVel -= SPEED_DECAY * (gVel / absf(gVel))
 			if absf(gVel) < SPEED_DECAY * 1.5:
 				gVel = 0
-	else:
+	elif rolling:
 		# general deceleration and stopping if no key is pressed
 		# declines at a constant rate
 		if not gVel == 0:
