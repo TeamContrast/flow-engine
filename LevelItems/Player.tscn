@@ -453,7 +453,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"default",
-"speed": 25.0
+"speed": 35.0
 }]
 
 [sub_resource type="Gradient" id="30"]
@@ -561,7 +561,8 @@ visible = false
 modulate = Color(1, 1, 1, 0.78451)
 light_mask = 0
 sprite_frames = SubResource("29")
-frame = 1
+autoplay = "default"
+frame_progress = 0.120513
 
 [node name="BoostSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("17")

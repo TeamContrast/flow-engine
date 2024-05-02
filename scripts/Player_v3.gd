@@ -755,7 +755,7 @@ func hurt_player() -> void:
 		var n:bool = false
 		var speed:int = 4
 		
-		while t < min(ringCounter.ringCount, 32):
+		while t < mini(ringCounter.ringCount, 32):
 			var currentRing = bounceRing.instantiate()
 			currentRing.velocity = Vector2(-sin(angle) * speed, cos(angle) * speed) / 2
 			currentRing.position = position

@@ -433,12 +433,12 @@ func airProcess() -> void:
 		velocity1 = Vector2(0,velocity1.y)
 		position = RSideCast.get_collision_point() - Vector2(14,0)
 		boosting = false
-		
+	
 	# top collision
 	if VecDist(avgTPoint,position + velocity1) < 21:
 #		Vector2(avgTPoint.x-20*sin(rotation),avgTPoint.y+20*cos(rotation))
 		velocity1 = Vector2(velocity1.x, 0)
-		
+	
 	# render the sprites facing the correct direction
 	if velocity1.x < 0:
 		sprite1.flip_h = false
@@ -454,7 +454,6 @@ func airProcess() -> void:
 	sprite1.speed_scale = 1
 
 func gndProcess() -> void:
-	
 	# caluclate the ground rotation for the left and right raycast colliders,
 	# respectively
 	langle = -atan2(LeftCast.get_collision_normal().x,LeftCast.get_collision_normal().y)-PI
@@ -468,7 +467,7 @@ func gndProcess() -> void:
 	else:
 		avgGRot = limitAngle((langle + rangle + PI * 2) / 2)
 	
-	# caluculate the average ground level based on the available colliders
+	# calculate the average ground level based on the available colliders
 	if (LeftCast.is_colliding() and RightCast.is_colliding()):
 		avgGPoint = Vector2((LeftCast.get_collision_point().x+RightCast.get_collision_point().x)/2,(LeftCast.get_collision_point().y+RightCast.get_collision_point().y)/2)
 		#((acos(LeftCast.get_collision_normal().y/1)+PI)+(acos(RightCast.get_collision_normal().y/1)+PI))/2
@@ -484,9 +483,10 @@ func gndProcess() -> void:
 	position = Vector2(avgGPoint.x + 20 * sin(rotation), avgGPoint.y - 20 * cos(rotation))
 	
 	if not rolling:
-		# handle rightward acceleration
+		#If this is negative, the player is moving left. If positive, they're going right.
 		var input_direction:float = Input.get_axis("move left", "move right")
 		
+		# handle rightward acceleration
 		if input_direction > 0 and gVel < MAX_SPEED:
 			#Analog controls :nice:
 			gVel += ACCELERATION * input_direction 
@@ -503,7 +503,8 @@ func gndProcess() -> void:
 			# "skid" mechanic (see rightward section)
 			if gVel > 0:
 				gVel -= SKID_ACCEL
-		elif is_zero_approx(input_direction):
+		
+		elif input_direction == 0.0:
 			# general deceleration and stopping if no key is pressed
 			# declines at a constant rate
 			if not gVel == 0:
@@ -776,7 +777,7 @@ func _setVelocity(vel:Vector2) -> void:
 	velocity1 = vel
 
 ##this function is run whenever sonic hits a rail.
-func _on_Railgrind(area, curve:Curve2D, origin) -> void:
+func _on_Railgrind(area:Area2D, curve:Curve2D, origin:Vector2) -> void:
 	# stick to the current rail if you're already grindin
 	if grinding:
 		return
@@ -819,7 +820,7 @@ func hurt_player() -> void:
 		var n:bool = false
 		var speed:int = 4
 		
-		while t < min(ringCounter.ringCount, 32):
+		while t < mini(ringCounter.ringCount, 32):
 			var currentRing = bounceRing.instantiate()
 			currentRing.velocity1 = Vector2(-sin(angle) * speed, cos(angle) * speed) / 2
 			currentRing.position = position

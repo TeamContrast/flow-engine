@@ -1,38 +1,26 @@
-"""
-controls a typical (non-flying) ring
-"""
-
 extends Area2D
+## controls a typical (non-flying) ring
+class_name FlowGoldRing
 
-# true if the ring has been collected 
-var collected = false
+## true if the ring has been collected 
+var collected:bool = false
 
-# holds a reference to the AnimatedSprite node for the ring
-var sprite
+## holds a reference to the AnimatedSprite node for the ring
+@onready var sprite:AnimatedSprite2D = $"AnimatedSprite2D"
 
-# holds a referene to the AudioStreamPlayer for the ring
-var audio
+## holds a referene to the AudioStreamPlayer for the ring
+@onready var audio:AudioStreamPlayer = $"AudioStreamPlayer"
 
-var boostBar
+func _ready() -> void:
+	sprite.play("default")
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	sprite = get_node("AnimatedSprite2D")
-	audio = get_node("AudioStreamPlayer")
-
-# if the sprite has been collected, remove all visibility once the sparkle 
-# animation finishes
-func _process(_delta):
-	if collected and sprite.animation == "Sparkle" and \
-		sprite.frame >= 6:
-		visible = false
-
-
-func _on_Ring_area_entered(area):
+func _on_Ring_area_entered(area:Area2D) -> void:
 	# collide with the player, if the ring has not yet been collected
 	if not collected and area.name == "Player":
 		collected = true
-		sprite.animation = "Sparkle"
+		sprite.stop()
+		sprite.connect("animation_finished", hide, CONNECT_ONE_SHOT)
+		sprite.play("Sparkle")
 		audio.play();
 		get_node("/root/Node2D/CanvasLayer/RingCounter").addRing()
 		get_node("/root/Node2D/CanvasLayer/boostBar").changeBy(2)

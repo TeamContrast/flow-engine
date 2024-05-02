@@ -1,8 +1,7 @@
-##controls the current ring count indicator
-class_name FlowRingCounter
-
 extends Control
 
+##controls the current ring count indicator
+class_name FlowRingCounter
 
 ## the current number of collected rings
 @export var ringCount:int = 0
@@ -24,7 +23,7 @@ func _ready():
 	for i in range(3,0,-1):
 		digits.append(get_node("Numbers/Digit %d/TextureRect2" % i))
 
-func _process(_delta:float) -> void:
+func updateCounter() -> void:
 	# place stores the place multiplier for the value 
 	var place:int = 1
 	for i:TextureRect in digits:
@@ -40,3 +39,4 @@ func _process(_delta:float) -> void:
 ##add a single ring to the ring count
 func addRing():
 	ringCount += 1
+	updateCounter()

@@ -1,8 +1,7 @@
-"""
-controls a spring, as well as boost rings
-"""
-
 extends Area2D
+
+##controls a spring, as well as boost rings
+class_name FlowCharacterLauncher
 
 @export_group("Physics")
 ## how strong is the spring?

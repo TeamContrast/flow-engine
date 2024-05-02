@@ -15,7 +15,6 @@ var splodeVel:Vector2 = Vector2.ZERO
 ## keeps a reference to the audio stream player for the explosion sound
 @onready var boomSound:AudioStreamPlayer2D = $"BoomSound"
 
-#func _process(_delta:float) -> void:
 func _physics_process(_delta: float) -> void:
 	if alive:
 		# a stupid simple AI routine. Simply move x by -0.1 pixels per frame

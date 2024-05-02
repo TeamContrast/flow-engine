@@ -9,7 +9,7 @@ class_name FlowRail
 @onready var coll:CollisionPolygon2D = $"Area2D/CollisionPolygon2D"
 
 
-func _ready():
+func _ready() -> void:
 	# set the line points for rendering 
 	line.points = curve.get_baked_points()
 	

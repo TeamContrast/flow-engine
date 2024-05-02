@@ -11,12 +11,14 @@ var loopbackFlag:bool = false
 
 
 func _process(_delta:float) -> void:
-	# set the loopback flag if we are in the loopable section
-	if get_playback_position() > loopbackTime:
-		loopbackFlag = true
-
-	# if the track loops back to the beginning, automatically 
-	# skip to the loopable section instead
-	if get_playback_position() < loopbackTime and loopbackFlag:
-		seek(loopbackTime)
+	#Only process the music if it's actually playing
+	if playing:
+		# set the loopback flag if we are in the loopable section
+		if get_playback_position() > loopbackTime:
+			loopbackFlag = true
+		
+		# if the track loops back to the beginning, automatically 
+		# skip to the loopable section instead
+		if get_playback_position() < loopbackTime and loopbackFlag:
+			seek(loopbackTime)
 
