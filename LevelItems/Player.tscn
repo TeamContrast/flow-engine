@@ -491,10 +491,12 @@ SPEED_DECAY = 0.4
 SPINDASH_ACCUMULATE = 2.0
 SPINDASH_CHARGE_CAP = 16.0
 BOOST_SPEED = 14.0
+BOOST_COOLDOWN = 0.5
 GRAVITY = 0.2
 AIR_ACCEL = 0.05
 JUMP_VELOCITY = 5.5
 JUMP_SHORT_LIMIT = 0.25
+HURT_VEL_ADD = false
 
 [node name="playerCollider" type="CollisionShape2D" parent="."]
 shape = SubResource("1")
@@ -524,6 +526,8 @@ sprite_frames = SubResource("27")
 animation = &"idle"
 autoplay = "idle"
 flip_h = true
+
+[node name="BoostTimer" type="Timer" parent="."]
 
 [node name="LeftCast" type="RayCast2D" parent="."]
 position = Vector2(-6, -10)

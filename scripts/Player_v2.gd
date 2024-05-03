@@ -39,9 +39,9 @@ class_name RushPlayer2D
 @export_group("Boost")
 ## the speed of sonic's boost. Generally just a tad higher than MAX_SPEED
 @export var BOOST_SPEED:float = 25 /2
-## The cooldown on activating the boost. Smaller values make it more spammable.
+## The cooldown on activating the boost ,in seconds. Smaller values make it more spammable.
 @export var BOOST_COOLDOWN:float = 0.0
-##The amount that boosting will cost per physics frame
+##The amount of boost that boosting will cost per physics frame
 @export var BOOST_COST:float = 0.06
 
 @export_group("Air")
@@ -55,6 +55,11 @@ class_name RushPlayer2D
 @export var JUMP_SHORT_LIMIT:float = 1.5
 ##If enabled, Sonic can initiate boosting in midair.
 @export var AIR_BOOST:bool = true
+##When enabled, the velocity that Sonic was moving at is the velocity he will be launched back when hurt
+@export var HURT_VEL_ADD:bool = true
+##This is the velocity Sonic will be sent backwards when HURT_VEL_ADD is false.
+##This vector is treated absolutely, so negative values will act like their positive equivalent.
+@export var STATIC_HURT_VEL:Vector2 = Vector2.ONE
 
 @export_group("Stomp")
 ## how fast (in pixels per 1/120th of a second) should sonic stomp
@@ -83,6 +88,8 @@ class_name RushPlayer2D
 
 ## a reference to Sonic's physics collider
 @onready var collider:CollisionShape2D = $"playerCollider"
+##The cooldown timer on Sonic's boost
+@onready var boost_cooldown_timer:Timer = $"BoostTimer"
 
 # sonic's sprites/renderers
 ### sonic's sprite
@@ -91,6 +98,7 @@ class_name RushPlayer2D
 @onready var boostSprite:AnimatedSprite2D = $"BoostSprite"
 ## the line renderer for boosting and stomping
 @onready var boostLine:Line2D = $"BoostLine"
+
 
 ## holds a reference to the boost UI bar
 @onready var boostBar:Control
@@ -140,9 +148,12 @@ var rolling:bool = false
 var grinding:bool = false
 var stomping:bool = false
 var boosting:bool = false
+var can_boost:bool = true
 var tricking:bool = false
 
 var trickingCanStop:bool = false
+
+
 
 # flags and values for getting hurt
 var hurt:bool = false
@@ -214,6 +225,9 @@ func _ready():
 	# set the trail length to whatever the boostLine's size is.
 	TRAIL_LENGTH = boostLine.get_point_count()
 	
+	#make sure the boost timer uses physics frames
+	boost_cooldown_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
+	
 	# reset all game values
 	resetGame()
 
@@ -242,9 +256,20 @@ func angleDist(rot1:float, rot2:float) -> float:
 
 ##Handles the boosting controls
 func boostControl():
-	if Input.is_action_just_pressed("boost") and boostBar.boostAmount > 0:
+	if Input.is_action_just_pressed("boost") and boostBar.boostAmount > 0 and can_boost:
 		# set boosting to true
 		boosting = true
+		can_boost = false
+		
+		#Begin boost timer
+		if not boost_cooldown_timer.is_connected("timeout", set.bind("can_boost", true)):
+			boost_cooldown_timer.connect("timeout", set.bind("can_boost", true), CONNECT_ONE_SHOT)
+		
+		#This is to get around the fact that the timer will default to 1 second when 0 is provided for time
+		if BOOST_COOLDOWN > 0:
+			boost_cooldown_timer.start(BOOST_COOLDOWN)
+		else:
+			can_boost = true
 		
 		# reset the boost line points
 		for i in range(0, TRAIL_LENGTH):
@@ -565,17 +590,17 @@ func gndProcess() -> void:
 	# set Sonic's sprite based on his ground velocity
 	if not rolling:
 		if absf(gVel) > 12 / 2:
-			sprite1.animation = "Run4"
+			sprite1.play("Run4")
 		elif absf(gVel) > 10 / 2:
-			sprite1.animation = "Run3"
+			sprite1.play("Run3")
 		elif absf(gVel) > 5 / 2:
-			sprite1.animation = "Run2"
+			sprite1.play("Run2")
 		elif absf(gVel) > 0.02:
-			sprite1.animation = "Walk"
+			sprite1.play("Walk")
 		elif not crouching:
-			sprite1.animation = "idle"
+			sprite1.play("idle")
 	else:
-		sprite1.animation = "Roll"
+		sprite1.play("Roll")
 	
 	
 	#Crouching
@@ -586,22 +611,24 @@ func gndProcess() -> void:
 		gVel = 0
 		rolling = false
 	
-	if Input.is_action_pressed("ui_down") and absf(gVel) <= 0.02:
-		crouching = true
-		sprite1.animation = "Crouch"
-		sprite1.speed_scale = 1
-		if sprite1.frame > 3:
-			sprite1.speed_scale = 0
-	#keep crouching, don't re-play the animation
-	elif crouching == true:
-		sprite1.animation = "Crouch"
-		sprite1.speed_scale = 1
-		if sprite1.frame >= 6:
+	if not spindashing:
+		if Input.is_action_pressed("ui_down") and absf(gVel) <= 0.02:
+			crouching = true
+			sprite1.animation = "Crouch"
 			sprite1.speed_scale = 1
-			crouching = false
+			if sprite1.frame > 3:
+				sprite1.speed_scale = 0
+		#keep crouching, don't re-play the animation
+		elif crouching == true:
+			sprite1.animation = "Crouch"
+			sprite1.speed_scale = 1
+			if sprite1.frame >= 6:
+				sprite1.speed_scale = 1
+				crouching = false
 	
-	# run boost controls
-	boostControl()
+	# run boost controls, but only if you aren't spindashing or rolling
+	if not (rolling or spindashing):
+		boostControl()
 	
 	# jumping
 	if Input.is_action_pressed("jump") and not (crouching or spindashing):
@@ -610,7 +637,7 @@ func gndProcess() -> void:
 			velocity1 = Vector2(velocity1.x + sin(rotation) * JUMP_VELOCITY, velocity1.y - cos(rotation) * JUMP_VELOCITY)
 			sprite1.rotation = rotation
 			rotation = 0
-			sprite1.animation = "Roll"
+			sprite1.play("Roll")
 			canShort = true
 			rolling = false
 	else:
@@ -619,17 +646,17 @@ func gndProcess() -> void:
 	#initate spindash
 	if (Input.is_action_pressed("jump") and crouching) and not rolling:
 		spindashing = true
+		#Mimic how the animation would restart in the classics
+		sprite1.play("Spindash", 1.0)
 	
 	if spindashing and not rolling:
-		sprite1.animation = "Spindash"
-		sprite1.speed_scale = 1
 		#if a charge is being built up this frame
 		if Input.is_action_just_pressed("jump"):
 			#accumulate spindash speed
 			spindash_buildup += SPINDASH_ACCUMULATE * (1 if sprite1.flip_h else -1)
-			#cap buildup velocity so Sonic can't fly off
+			#cap buildup velocity so Sonic can't rocket off
 			if SPINDASH_CHARGE_CAP > 0:
-				spindash_buildup = minf(spindash_buildup, SPINDASH_CHARGE_CAP)
+				spindash_buildup = clampf(spindash_buildup,-SPINDASH_CHARGE_CAP ,SPINDASH_CHARGE_CAP)
 		#charge release
 		if not Input.is_action_pressed("ui_down"):
 			spindashing = false
@@ -811,7 +838,7 @@ func _on_Railgrind(area:Area2D, curve:Curve2D, origin:Vector2) -> void:
 			stomping = false
 
 func isAttacking() -> bool:
-	if stomping or boosting or rolling or \
+	if stomping or boosting or rolling or spindashing or \
 		(sprite1.animation == "Roll" and state == CharStates.STATE_AIR):
 		return true
 	return false
@@ -820,10 +847,13 @@ func hurt_player() -> void:
 	if not invincible > 0:
 		invincible = 120 * 5
 		state = CharStates.STATE_AIR
-		velocity1 = Vector2(-velocity1.x + sin(rotation) * JUMP_VELOCITY, velocity1.y - cos(rotation) * JUMP_VELOCITY)
+		if HURT_VEL_ADD:
+			velocity1 = Vector2(-velocity1.x + sin(rotation) * JUMP_VELOCITY, velocity1.y - cos(rotation) * JUMP_VELOCITY)
+		else:
+			velocity1 = Vector2(-signf(velocity1.x) * absf(STATIC_HURT_VEL.x) + sin(rotation), -signf(velocity1.y) * STATIC_HURT_VEL.y - cos(rotation)) * JUMP_VELOCITY
 		rotation = 0
 		position += velocity1 * 2
-		sprite1.animation = "hurt"
+		sprite1.play("hurt")
 		
 		voiceSound.play_hurt()
 		
