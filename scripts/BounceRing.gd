@@ -46,7 +46,7 @@ func _physics_process(_delta:float) -> void:
 	
 	# once the timer gets to a certain point, start flashing the ring sprite
 	if collectionStartTimer < -900:
-		sprite.modulate = Color(1,1,1,1-(-collectionStartTimer%30)/30.0)
+		sprite.modulate = Color(1,1,1,1-(-collectionStartTimer%30) / 30.0)
 	
 	# remove the ring node once the timer is up
 	if collectionStartTimer < -1080:

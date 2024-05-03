@@ -32,7 +32,6 @@ func _ready():
 	for i in range(lineLength):
 		line.points[i] = Vector2.ZERO
 
-#func _process(delta:float):
 func _physics_process(delta: float) -> void:
 	if timer < 1:
 		timer += delta

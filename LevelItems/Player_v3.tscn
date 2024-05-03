@@ -64,7 +64,8 @@
 [ext_resource type="AudioStream" uid="uid://bap1vkexbx2ib" path="res://audio/sonic/effort/14_V_SNC_013_a.wav" id="62_7uxgg"]
 [ext_resource type="AudioStream" uid="uid://b7lcplcwm2ifn" path="res://audio/sonic/effort/18_V_SNC_033_c.wav" id="63_ek7tm"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jeerp"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1qhij"]
+size = Vector2(20, 29)
 
 [sub_resource type="AtlasTexture" id="18"]
 atlas = ExtResource("2_aojfy")
@@ -475,14 +476,18 @@ scale_curve = SubResource("33")
 color_ramp = SubResource("31")
 
 [node name="Node2D" type="CharacterBody2D"]
+floor_stop_on_slope = false
 floor_constant_speed = true
 floor_max_angle = 3.14159
-platform_on_leave = 2
+floor_snap_length = 32.0
 platform_floor_layers = 4294967041
+platform_wall_layers = 1
 script = ExtResource("1_y045l")
 
 [node name="playerCollider" type="CollisionShape2D" parent="."]
-shape = SubResource("CapsuleShape2D_jeerp")
+position = Vector2(0, 4.5)
+shape = SubResource("RectangleShape2D_1qhij")
+debug_color = Color(0, 0.694118, 0.807843, 0.894118)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, -1.05945)
@@ -506,7 +511,7 @@ scroll_active = false
 
 [node name="PlayerSprites" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_rp1c0")
-animation = &"idle"
+animation = &"Run4"
 autoplay = "idle"
 flip_h = true
 
