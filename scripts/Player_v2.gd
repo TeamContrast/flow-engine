@@ -35,6 +35,10 @@ class_name RushPlayer2D
 @export var SPINDASH_ACCUMULATE:float = 15.0
 ##The maximum velocity Sonic can build up from charging a Spindash
 @export var SPINDASH_CHARGE_CAP:float = 0.0
+##How fast Sonic will speed up when rolling downhill
+@export var downhill_roll:float 
+##How fast Sonic will slow down when rolling uphill
+@export var uphill_roll:float
 
 @export_group("Boost")
 ## the speed of sonic's boost. Generally just a tad higher than MAX_SPEED
@@ -425,7 +429,7 @@ func airProcess() -> void:
 		
 		# set the stomping state, and animation state 
 		stomping = true
-		sprite1.animation = "Roll"
+		sprite1.play("Roll")
 		rotation = 0
 		sprite1.rotation = 0
 		
@@ -534,7 +538,6 @@ func gndProcess() -> void:
 			# "skid" mechanic (see rightward section)
 			if gVel > 0:
 				gVel -= SKID_ACCEL
-		
 		elif input_direction == 0.0:
 			# general deceleration and stopping if no key is pressed
 			# declines at a constant rate
@@ -542,8 +545,8 @@ func gndProcess() -> void:
 				gVel -= SPEED_DECAY * (gVel / absf(gVel))
 			if absf(gVel) < SPEED_DECAY * 1.5:
 				gVel = 0
-	elif rolling:
-		# general deceleration and stopping if no key is pressed
+	elif rolling and is_zero_approx(avgGRot):
+		# general deceleration and stopping if no key is pressed and ground is level
 		# declines at a constant rate
 		if not gVel == 0:
 			gVel -= SPEED_DECAY * (gVel / absf(gVel)) * 0.3
@@ -553,16 +556,20 @@ func gndProcess() -> void:
 	# left and right wall collision, respectively
 	if LSideCast.is_colliding() and LSideCast.get_collision_point().distance_to(position) < 21 and gVel < 0:
 		gVel = 0
-		position = LSideCast.get_collision_point() + Vector2(position.x-LSideCast.get_collision_point().x,position.y-LSideCast.get_collision_point().y).normalized()*21
+		#position = LSideCast.get_collision_point() + Vector2(position.x-LSideCast.get_collision_point().x,position.y-LSideCast.get_collision_point().y).normalized()*21
+		position = LSideCast.get_collision_point() + Vector2(position - LSideCast.get_collision_point()).normalized() * 21
 		boosting = false
 	if RSideCast.is_colliding() and RSideCast.get_collision_point().distance_to(position) < 21 and gVel > 0:
 		gVel = 0
-		position = RSideCast.get_collision_point() + Vector2(position.x-RSideCast.get_collision_point().x,position.y-RSideCast.get_collision_point().y).normalized()*21
-		boosting = false
+		#position = RSideCast.get_collision_point() + Vector2(position.x-RSideCast.get_collision_point().x,position.y-RSideCast.get_collision_point().y).normalized()*21
+		position = RSideCast.get_collision_point() + Vector2(position - RSideCast.get_collision_point()).normalized() * 21
+		boosting = false 
 	
 	# apply gravity if you are on a slope, and apply the ground velocity
 	gVel += sin(rotation) * GRAVITY
-	velocity1 = Vector2(cos(rotation) * gVel, sin(rotation) * gVel)
+	var rot_ang:Vector2 = Vector2.from_angle(rotation)
+	#velocity1 = Vector2(cos(rotation) * gVel, sin(rotation) * gVel)
+	velocity1 = rot_ang * gVel
 	
 	# enter the air state if you run off a ramp, or walk off a cliff, or something
 	if not avgGPoint.distance_to(position) < 21 or not (LeftCast.is_colliding() and RightCast.is_colliding()):
@@ -587,8 +594,11 @@ func gndProcess() -> void:
 	elif gVel > 0:
 		sprite1.flip_h = true
 	
+	#Check if Sonic is in the air, and play that anim if so
+	if state == CharStates.STATE_AIR:
+		sprite1.play("Free_falling")
 	# set Sonic's sprite based on his ground velocity
-	if not rolling:
+	elif not rolling:
 		if absf(gVel) > 12 / 2:
 			sprite1.play("Run4")
 		elif absf(gVel) > 10 / 2:
@@ -611,19 +621,27 @@ func gndProcess() -> void:
 		gVel = 0
 		rolling = false
 	
+	
 	if not spindashing:
-		if Input.is_action_pressed("ui_down") and absf(gVel) <= 0.02:
-			crouching = true
-			sprite1.animation = "Crouch"
-			sprite1.speed_scale = 1
-			if sprite1.frame > 3:
-				sprite1.speed_scale = 0
+		#Sonic is either rolling or crouching
+		if Input.is_action_pressed("ui_down"):
+			if absf(gVel) <= 0.02:
+				crouching = true
+				sprite1.play("Crouch", 1.0)
+				#sprite1.animation = "Crouch"
+				#sprite1.speed_scale = 1
+				if sprite1.frame > 3:
+					sprite1.pause()
+			else:
+				rolling = true
+				sprite1.play("Roll", 1.0)
 		#keep crouching, don't re-play the animation
 		elif crouching == true:
-			sprite1.animation = "Crouch"
-			sprite1.speed_scale = 1
+			sprite1.play("Crouch", 1.0)
+			#sprite1.animation = "Crouch"
+			#sprite1.speed_scale = 1
 			if sprite1.frame >= 6:
-				sprite1.speed_scale = 1
+				sprite1.play()
 				crouching = false
 	
 	# run boost controls, but only if you aren't spindashing or rolling
@@ -656,7 +674,7 @@ func gndProcess() -> void:
 			spindash_buildup += SPINDASH_ACCUMULATE * (1 if sprite1.flip_h else -1)
 			#cap buildup velocity so Sonic can't rocket off
 			if SPINDASH_CHARGE_CAP > 0:
-				spindash_buildup = clampf(spindash_buildup,-SPINDASH_CHARGE_CAP ,SPINDASH_CHARGE_CAP)
+				spindash_buildup = clampf(spindash_buildup, -SPINDASH_CHARGE_CAP, SPINDASH_CHARGE_CAP)
 		#charge release
 		if not Input.is_action_pressed("ui_down"):
 			spindashing = false
@@ -691,8 +709,9 @@ func _physics_process(_delta:float) -> void:
 	# run the correct function based on the current air/ground state
 	if grinding:
 		if tricking:
-			sprite1.animation = "railTrick"
-			sprite1.speed_scale = 1
+			sprite1.play("railTrick", 1.0)
+			#sprite1.animation = "railTrick"
+			#sprite1.speed_scale = 1
 			if sprite1.frame > 0:
 				trickingCanStop = true
 			if sprite1.frame <= 0 and trickingCanStop:
@@ -702,7 +721,8 @@ func _physics_process(_delta:float) -> void:
 				part.boostValue = 2
 				get_node("/root/Node2D").add_child(part)
 		else:
-			sprite1.animation = "Grind"
+			sprite1.play("Grind")
+			#sprite1.animation = "Grind"
 			
 		if Input.is_action_just_pressed("stomp") and not tricking:
 			tricking = true
@@ -712,7 +732,7 @@ func _physics_process(_delta:float) -> void:
 		grindHeight = sprite1.sprite_frames.get_frame_texture(sprite1.animation, sprite1.frame).get_height() / 2
 		
 		grindOffset += grindVel
-		var dirVec = grindCurve.sample_baked(grindOffset + 1) - grindCurve.sample_baked(grindOffset)
+		var dirVec:Vector2 = grindCurve.sample_baked(grindOffset + 1) - grindCurve.sample_baked(grindOffset)
 #		grindVel = velocity1.dot(dirVec)
 		rotation = dirVec.angle()
 		#position = grindCurve.sample_baked(grindOffset) \
@@ -720,7 +740,7 @@ func _physics_process(_delta:float) -> void:
 		#	+ grindPos
 		
 		
-		RailSound.pitch_scale = lerp(RAILSOUND_MINPITCH,RAILSOUND_MAXPITCH,\
+		RailSound.pitch_scale = lerp(RAILSOUND_MINPITCH, RAILSOUND_MAXPITCH,\
 			absf(grindVel) / BOOST_SPEED)
 		grindVel += sin(rotation) * GRAVITY
 		
@@ -733,7 +753,7 @@ func _physics_process(_delta:float) -> void:
 			trickingCanStop = false
 			RailSound.stop()
 		else:
-			velocity1 = dirVec*grindVel
+			velocity1 = dirVec * grindVel
 		
 		if Input.is_action_pressed("jump") and not crouching:
 			if not canShort:
@@ -741,7 +761,8 @@ func _physics_process(_delta:float) -> void:
 				velocity1 = Vector2(velocity1.x+sin(rotation)*JUMP_VELOCITY,velocity1.y-cos(rotation)*JUMP_VELOCITY)
 				sprite1.rotation = rotation
 				rotation = 0
-				sprite1.animation = "Roll"
+				sprite1.play("Roll")
+				#sprite1.animation = "Roll"
 				canShort = true
 				rolling = false
 				grinding = false
@@ -760,12 +781,13 @@ func _physics_process(_delta:float) -> void:
 	# update the boost line 
 	for i in range(0, TRAIL_LENGTH - 1):
 		boostLine.points[i] = (boostLine.points[i+1]-velocity1+(lastPos-position))
-	boostLine.points[TRAIL_LENGTH - 1] = Vector2(0,0)
+	boostLine.points[TRAIL_LENGTH - 1] = Vector2.ZERO
 	if stomping:
 		boostLine.points[TRAIL_LENGTH - 1] = Vector2(0,8)
 	
 	# apply the character's velocity, no matter what state the player is in.
-	position = Vector2(position.x+velocity1.x,position.y+velocity1.y)
+	#position = Vector2(position.x+velocity1.x,position.y+velocity1.y)
+	position = position + velocity1
 	lastPos = position
 	
 	if parts:
@@ -784,8 +806,9 @@ func setCollisionLayer(value:bool) -> void:
 		rays.set_collision_mask_value(2, not backLayer)
 		rays.set_collision_mask_value(3, backLayer)
 
+## toggle between layers
 func FlipLayer(_body) -> void:
-	# toggle between layers
+	print("Toggle layer: ", _body.name)
 	setCollisionLayer(not backLayer)
 
 ## enables interaction with the "left loop" collision layer for Sonic

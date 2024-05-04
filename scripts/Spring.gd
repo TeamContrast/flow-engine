@@ -49,9 +49,9 @@ func _on_Area2D_area_entered(area:Area2D) -> void:
 		var finalVector:Vector2 = (Vector2.ZERO if DIRECTED else sideVector) + launchVector
 		
 		# print out the values for debugging
-		print("sideVector: ",sideVector)
-		print("launchVector: ",launchVector)
-		print("finalVector: ",finalVector)
+		#print("sideVector: ",sideVector)
+		#print("launchVector: ",launchVector)
+		#print("finalVector: ",finalVector)
 		
 		if OVERRIDE_MOMENTUM:
 			# set sonic's velocity to the final vector

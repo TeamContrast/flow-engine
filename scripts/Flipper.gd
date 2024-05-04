@@ -3,14 +3,16 @@ extends Area2D
 class_name FlowLayerFlipper
 
 ##The layer interaction that this LayerFlopper will trigger
-@export_enum("Left Layer","Right Layer", "Toggle") var layer:int
+@export_enum("Left Layer:0","Right Layer:1", "Toggle:2") var layer:int
 
-func _tripped(area:Area2D) -> void:
-	if area.name == 'Player':
+func _tripped(entry:Area2D) -> void:
+	print("Activated")
+	if entry.has_node("playerCollider"):
+		print("player detected")
 		match layer:
 			0:
-				area.LeftLayerOn(area)
+				entry.LeftLayerOn(entry)
 			1:
-				area.RightLayerOn(area)
+				entry.RightLayerOn(entry)
 			2:
-				area.FlipLayer(area)
+				entry.FlipLayer(entry)

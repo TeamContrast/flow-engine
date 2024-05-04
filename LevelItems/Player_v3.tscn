@@ -1,19 +1,35 @@
-[gd_scene load_steps=98 format=3 uid="uid://dxbun362nq7y5"]
+[gd_scene load_steps=104 format=3 uid="uid://dxbun362nq7y5"]
 
 [ext_resource type="Script" path="res://scripts/Player_v3.gd" id="1_y045l"]
-[ext_resource type="Texture2D" uid="uid://dao8nd263qnfk" path="res://sprites/sonic/Crouch.png" id="2_aojfy"]
-[ext_resource type="Texture2D" uid="uid://uiua4cawk3rc" path="res://sprites/sonic/grind.png" id="3_7q8s4"]
-[ext_resource type="Texture2D" uid="uid://cb1wnnev1bi1p" path="res://sprites/sonic/roll.png" id="4_q1u3l"]
+[ext_resource type="Texture2D" uid="uid://bd6p2m5y4g84i" path="res://sprites/sonic/atlas_textures/crouch/crouch_1.tres" id="2_l1pl8"]
+[ext_resource type="Texture2D" uid="uid://xace7jtx5ajc" path="res://sprites/sonic/atlas_textures/crouch/crouch_2.tres" id="3_sf6s4"]
+[ext_resource type="Texture2D" uid="uid://dci5kyidwbpkm" path="res://sprites/sonic/atlas_textures/idle/idle_1.tres" id="4_gb471"]
+[ext_resource type="Texture2D" uid="uid://c802nfs856f76" path="res://sprites/sonic/atlas_textures/crouch/crouch_3.tres" id="4_h6vis"]
+[ext_resource type="Texture2D" uid="uid://dw6ysk4t7meix" path="res://sprites/sonic/atlas_textures/idle/idle_2.tres" id="5_gxnxy"]
 [ext_resource type="Texture2D" uid="uid://wdcgfl7xwrlh" path="res://sprites/sonic/sonic_run2_0.png" id="5_unyfo"]
+[ext_resource type="Texture2D" uid="uid://cwgpjae53cqcd" path="res://sprites/sonic/atlas_textures/crouch/crouch_4.tres" id="5_uyxma"]
+[ext_resource type="Texture2D" uid="uid://bk8nat8p7yasr" path="res://sprites/sonic/atlas_textures/free_falling_1.tres" id="6_2b3if"]
+[ext_resource type="Texture2D" uid="uid://ca4047gdqw247" path="res://sprites/sonic/atlas_textures/idle/idle_3.tres" id="6_umj8v"]
 [ext_resource type="Texture2D" uid="uid://gjx1nvg01euv" path="res://sprites/sonic/sonic_run2_1.png" id="6_yup83"]
+[ext_resource type="Texture2D" uid="uid://cku8kma734y5y" path="res://sprites/sonic/atlas_textures/free_falling_2.tres" id="7_jqfb5"]
+[ext_resource type="Texture2D" uid="uid://beq4pbwuhnf3y" path="res://sprites/sonic/atlas_textures/idle/idle_4.tres" id="7_k030a"]
 [ext_resource type="Texture2D" uid="uid://bv44qucmpd13k" path="res://sprites/sonic/sonic_run2_2.png" id="7_s8un6"]
+[ext_resource type="Texture2D" uid="uid://b7dnvivworqdk" path="res://sprites/sonic/atlas_textures/idle/idle_5.tres" id="8_64aih"]
+[ext_resource type="Texture2D" uid="uid://chpbxqbdpjl2e" path="res://sprites/sonic/atlas_textures/grind_1.tres" id="8_b61kq"]
 [ext_resource type="Texture2D" uid="uid://cmktybf7o5br2" path="res://sprites/sonic/sonic_run2_3.png" id="8_gfmy8"]
+[ext_resource type="Texture2D" uid="uid://bula1lew3bo8s" path="res://sprites/sonic/atlas_textures/idle/idle_6.tres" id="9_6eslo"]
+[ext_resource type="Texture2D" uid="uid://b6wso4575b52d" path="res://sprites/sonic/atlas_textures/grind_2.tres" id="9_j3f1o"]
 [ext_resource type="Texture2D" uid="uid://ch01ba5btodw3" path="res://sprites/sonic/sonic_run2_4.png" id="9_t2ib2"]
+[ext_resource type="Texture2D" uid="uid://dksyoqn1gy1xc" path="res://sprites/sonic/atlas_textures/idle/idle_7.tres" id="10_cbnol"]
 [ext_resource type="Texture2D" uid="uid://dpbe3l2vnxeiv" path="res://sprites/sonic/sonic_run2_5.png" id="10_ms6pw"]
 [ext_resource type="Texture2D" uid="uid://c1ffdhs66d4tq" path="res://sprites/sonic/sonic_run2_6.png" id="11_06ot7"]
+[ext_resource type="Texture2D" uid="uid://bdpwaffm7k0dr" path="res://sprites/sonic/atlas_textures/roll/roll_1.tres" id="11_ohorw"]
+[ext_resource type="Texture2D" uid="uid://kk8k025uedjk" path="res://sprites/sonic/atlas_textures/roll/roll_2.tres" id="12_0fvmf"]
 [ext_resource type="Texture2D" uid="uid://cg0q7k6eodx86" path="res://sprites/sonic/sonic_run2_7.png" id="12_vvypo"]
 [ext_resource type="Texture2D" uid="uid://d3m6yq18bsni" path="res://sprites/sonic/Sonic_run30.png" id="13_3l6y2"]
+[ext_resource type="Texture2D" uid="uid://bhbhd01sb0boc" path="res://sprites/sonic/atlas_textures/roll/roll_3.tres" id="13_kiu8l"]
 [ext_resource type="Texture2D" uid="uid://bq6vhqwvomebs" path="res://sprites/sonic/Sonic_run31.png" id="14_3glhg"]
+[ext_resource type="Texture2D" uid="uid://b41alen4sjcee" path="res://sprites/sonic/atlas_textures/roll/roll_4.tres" id="14_m34w8"]
 [ext_resource type="Texture2D" uid="uid://dgy0by813r4dw" path="res://sprites/sonic/Sonic_run32.png" id="15_xxwsm"]
 [ext_resource type="Texture2D" uid="uid://br00i8on1s4ol" path="res://sprites/sonic/Sonic_run33.png" id="16_4fv6c"]
 [ext_resource type="Texture2D" uid="uid://c5xirlwfkfy18" path="res://sprites/sonic/Sonic_run34.png" id="17_q7qyf"]
@@ -28,27 +44,30 @@
 [ext_resource type="Texture2D" uid="uid://b8noilwkeysvc" path="res://sprites/sonic/sonic_run4_5.png" id="26_ohamw"]
 [ext_resource type="Texture2D" uid="uid://7stdlxafywkj" path="res://sprites/sonic/sonic_run4_6.png" id="27_kd8w2"]
 [ext_resource type="Texture2D" uid="uid://bswpl06ruixjy" path="res://sprites/sonic/sonic_run4_7.png" id="28_0j8xx"]
-[ext_resource type="Texture2D" uid="uid://by3yo2rfyos2a" path="res://sprites/sonic/spindash.png" id="29_yeky8"]
-[ext_resource type="Texture2D" uid="uid://b08xqv5festos" path="res://sprites/sonic/sonic_walk_0.png" id="30_kjyf8"]
-[ext_resource type="Texture2D" uid="uid://d3h1pk81a7ldb" path="res://sprites/sonic/sonic_walk_1.png" id="31_u6iuh"]
-[ext_resource type="Texture2D" uid="uid://bttjwjm5b00ke" path="res://sprites/sonic/sonic_walk_2.png" id="32_uhcdb"]
-[ext_resource type="Texture2D" uid="uid://b8gc8h8cmqoar" path="res://sprites/sonic/sonic_walk_3.png" id="33_rnua0"]
-[ext_resource type="Texture2D" uid="uid://34vyickjsi38" path="res://sprites/sonic/sonic_walk_4.png" id="34_gbsih"]
-[ext_resource type="Texture2D" uid="uid://3voonpk36t1x" path="res://sprites/sonic/sonic_walk_5.png" id="35_wd5rg"]
-[ext_resource type="Texture2D" uid="uid://bumi5na2oadhd" path="res://sprites/sonic/sonic_walk_6.png" id="36_sajdw"]
-[ext_resource type="Texture2D" uid="uid://cnskocp4lic5e" path="res://sprites/sonic/sonic_walk_7.png" id="37_acwxj"]
 [ext_resource type="Texture2D" uid="uid://qx3rccsa1pk4" path="res://sprites/sonic/hurt.png" id="38_qrt2s"]
+[ext_resource type="Texture2D" uid="uid://xapia7bo75ep" path="res://sprites/sonic/atlas_textures/spindash/spindash_1.tres" id="39_8mb48"]
 [ext_resource type="Texture2D" uid="uid://c11umfq0nm1ot" path="res://sprites/sonic/sonic_idle0.png" id="39_8q3y0"]
 [ext_resource type="Texture2D" uid="uid://berim1m38sotd" path="res://sprites/sonic/sonic_idle1.png" id="40_nqk5e"]
+[ext_resource type="Texture2D" uid="uid://p3hg23sr4l3" path="res://sprites/sonic/atlas_textures/spindash/spindash_2.tres" id="40_pnv54"]
+[ext_resource type="Texture2D" uid="uid://4u5oh2iodavj" path="res://sprites/sonic/atlas_textures/spindash/spindash_3.tres" id="41_a80f1"]
 [ext_resource type="Texture2D" uid="uid://dco2waiu6quq5" path="res://sprites/sonic/sonic_idle2.png" id="41_ceqpf"]
 [ext_resource type="Texture2D" uid="uid://dirt8qs361sng" path="res://sprites/sonic/sonic_idle3.png" id="42_1u06e"]
+[ext_resource type="Texture2D" uid="uid://c6y0v8wl4nnsk" path="res://sprites/sonic/atlas_textures/spindash/spindash_4.tres" id="42_vkyb1"]
+[ext_resource type="Texture2D" uid="uid://ui7sou6cjpk1" path="res://sprites/sonic/atlas_textures/walk/walk_1.tres" id="43_531ee"]
 [ext_resource type="Texture2D" uid="uid://cq0bp7odfsrnm" path="res://sprites/sonic/sonic_idle4.png" id="43_dhie3"]
 [ext_resource type="Texture2D" uid="uid://dmwg2rhuigdw6" path="res://sprites/sonic/sonic_idle5.png" id="44_5iqag"]
+[ext_resource type="Texture2D" uid="uid://b1ghhf5vat27l" path="res://sprites/sonic/atlas_textures/walk/walk_2.tres" id="44_imhlg"]
 [ext_resource type="Texture2D" uid="uid://bgw5hht6pv47x" path="res://sprites/sonic/sonic_idle6.png" id="45_5vj3c"]
+[ext_resource type="Texture2D" uid="uid://b3giw7vf2h5xq" path="res://sprites/sonic/atlas_textures/walk/walk_3.tres" id="45_cl823"]
 [ext_resource type="Texture2D" uid="uid://bkgtmpck7kl1i" path="res://sprites/sonic/sonic_idle7.png" id="46_g7cit"]
+[ext_resource type="Texture2D" uid="uid://cae4mtotwru10" path="res://sprites/sonic/atlas_textures/walk/walk_4.tres" id="46_hocle"]
 [ext_resource type="Texture2D" uid="uid://blq2ku4c3v1ir" path="res://sprites/sonic/railFlip.png" id="47_4kgoc"]
+[ext_resource type="Texture2D" uid="uid://bx1fnjs4oxhio" path="res://sprites/sonic/atlas_textures/walk/walk_5.tres" id="47_wr2rm"]
+[ext_resource type="Texture2D" uid="uid://c3lof4ginkt6e" path="res://sprites/sonic/atlas_textures/walk/walk_6.tres" id="48_gof4b"]
 [ext_resource type="Texture2D" uid="uid://c8oxrpmxub6rb" path="res://sprites/effects/sonic_boost_0.png" id="48_wu4x6"]
+[ext_resource type="Texture2D" uid="uid://cv3yxiha40nj5" path="res://sprites/sonic/atlas_textures/walk/walk_7.tres" id="49_2nqfb"]
 [ext_resource type="Texture2D" uid="uid://eq10m8rgclhf" path="res://sprites/effects/sonic_boost_1.png" id="49_eu637"]
+[ext_resource type="Texture2D" uid="uid://cd3532ajk4vf" path="res://sprites/sonic/atlas_textures/walk/walk_8.tres" id="50_3ocbe"]
 [ext_resource type="Texture2D" uid="uid://b223bfpvvki4q" path="res://sprites/effects/sonic_boost_2.png" id="50_pjuuy"]
 [ext_resource type="Texture2D" uid="uid://bmcuuwbjfhkdw" path="res://sprites/effects/sonic_boost_3.png" id="51_qk6wt"]
 [ext_resource type="AudioStream" uid="uid://cqkjva8xvechs" path="res://audio/SFX/Boost.wav" id="52_xlokp"]
@@ -66,58 +85,6 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1qhij"]
 size = Vector2(20, 29)
-
-[sub_resource type="AtlasTexture" id="18"]
-atlas = ExtResource("2_aojfy")
-region = Rect2(0, 0, 40, 40)
-
-[sub_resource type="AtlasTexture" id="19"]
-atlas = ExtResource("2_aojfy")
-region = Rect2(40, 0, 40, 40)
-
-[sub_resource type="AtlasTexture" id="20"]
-atlas = ExtResource("2_aojfy")
-region = Rect2(120, 0, 40, 40)
-
-[sub_resource type="AtlasTexture" id="21"]
-atlas = ExtResource("2_aojfy")
-region = Rect2(80, 0, 40, 40)
-
-[sub_resource type="AtlasTexture" id="26"]
-atlas = ExtResource("3_7q8s4")
-region = Rect2(33, 0, 33, 35)
-
-[sub_resource type="AtlasTexture" id="22"]
-atlas = ExtResource("4_q1u3l")
-region = Rect2(0, 0, 40, 40)
-
-[sub_resource type="AtlasTexture" id="23"]
-atlas = ExtResource("4_q1u3l")
-region = Rect2(40, 0, 40, 40)
-
-[sub_resource type="AtlasTexture" id="24"]
-atlas = ExtResource("4_q1u3l")
-region = Rect2(80, 0, 40, 40)
-
-[sub_resource type="AtlasTexture" id="25"]
-atlas = ExtResource("4_q1u3l")
-region = Rect2(120, 0, 40, 40)
-
-[sub_resource type="AtlasTexture" id="7"]
-atlas = ExtResource("29_yeky8")
-region = Rect2(120, 0, 40, 40)
-
-[sub_resource type="AtlasTexture" id="8"]
-atlas = ExtResource("29_yeky8")
-region = Rect2(80, 0, 40, 40)
-
-[sub_resource type="AtlasTexture" id="9"]
-atlas = ExtResource("29_yeky8")
-region = Rect2(40, 0, 40, 40)
-
-[sub_resource type="AtlasTexture" id="10"]
-atlas = ExtResource("29_yeky8")
-region = Rect2(0, 0, 40, 40)
 
 [sub_resource type="AtlasTexture" id="2"]
 atlas = ExtResource("38_qrt2s")
@@ -167,54 +134,85 @@ region = Rect2(200, 0, 40, 45)
 atlas = ExtResource("47_4kgoc")
 region = Rect2(240, 0, 40, 45)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_rp1c0"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_3y01s"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("18")
+"texture": ExtResource("2_l1pl8")
 }, {
 "duration": 1.0,
-"texture": SubResource("19")
+"texture": ExtResource("3_sf6s4")
 }, {
 "duration": 1.0,
-"texture": SubResource("20")
+"texture": ExtResource("4_h6vis")
 }, {
 "duration": 1.0,
-"texture": SubResource("21")
-}, {
-"duration": 1.0,
-"texture": SubResource("20")
-}, {
-"duration": 1.0,
-"texture": SubResource("19")
-}, {
-"duration": 1.0,
-"texture": SubResource("18")
+"texture": ExtResource("5_uyxma")
 }],
-"loop": true,
+"loop": false,
 "name": &"Crouch",
 "speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("26")
+"texture": ExtResource("6_2b3if")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_jqfb5")
 }],
-"loop": true,
-"name": &"Grind",
+"loop": false,
+"name": &"Free_falling",
 "speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("22")
+"texture": ExtResource("8_b61kq")
 }, {
 "duration": 1.0,
-"texture": SubResource("23")
+"texture": ExtResource("9_j3f1o")
+}],
+"loop": true,
+"name": &"Grind",
+"speed": 15.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_gb471")
 }, {
 "duration": 1.0,
-"texture": SubResource("24")
+"texture": ExtResource("5_gxnxy")
 }, {
 "duration": 1.0,
-"texture": SubResource("25")
+"texture": ExtResource("6_umj8v")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_k030a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_64aih")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_6eslo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_cbnol")
+}],
+"loop": true,
+"name": &"New_idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_ohorw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_0fvmf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_kiu8l")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_m34w8")
 }],
 "loop": true,
 "name": &"Roll",
@@ -309,16 +307,16 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("7")
+"texture": ExtResource("39_8mb48")
 }, {
 "duration": 1.0,
-"texture": SubResource("8")
+"texture": ExtResource("40_pnv54")
 }, {
 "duration": 1.0,
-"texture": SubResource("9")
+"texture": ExtResource("41_a80f1")
 }, {
 "duration": 1.0,
-"texture": SubResource("10")
+"texture": ExtResource("42_vkyb1")
 }],
 "loop": true,
 "name": &"Spindash",
@@ -326,28 +324,28 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("30_kjyf8")
+"texture": ExtResource("43_531ee")
 }, {
 "duration": 1.0,
-"texture": ExtResource("31_u6iuh")
+"texture": ExtResource("44_imhlg")
 }, {
 "duration": 1.0,
-"texture": ExtResource("32_uhcdb")
+"texture": ExtResource("45_cl823")
 }, {
 "duration": 1.0,
-"texture": ExtResource("33_rnua0")
+"texture": ExtResource("46_hocle")
 }, {
 "duration": 1.0,
-"texture": ExtResource("34_gbsih")
+"texture": ExtResource("47_wr2rm")
 }, {
 "duration": 1.0,
-"texture": ExtResource("35_wd5rg")
+"texture": ExtResource("48_gof4b")
 }, {
 "duration": 1.0,
-"texture": ExtResource("36_sajdw")
+"texture": ExtResource("49_2nqfb")
 }, {
 "duration": 1.0,
-"texture": ExtResource("37_acwxj")
+"texture": ExtResource("50_3ocbe")
 }],
 "loop": true,
 "name": &"Walk",
@@ -510,8 +508,9 @@ offset_bottom = -8.75748
 scroll_active = false
 
 [node name="PlayerSprites" type="AnimatedSprite2D" parent="."]
-sprite_frames = SubResource("SpriteFrames_rp1c0")
-animation = &"Run4"
+position = Vector2(-50.1209, -49.8169)
+sprite_frames = SubResource("SpriteFrames_3y01s")
+animation = &"Free_falling"
 autoplay = "idle"
 flip_h = true
 
