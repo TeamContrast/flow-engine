@@ -478,6 +478,7 @@ color_ramp = SubResource("GradientTexture2D_k6qco")
 
 [node name="Player" type="Area2D"]
 collision_layer = 32
+collision_mask = 81
 script = ExtResource("19")
 boost_sfx = ExtResource("17")
 stomp_sfx = ExtResource("16")
@@ -496,13 +497,15 @@ AIR_ACCEL = 0.05
 JUMP_VELOCITY = 5.5
 JUMP_SHORT_LIMIT = 0.25
 HURT_VEL_ADD = false
+STOMP_SPEED = 15.0
+MAX_STOMP_XVEL = 0.0
 
 [node name="playerCollider" type="CollisionShape2D" parent="."]
 shape = SubResource("1")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, -1.05945)
-zoom = Vector2(1.5, 1.5)
+zoom = Vector2(2, 2)
 position_smoothing_enabled = true
 position_smoothing_speed = 20.0
 drag_horizontal_enabled = true
@@ -571,7 +574,7 @@ frame_progress = 0.120513
 
 [node name="BoostSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("17")
-volume_db = -3.0
+volume_db = -4.0
 
 [node name="RailSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("53")

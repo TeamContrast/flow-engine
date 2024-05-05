@@ -28,7 +28,7 @@ func placeRings():
 func _ready():
 	placeRings()
 	if not Engine.is_editor_hint():
-		for i in posList:
+		for i:Vector2 in posList:
 			var currentRing = ringSource.instantiate()
 			currentRing.position = i
 			add_child(currentRing)
@@ -37,7 +37,7 @@ func _ready():
 # place ring circle hints inside the editor
 func _process(_delta):
 	if Engine.is_editor_hint():
-		var pposList:PackedVector2Array = posList;
+		var pposList:PackedVector2Array = posList
 		posList = []
 		placeRings()
 		if not pposList == posList:

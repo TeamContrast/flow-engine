@@ -11,8 +11,8 @@ func _tripped(entry:Area2D) -> void:
 		print("player detected")
 		match layer:
 			0:
-				entry.LeftLayerOn(entry)
+				entry.LeftLayerOn()
 			1:
-				entry.RightLayerOn(entry)
+				entry.RightLayerOn()
 			2:
-				entry.FlipLayer(entry)
+				entry.FlipLayer()

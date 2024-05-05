@@ -60,14 +60,14 @@ radius = 8.94945
 height = 17.8989
 
 [node name="EggPawn" type="Area2D"]
-position = Vector2(14.3136, -17.476)
-collision_layer = 1048575
-collision_mask = 1048575
+collision_layer = 16
+collision_mask = 32
 script = ExtResource("2")
 boostParticle = ExtResource("4")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("7")
+autoplay = "default"
 frame = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

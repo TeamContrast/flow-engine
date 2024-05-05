@@ -28,7 +28,7 @@ func _physics_process(_delta: float) -> void:
 
 func _on_EggPawn_area_entered(area:Area2D):
 	# if the player collides with this egg pawn
-	if area.name == "Player" and alive:
+	if alive:
 		# if the player isn't attacking (boosting or jumping) hurt the player
 		if not area.isAttacking():
 			area.hurt_player()

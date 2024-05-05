@@ -736,19 +736,17 @@ func setCollisionLayer(value:bool) -> void:
 	#	rays.set_collision_mask_value(2, not backLayer)
 	#	rays.set_collision_mask_value(3, backLayer)
 
-func FlipLayer(_body) -> void:
+func FlipLayer() -> void:
 	# toggle between layers
 	setCollisionLayer(not backLayer)
 
 ## enables interaction with the "left loop" collision layer for Sonic
-func LeftLayerOn(area) -> void:
+func LeftLayerOn() -> void:
 	# explicitly set the collision layer to 0
-	print("Left layer: ", area.name)
 	setCollisionLayer(false)
 
-func RightLayerOn(area) -> void:
+func RightLayerOn() -> void:
 	# explicitly set the collision layer to 1
-	print("Right Layer: ", area.name)
 	setCollisionLayer(true)
 
 func _on_DeathPlane_area_entered(area:Node) -> void:

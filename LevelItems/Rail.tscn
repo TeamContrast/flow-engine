@@ -5,9 +5,9 @@
 
 [sub_resource type="Curve2D" id="1"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 56.7782, -41.2391, -63.6396, -0.707107, 63.6396, 0.707107, 162.844, -39.8249, -59.397, -7.15256e-07, 59.397, 7.15256e-07, 288.709, -132.456, -98.2878, -3.53553, 98.2878, 3.53553, 421.925, -40.2635, 0, 0, 0, 0, 648.199, -39.5564)
+"points": PackedVector2Array(0, 0, 0, 0, 301.835, -219.053, -58.5999, -24.6456, 58.5999, 24.6456, 528.835, -90.0533, -98.2878, -3.53553, 98.2878, 3.53553, 1063.83, -31.0533, 0, 0, 0, 0, 1651.83, -779.053)
 }
-point_count = 5
+point_count = 4
 
 [node name="Rail" type="Path2D"]
 curve = SubResource("1")
@@ -22,8 +22,7 @@ texture_mode = 1
 joint_mode = 1
 
 [node name="Area2D" type="Area2D" parent="."]
-collision_layer = 1048575
-collision_mask = 1048575
+collision_mask = 32
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Area2D"]
 build_mode = 1

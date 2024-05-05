@@ -1,10 +1,10 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=3 format=3 uid="uid://cpe4gmd78rcwt"]
 
-[ext_resource path="res://LevelItems/Ring.tscn" type="PackedScene" id=1]
-[ext_resource path="res://scripts/RingArray.gd" type="Script" id=2]
+[ext_resource type="PackedScene" uid="uid://cf6bcc7vtumen" path="res://LevelItems/Ring.tscn" id="1"]
+[ext_resource type="Script" path="res://scripts/RingArray.gd" id="2"]
 
 [node name="RingSpawner" type="Node2D"]
-position = Vector2( -1844.38, -21.6713 )
-script = ExtResource( 2 )
+position = Vector2(-1844.38, -21.6713)
+script = ExtResource("2")
 count = 4
-ringSource = ExtResource( 1 )
+ringSource = ExtResource("1")

@@ -28,9 +28,9 @@ class_name RushPlayer2D
 ## how much sonic decelerates when skidding.
 @export var SKID_ACCEL:float = 1
 ## maximum speed under sonic's own power
-@export var MAX_SPEED:float = 20 / 2
+@export var MAX_SPEED:float = 20.0 / 2.0
 ## used to dampen Sonic's movement a little bit. Basically poor man's friction
-@export var SPEED_DECAY:float = 0.2 /2
+@export var SPEED_DECAY:float = 0.2 / 2.0
 ##The amount of velocity added from a single spindash charge (jump + down)
 @export var SPINDASH_ACCUMULATE:float = 15.0
 ##The maximum velocity Sonic can build up from charging a Spindash
@@ -42,7 +42,7 @@ class_name RushPlayer2D
 
 @export_group("Boost")
 ## the speed of sonic's boost. Generally just a tad higher than MAX_SPEED
-@export var BOOST_SPEED:float = 25 /2
+@export var BOOST_SPEED:float = 25.0 / 2.0
 ## The cooldown on activating the boost ,in seconds. Smaller values make it more spammable.
 @export var BOOST_COOLDOWN:float = 0.0
 ##The amount of boost that boosting will cost per physics frame
@@ -67,9 +67,9 @@ class_name RushPlayer2D
 
 @export_group("Stomp")
 ## how fast (in pixels per 1/120th of a second) should sonic stomp
-@export var STOMP_SPEED:float = 20 / 2
+@export var STOMP_SPEED:float = 20.0 / 2.0
 ## what is the limit to Sonic's horizontal movement when stomping?
-@export var MAX_STOMP_XVEL:float = 2 / 2
+@export var MAX_STOMP_XVEL:float = 2.0 / 2.0
 ##How much Sonic will bounce upon landing from a stomp
 @export var STOMP_BOUNCE:float = 0.0
 
@@ -202,6 +202,8 @@ var startLayer:int = 0
 
 ## sonic's current velocity
 var velocity1:Vector2 = Vector2.ZERO
+##Sonic's last position
+var lastPos:Vector2 = Vector2.ZERO
 
 ## the ground velocity
 var gVel:float = 0
@@ -215,6 +217,8 @@ func _ready():
 	# get the UI elements
 	boostBar = get_node("/root/Node2D/CanvasLayer/boostBar")
 	ringCounter = get_node("/root/Node2D/CanvasLayer/RingCounter")
+	
+	FlowStatSingleton.add_player(self)
 	
 	# put all child particle systems in parts except for the grind particles
 	for i in get_children():
@@ -288,7 +292,8 @@ func boostControl():
 		
 		# stop moving vertically as much if you are in the air (air boost)
 		if state == CharStates.STATE_AIR and velocity1.x < ACCELERATION:
-			velocity1.x = BOOST_SPEED * (1 if sprite1.flip_h else -1)
+			if velocity1.x < BOOST_SPEED * (1 if sprite1.flip_h else -1):
+				velocity1.x = BOOST_SPEED * (1 if sprite1.flip_h else -1)
 			velocity1.y = 0
 		
 		voiceSound.play_effort()
@@ -306,8 +311,8 @@ func boostControl():
 			grindVel = BOOST_SPEED * (1 if sprite1.flip_h else -1)
 		elif state == CharStates.STATE_GROUND:
 			# apply boost if you are on the ground
-			gVel = BOOST_SPEED * (1 if sprite1.flip_h else -1)
-		
+			if absf(gVel) < BOOST_SPEED:
+				gVel = BOOST_SPEED * (1 if sprite1.flip_h else -1)
 		
 		#elif (angleDist(velocity1.angle(), 0) < PI/3 or angleDist(velocity1.angle(), PI) < PI / 3):
 		elif (angleDist(velocity1.angle(), 0) < PI/3 or angleDist(velocity1.angle(), PI) < PI / 3):
@@ -410,23 +415,19 @@ func airProcess() -> void:
 			boostSound.stream = stomp_land_sfx
 			boostSound.play()
 			stomping = false
-	else:
-#		print("GROUND MISS: %s" % str(avgGPoint))
-		pass
 	
 	# air-based movement (using the arrow keys)
 	#Only let the player accelerate if they aren't already at max speed
 	if Input.is_action_pressed("move right") and velocity1.x < MAX_SPEED:
 		velocity1.x += AIR_ACCEL
 	elif Input.is_action_pressed("move left") and velocity1.x > -MAX_SPEED:
-		velocity1.x -= AIR_ACCEL 
+		velocity1.x -= AIR_ACCEL
 	
 	
 	### STOMPING CONTROLS ###
 	
 	# initiating a stomp
 	if Input.is_action_just_pressed("stomp") and not stomping:
-		
 		# set the stomping state, and animation state 
 		stomping = true
 		sprite1.play("Roll")
@@ -446,7 +447,7 @@ func airProcess() -> void:
 		velocity1 = Vector2(maxf(-MAX_STOMP_XVEL, minf(MAX_STOMP_XVEL, velocity1.x)), STOMP_SPEED)
 		
 		# make sure that the boost sprite is not visible
-		boostSprite.visible = false;
+		boostSprite.visible = false
 		
 		# manage the boost line 
 		boostLine.visible = true
@@ -461,12 +462,16 @@ func airProcess() -> void:
 	
 	# handle left and right sideways collision (respectively)
 	if LSideCast.is_colliding() and LSideCast.get_collision_point().distance_to(position + velocity1) < 14 and velocity1.x < 0:
-		velocity1 = Vector2(0,velocity1.y)
-		position = LSideCast.get_collision_point() + Vector2(14,0)
+		#velocity1 = Vector2(0,velocity1.y)
+		velocity1.x = 0
+		#position = LSideCast.get_collision_point() + Vector2(14,0)
+		position.x = LSideCast.get_collision_point().x + 14.0
 		boosting = false
 	if RSideCast.is_colliding() and RSideCast.get_collision_point().distance_to(position + velocity1) < 14 and velocity1.x > 0:
-		velocity1 = Vector2(0,velocity1.y)
-		position = RSideCast.get_collision_point() - Vector2(14,0)
+		#velocity1 = Vector2(0,velocity1.y)
+		velocity1.x = 0
+		position.x = RSideCast.get_collision_point().x - 14
+		#position = RSideCast.get_collision_point() - Vector2(14,0)
 		boosting = false
 	
 	# top collision
@@ -483,12 +488,13 @@ func airProcess() -> void:
 	# Allow the player to change the duration of the jump by releasing the jump
 	# button early
 	if not Input.is_action_pressed("jump") and canShort:
-		velocity1 = Vector2(velocity1.x, maxf(velocity1.y,-JUMP_SHORT_LIMIT))
-		
+		#velocity1 = Vector2(velocity1.x, maxf(velocity1.y,-JUMP_SHORT_LIMIT))
+		velocity1.y = maxf(velocity1.y, -JUMP_SHORT_LIMIT)
+	
 	# ensure the proper speed of the animated sprites
 	sprite1.speed_scale = 1
 
-func gndProcess() -> void:
+func groundProcess() -> void:
 	# caluclate the ground rotation for the left and right raycast colliders,
 	# respectively
 	langle = -atan2(LeftCast.get_collision_normal().x,LeftCast.get_collision_normal().y)-PI
@@ -517,10 +523,10 @@ func gndProcess() -> void:
 	rotation = avgGRot
 	position = Vector2(avgGPoint.x + 20 * sin(rotation), avgGPoint.y - 20 * cos(rotation))
 	
+	#If this is negative, the player is pressing left. If positive, they're pressing right.
+	var input_direction:float = Input.get_axis("move left", "move right")
+	
 	if not rolling:
-		#If this is negative, the player is moving left. If positive, they're going right.
-		var input_direction:float = Input.get_axis("move left", "move right")
-		
 		# handle rightward acceleration
 		if input_direction > 0 and gVel < MAX_SPEED:
 			#Analog controls :nice:
@@ -599,11 +605,11 @@ func gndProcess() -> void:
 		sprite1.play("Free_falling")
 	# set Sonic's sprite based on his ground velocity
 	elif not rolling:
-		if absf(gVel) > 12 / 2:
+		if absf(gVel) > 12.0 / 2.0:
 			sprite1.play("Run4")
-		elif absf(gVel) > 10 / 2:
+		elif absf(gVel) > 10.0 / 2.0:
 			sprite1.play("Run3")
-		elif absf(gVel) > 5 / 2:
+		elif absf(gVel) > 5.0 / 2.0:
 			sprite1.play("Run2")
 		elif absf(gVel) > 0.02:
 			sprite1.play("Walk")
@@ -626,23 +632,23 @@ func gndProcess() -> void:
 		#Sonic is either rolling or crouching
 		if Input.is_action_pressed("ui_down"):
 			if absf(gVel) <= 0.02:
+				#crouch, since Sonic is effectively at a standstill
+				
+				#Only play the anim if he wasn't crouching before, 
+				#to avoid it being played repeatedly
+				if not crouching:
+					sprite1.play("Crouch")
 				crouching = true
-				sprite1.play("Crouch", 1.0)
-				#sprite1.animation = "Crouch"
-				#sprite1.speed_scale = 1
-				if sprite1.frame > 3:
-					sprite1.pause()
 			else:
+				#roll, since Sonic is moving
 				rolling = true
-				sprite1.play("Roll", 1.0)
-		#keep crouching, don't re-play the animation
+				sprite1.play("Roll")
+		
+		#since the previous check is false in this case, Sonic is no longer crouching
 		elif crouching == true:
-			sprite1.play("Crouch", 1.0)
-			#sprite1.animation = "Crouch"
-			#sprite1.speed_scale = 1
-			if sprite1.frame >= 6:
-				sprite1.play()
-				crouching = false
+			sprite1.stop()
+			sprite1.play("Crouch", -1.0, true)
+			crouching = false
 	
 	# run boost controls, but only if you aren't spindashing or rolling
 	if not (rolling or spindashing):
@@ -665,7 +671,7 @@ func gndProcess() -> void:
 	if (Input.is_action_pressed("jump") and crouching) and not rolling:
 		spindashing = true
 		#Mimic how the animation would restart in the classics
-		sprite1.play("Spindash", 1.0)
+		sprite1.play("Spindash")
 	
 	if spindashing and not rolling:
 		#if a charge is being built up this frame
@@ -686,15 +692,75 @@ func gndProcess() -> void:
 	pgVel = gVel
 	lRot = rotation
 
-var lastPos:Vector2 = Vector2.ZERO
+func grindProcess() -> void:
+	if tricking:
+		sprite1.play("railTrick")
+		if sprite1.frame > 0:
+			trickingCanStop = true
+		if sprite1.frame <= 0 and trickingCanStop:
+			tricking = false
+			var part = boostParticle.instantiate()
+			part.position = position 
+			part.boostValue = 2
+			get_node("/root/Node2D").add_child(part)
+	else:
+		sprite1.play("Grind")
+	
+	if Input.is_action_just_pressed("stomp") and not tricking:
+		tricking = true
+		trickingCanStop = false
+		voiceSound.play_effort()
+	
+	grindHeight = sprite1.sprite_frames.get_frame_texture(sprite1.animation, sprite1.frame).get_height() / 2.0
+	
+	grindOffset += grindVel
+	var dirVec:Vector2 = grindCurve.sample_baked(grindOffset + 1) - grindCurve.sample_baked(grindOffset)
+	#grindVel = velocity1.dot(dirVec)
+	rotation = dirVec.angle()
+	position = grindCurve.sample_baked(grindOffset) + (Vector2(1 * sin(rotation), -1 * cos(rotation)) * grindHeight) + grindPos
+	
+	
+	RailSound.pitch_scale = lerpf(RAILSOUND_MINPITCH, RAILSOUND_MAXPITCH,\
+		absf(grindVel) / BOOST_SPEED)
+	grindVel += sin(rotation) * GRAVITY
+	
+	if dirVec.length() < 0.5 or \
+		grindCurve.sample_baked(grindOffset - 1) == \
+		grindCurve.sample_baked(grindOffset):
+		state = CharStates.STATE_AIR
+		grinding = false
+		tricking = false
+		trickingCanStop = false
+		RailSound.stop()
+		sprite1.play("Free_falling")
+	else:
+		velocity1 = dirVec * grindVel
+	
+	if Input.is_action_pressed("jump") and not crouching:
+		if not canShort:
+			state = CharStates.STATE_AIR
+			#velocity1 = Vector2(velocity1.x+sin(rotation)*JUMP_VELOCITY,velocity1.y-cos(rotation)*JUMP_VELOCITY)
+			velocity1 = velocity1 + Vector2(sin(rotation), -cos(rotation)) * JUMP_VELOCITY
+			sprite1.rotation = rotation
+			rotation = 0
+			sprite1.play("Roll")
+			canShort = true
+			rolling = false
+			grinding = false
+			tricking = false
+			trickingCanStop = false
+			RailSound.stop()
+	else:
+		canShort = false
+	boostControl()
 
 func _process(_delta:float) -> void:
 	if invincible > 0:
-		sprite1.modulate = Color(1,1,1,1-(invincible % 30)/30.0)
+		sprite1.modulate = Color(1,1,1, 1-(invincible % 30)/30.0)
 	else:
 		hurt = false
 
-##calculate Sonic's physics, controls, and all that fun stuff
+#calculate Sonic's physics, controls, and all that fun stuff
 func _physics_process(_delta:float) -> void:
 	if invincible > 0:
 		invincible -= 1
@@ -708,75 +774,12 @@ func _physics_process(_delta:float) -> void:
 	
 	# run the correct function based on the current air/ground state
 	if grinding:
-		if tricking:
-			sprite1.play("railTrick", 1.0)
-			#sprite1.animation = "railTrick"
-			#sprite1.speed_scale = 1
-			if sprite1.frame > 0:
-				trickingCanStop = true
-			if sprite1.frame <= 0 and trickingCanStop:
-				tricking = false
-				var part = boostParticle.instantiate()
-				part.position = position 
-				part.boostValue = 2
-				get_node("/root/Node2D").add_child(part)
-		else:
-			sprite1.play("Grind")
-			#sprite1.animation = "Grind"
-			
-		if Input.is_action_just_pressed("stomp") and not tricking:
-			tricking = true
-			trickingCanStop = false
-			voiceSound.play_effort()
-		
-		grindHeight = sprite1.sprite_frames.get_frame_texture(sprite1.animation, sprite1.frame).get_height() / 2
-		
-		grindOffset += grindVel
-		var dirVec:Vector2 = grindCurve.sample_baked(grindOffset + 1) - grindCurve.sample_baked(grindOffset)
-#		grindVel = velocity1.dot(dirVec)
-		rotation = dirVec.angle()
-		#position = grindCurve.sample_baked(grindOffset) \
-		#	+ Vector2.UP * grindHeight*cos(rotation) + Vector2.RIGHT * grindHeight*sin(rotation) \
-		#	+ grindPos
-		
-		
-		RailSound.pitch_scale = lerp(RAILSOUND_MINPITCH, RAILSOUND_MAXPITCH,\
-			absf(grindVel) / BOOST_SPEED)
-		grindVel += sin(rotation) * GRAVITY
-		
-		if dirVec.length() < 0.5 or \
-			grindCurve.sample_baked(grindOffset-1) == \
-			grindCurve.sample_baked(grindOffset):
-			state = CharStates.STATE_AIR
-			grinding = false
-			tricking = false
-			trickingCanStop = false
-			RailSound.stop()
-		else:
-			velocity1 = dirVec * grindVel
-		
-		if Input.is_action_pressed("jump") and not crouching:
-			if not canShort:
-				state = CharStates.STATE_AIR
-				velocity1 = Vector2(velocity1.x+sin(rotation)*JUMP_VELOCITY,velocity1.y-cos(rotation)*JUMP_VELOCITY)
-				sprite1.rotation = rotation
-				rotation = 0
-				sprite1.play("Roll")
-				#sprite1.animation = "Roll"
-				canShort = true
-				rolling = false
-				grinding = false
-				tricking = false
-				trickingCanStop = false
-				RailSound.stop()
-		else:
-			canShort = false
-		boostControl()
+		grindProcess()
 	elif state == CharStates.STATE_AIR:
 		airProcess()
 		rolling = false
 	elif state == CharStates.STATE_GROUND:
-		gndProcess()
+		groundProcess()
 	
 	# update the boost line 
 	for i in range(0, TRAIL_LENGTH - 1):
@@ -787,13 +790,15 @@ func _physics_process(_delta:float) -> void:
 	
 	# apply the character's velocity, no matter what state the player is in.
 	#position = Vector2(position.x+velocity1.x,position.y+velocity1.y)
-	position = position + velocity1
+	#position = position + velocity1
+	position += velocity1
 	lastPos = position
 	
 	if parts:
 		for i:GPUParticles2D in parts:
 			i.process_material.direction = Vector3(velocity1.x,velocity1.y,0)
-			#i.process_material.initial_velocity = velocity1.length()*20
+			
+			#i.process_material.initial_velocity = velocity1.length() * 20
 			
 			i.rotation = -rotation
 
@@ -807,19 +812,15 @@ func setCollisionLayer(value:bool) -> void:
 		rays.set_collision_mask_value(3, backLayer)
 
 ## toggle between layers
-func FlipLayer(_body) -> void:
-	print("Toggle layer: ", _body.name)
+func FlipLayer() -> void:
 	setCollisionLayer(not backLayer)
 
 ## enables interaction with the "left loop" collision layer for Sonic
-func LeftLayerOn(area) -> void:
-	# explicitly set the collision layer to 0
-	print("Left layer: ", area.name)
+func LeftLayerOn() -> void:
 	setCollisionLayer(false)
 
-func RightLayerOn(area) -> void:
-	# explicitly set the collision layer to 1
-	print("Right Layer: ", area.name)
+## enables interaction with the "right loop" collision layer
+func RightLayerOn() -> void:
 	setCollisionLayer(true)
 
 func _on_DeathPlane_area_entered(area:Node) -> void:
@@ -835,8 +836,8 @@ func resetGame() -> void:
 	position = startpos
 	setCollisionLayer(false)
 
-func _setVelocity(vel:Vector2) -> void:
-	velocity1 = vel
+#func _setVelocity(vel:Vector2) -> void:
+#	velocity1 = vel
 
 ##this function is run whenever sonic hits a rail.
 func _on_Railgrind(area:Area2D, curve:Curve2D, origin:Vector2) -> void:
@@ -892,7 +893,7 @@ func hurt_player() -> void:
 			if n:
 				currentRing.velocity1.x *= -1
 				angle += 22.5
-			n = not n 
+			n = not n
 			t += 1
 			if t == 16:
 				speed = 2
