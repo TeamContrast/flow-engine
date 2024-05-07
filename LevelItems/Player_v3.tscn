@@ -474,12 +474,12 @@ scale_curve = SubResource("33")
 color_ramp = SubResource("31")
 
 [node name="Node2D" type="CharacterBody2D"]
+collision_layer = 32
+collision_mask = 89
 floor_stop_on_slope = false
-floor_constant_speed = true
 floor_max_angle = 3.14159
 floor_snap_length = 32.0
-platform_floor_layers = 4294967041
-platform_wall_layers = 1
+platform_floor_layers = 4294967040
 script = ExtResource("1_y045l")
 
 [node name="playerCollider" type="CollisionShape2D" parent="."]
@@ -508,7 +508,6 @@ offset_bottom = -8.75748
 scroll_active = false
 
 [node name="PlayerSprites" type="AnimatedSprite2D" parent="."]
-position = Vector2(-50.1209, -49.8169)
 sprite_frames = SubResource("SpriteFrames_3y01s")
 animation = &"Free_falling"
 autoplay = "idle"

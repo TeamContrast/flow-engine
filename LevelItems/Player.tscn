@@ -1,4 +1,4 @@
-[gd_scene load_steps=108 format=3 uid="uid://b1g7if77ai0ej"]
+[gd_scene load_steps=123 format=3 uid="uid://b1g7if77ai0ej"]
 
 [ext_resource type="Texture2D" uid="uid://bswpl06ruixjy" path="res://sprites/sonic/sonic_run4_7.png" id="1"]
 [ext_resource type="Texture2D" uid="uid://b223bfpvvki4q" path="res://sprites/effects/sonic_boost_2.png" id="2"]
@@ -30,21 +30,36 @@
 [ext_resource type="Texture2D" uid="uid://b8noilwkeysvc" path="res://sprites/sonic/sonic_run4_5.png" id="14"]
 [ext_resource type="Texture2D" uid="uid://bula1lew3bo8s" path="res://sprites/sonic/atlas_textures/idle/idle_6.tres" id="14_6gw3f"]
 [ext_resource type="Texture2D" uid="uid://bmcuuwbjfhkdw" path="res://sprites/effects/sonic_boost_3.png" id="15"]
+[ext_resource type="Texture2D" uid="uid://eft20a3oa4ly" path="res://sprites/sonic/atlas_textures/run_2/run_2_1.tres" id="15_jmy7v"]
 [ext_resource type="Texture2D" uid="uid://dksyoqn1gy1xc" path="res://sprites/sonic/atlas_textures/idle/idle_7.tres" id="15_piv3r"]
 [ext_resource type="AudioStream" uid="uid://535v0e6so0vn" path="res://audio/SFX/stomping.wav" id="16"]
+[ext_resource type="Texture2D" uid="uid://b8uimr2o7teys" path="res://sprites/sonic/atlas_textures/run_2/run_2_2.tres" id="16_7o3wn"]
 [ext_resource type="Texture2D" uid="uid://bdpwaffm7k0dr" path="res://sprites/sonic/atlas_textures/roll/roll_1.tres" id="16_vaqoe"]
 [ext_resource type="AudioStream" uid="uid://cqkjva8xvechs" path="res://audio/SFX/Boost.wav" id="17"]
 [ext_resource type="Texture2D" uid="uid://kk8k025uedjk" path="res://sprites/sonic/atlas_textures/roll/roll_2.tres" id="17_hk6tk"]
+[ext_resource type="Texture2D" uid="uid://7h0ko2nglhvc" path="res://sprites/sonic/atlas_textures/run_2/run_2_3.tres" id="17_pltyi"]
 [ext_resource type="AudioStream" uid="uid://u4bgsah0pqj5" path="res://audio/SFX/stomping_land.wav" id="18"]
 [ext_resource type="Texture2D" uid="uid://bhbhd01sb0boc" path="res://sprites/sonic/atlas_textures/roll/roll_3.tres" id="18_k3wjg"]
+[ext_resource type="Texture2D" uid="uid://ch7pwlwiyd3a6" path="res://sprites/sonic/atlas_textures/run_2/run_2_4.tres" id="18_sdckx"]
 [ext_resource type="Script" path="res://scripts/Player_v2.gd" id="19"]
 [ext_resource type="Texture2D" uid="uid://b41alen4sjcee" path="res://sprites/sonic/atlas_textures/roll/roll_4.tres" id="19_gai6x"]
+[ext_resource type="Texture2D" uid="uid://y7w87i5sxjar" path="res://sprites/sonic/atlas_textures/run_2/run_2_5.tres" id="19_km01q"]
 [ext_resource type="Texture2D" uid="uid://c1ffdhs66d4tq" path="res://sprites/sonic/sonic_run2_6.png" id="20"]
+[ext_resource type="Texture2D" uid="uid://drb52we7bsta1" path="res://sprites/sonic/atlas_textures/run_2/run_2_6.tres" id="20_05ch2"]
 [ext_resource type="Texture2D" uid="uid://bq6vhqwvomebs" path="res://sprites/sonic/Sonic_run31.png" id="21"]
+[ext_resource type="Texture2D" uid="uid://b4ye3ah5sns7h" path="res://sprites/sonic/atlas_textures/run_2/run_2_7.tres" id="21_1oprx"]
+[ext_resource type="Texture2D" uid="uid://kot1vhie1and" path="res://sprites/sonic/atlas_textures/run_2/run_2_8.tres" id="22_wge87"]
 [ext_resource type="Texture2D" uid="uid://gjx1nvg01euv" path="res://sprites/sonic/sonic_run2_1.png" id="23"]
 [ext_resource type="Texture2D" uid="uid://dgy0by813r4dw" path="res://sprites/sonic/Sonic_run32.png" id="24"]
 [ext_resource type="Texture2D" uid="uid://bgw5hht6pv47x" path="res://sprites/sonic/sonic_idle6.png" id="25"]
+[ext_resource type="Texture2D" uid="uid://dw18542nd3ecv" path="res://sprites/sonic/atlas_textures/run_1/run_1_0.tres" id="26_546fk"]
+[ext_resource type="Texture2D" uid="uid://c4l0ytrusqx8j" path="res://sprites/sonic/atlas_textures/run_1/run_1_1.tres" id="27_ojfsv"]
+[ext_resource type="Texture2D" uid="uid://babu1cmt5554k" path="res://sprites/sonic/atlas_textures/run_1/run_1_2.tres" id="28_gsfrb"]
+[ext_resource type="Texture2D" uid="uid://5j1gigti86og" path="res://sprites/sonic/atlas_textures/run_1/run_1_4.tres" id="29_8s40f"]
+[ext_resource type="Texture2D" uid="uid://c5gs1acyp3t25" path="res://sprites/sonic/atlas_textures/run_1/run_1_5.tres" id="30_b03gg"]
+[ext_resource type="Texture2D" uid="uid://bdhjlskhmb8wd" path="res://sprites/sonic/atlas_textures/run_1/run_1_6.tres" id="31_3u2an"]
 [ext_resource type="Texture2D" uid="uid://dmwg2rhuigdw6" path="res://sprites/sonic/sonic_idle5.png" id="32"]
+[ext_resource type="Texture2D" uid="uid://ujvhwb45fbs3" path="res://sprites/sonic/atlas_textures/run_1/run_1_7.tres" id="32_xg4xl"]
 [ext_resource type="Texture2D" uid="uid://bkgtmpck7kl1i" path="res://sprites/sonic/sonic_idle7.png" id="33"]
 [ext_resource type="Texture2D" uid="uid://wdcgfl7xwrlh" path="res://sprites/sonic/sonic_run2_0.png" id="34"]
 [ext_resource type="Texture2D" uid="uid://bv44qucmpd13k" path="res://sprites/sonic/sonic_run2_2.png" id="35"]
@@ -180,6 +195,35 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("15_jmy7v")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_7o3wn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_pltyi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_sdckx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_km01q")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_05ch2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_1oprx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_wge87")
+}],
+"loop": true,
+"name": &"New_Run2",
+"speed": 15.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": ExtResource("9_g612u")
 }, {
 "duration": 1.0,
@@ -220,6 +264,35 @@ animations = [{
 "loop": true,
 "name": &"Roll",
 "speed": 16.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("26_546fk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_ojfsv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("28_gsfrb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_546fk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("29_8s40f")
+}, {
+"duration": 1.0,
+"texture": ExtResource("30_b03gg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31_3u2an")
+}, {
+"duration": 1.0,
+"texture": ExtResource("32_xg4xl")
+}],
+"loop": true,
+"name": &"Run1",
+"speed": 6.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -425,7 +498,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("17")
 }],
-"loop": true,
+"loop": false,
 "name": &"railTrick",
 "speed": 20.0
 }]
@@ -480,6 +553,14 @@ color_ramp = SubResource("GradientTexture2D_k6qco")
 collision_layer = 32
 collision_mask = 81
 script = ExtResource("19")
+up_button = &"ui_up"
+down_button = &"ui_down"
+left_button = &"move left"
+right_button = &"move right"
+jump_button = &"jump"
+stomp_button = &"stomp"
+boost_button = &"boost"
+trick_button = &"trick"
 boost_sfx = ExtResource("17")
 stomp_sfx = ExtResource("16")
 stomp_land_sfx = ExtResource("18")
@@ -525,11 +606,14 @@ scroll_active = false
 
 [node name="PlayerSprites" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("27")
-animation = &"Free_falling"
+animation = &"railTrick"
 autoplay = "idle"
+frame_progress = 0.212736
 flip_h = true
 
 [node name="BoostTimer" type="Timer" parent="."]
+process_callback = 0
+one_shot = true
 
 [node name="LeftCast" type="RayCast2D" parent="."]
 position = Vector2(-6, -10)
@@ -570,7 +654,6 @@ modulate = Color(1, 1, 1, 0.78451)
 light_mask = 0
 sprite_frames = SubResource("29")
 autoplay = "default"
-frame_progress = 0.120513
 
 [node name="BoostSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("17")

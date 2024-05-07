@@ -117,7 +117,7 @@ var parts:Array[GPUParticles2D] = []
 var state:CharStates = CharStates.STATE_AIR
 
 ##An enumeration on Sonic's various states.
-##For a quick check, if the value is negative, Sonic is in the air in some form
+##For a quick check, if the value is negative, Sonic is in the air in some form.
 enum CharStates {
 	##Sonic is grinding on a rail
 	STATE_GRINDING = 2,
@@ -127,13 +127,22 @@ enum CharStates {
 	STATE_AIR = -1,
 	##Sonic jumped or is jumping
 	STATE_JUMP = -2,
-
 }
 
 ## can the player shorten the jump (aka was this -1 (air) state initiated by a jump?)
-var canShort:bool = false 
+#var canShort:bool = false 
 
-var append_state:int
+@export_flags("Crouching", "Spindashing", "Rolling") var append_state:int
+
+enum StateFlags {
+	IS_CROUCHING = 1,
+	IS_SPINDASHING = 2,
+	IS_ROLLING = 4,
+	IS_STOMPING = 8,
+	IS_BOOSTING = 16,
+	IS_TRICKING = 32,
+	
+}
 
 # state flags
 var crouching:bool = false
@@ -240,8 +249,8 @@ func limitAngle(ang:float) -> float:
 func angleDist(rot1:float, rot2:float) -> float:
 	rot1 = limitAngle(rot1)
 	rot2 = limitAngle(rot2)
-	if abs(rot1-rot2) > PI and rot1>rot2:
-		return abs(limitAngle(rot1)-(limitAngle(rot2)+PI*2))
+	if absf(rot1-rot2) > PI and rot1>rot2:
+		return absf(limitAngle(rot1)-(limitAngle(rot2)+PI*2))
 	elif abs(rot1-rot2) > PI and rot1 < rot2:
 		return absf((limitAngle(rot1) + PI * 2) - (limitAngle(rot2)))
 	else:
@@ -282,7 +291,7 @@ func boostControl():
 #			boostSound.play()
 		
 		# linearly interpolate the camera's "boost lag" back down to the normal (non-boost) value
-		cam.set_position_smoothing_speed(lerp(cam.get_position_smoothing_speed(),DEFAULT_CAM_LAG,CAM_LAG_SLIDE))
+		cam.set_position_smoothing_speed(lerpf(cam.get_position_smoothing_speed(), DEFAULT_CAM_LAG, CAM_LAG_SLIDE))
 		
 		if state == CharStates.STATE_GRINDING:
 			# apply boost to a grind
@@ -293,7 +302,8 @@ func boostControl():
 		elif (angleDist(velocity.angle(), 0) < PI/3 or angleDist(velocity.angle(), PI) < PI / 3):
 			# apply boost if you are in the air (and are not going straight up or down)
 			velocity = velocity.normalized() * BOOST_SPEED
-		elif(state == CharStates.STATE_AIR and (not canShort)):
+		#elif(state == CharStates.STATE_AIR and (not canShort)):
+		elif(state == CharStates.STATE_AIR):
 			#Do nothing, because that actually mimics what the Rush games did
 			pass
 		else:
@@ -326,7 +336,9 @@ func boostControl():
 ##handles physics while Sonic is in the air
 func airProcess() -> void:
 	# apply gravity
-	velocity = Vector2(velocity.x, velocity.y + GRAVITY)
+	#velocity = Vector2(velocity.x, velocity.y + GRAVITY)
+	velocity.y += GRAVITY
+	
 	
 	# set a default avgGPoint
 	if get_last_slide_collision() != null:
@@ -337,7 +349,7 @@ func airProcess() -> void:
 	# handle collision with the ground
 	if is_on_floor():
 #		print("ground hit")
-		state =CharStates.STATE_GROUND
+		state = CharStates.STATE_GROUND
 		rotation = get_floor_angle()
 		sprite1.rotation = 0
 		gVel = sin(rotation) * (velocity.y + 0.5) + cos(rotation) * velocity.x
@@ -347,9 +359,6 @@ func airProcess() -> void:
 			boostSound.stream = stomp_land_sfx
 			boostSound.play()
 			stomping = false
-	else:
-#		print("GROUND MISS: %s" % str(avgGPoint))
-		pass
 	
 	# air-based movement (using the arrow keys)
 	if Input.is_action_pressed("move right") and velocity.x < MAX_SPEED:
@@ -366,7 +375,7 @@ func airProcess() -> void:
 	if Input.is_action_just_pressed("stomp") and not stomping:
 		# set the stomping state, and animation state 
 		stomping = true
-		sprite1.animation = "Roll"
+		sprite1.play("Roll")
 		rotation = 0
 		sprite1.rotation = 0
 		
@@ -380,10 +389,10 @@ func airProcess() -> void:
 	
 	# for every frame while a stomp is occuring...
 	if stomping:
-		velocity = Vector2(max(-MAX_STOMP_XVEL, min(MAX_STOMP_XVEL, velocity.x)), STOMP_SPEED)
+		velocity = Vector2(maxf(-MAX_STOMP_XVEL, minf(MAX_STOMP_XVEL, velocity.x)), STOMP_SPEED)
 		
 		# make sure that the boost sprite is not visible
-		boostSprite.visible = false;
+		boostSprite.visible = false
 		
 		# manage the boost line 
 		boostLine.visible = true
@@ -412,7 +421,8 @@ func airProcess() -> void:
 	# top collision
 	if VecDist(avgTPoint,position + velocity) < 21:
 #		Vector2(avgTPoint.x-20*sin(rotation),avgTPoint.y+20*cos(rotation))
-		velocity = Vector2(velocity.x, 0)
+		#velocity = Vector2(velocity.x, 0)
+		velocity.y = 0
 	
 	# render the sprites facing the correct direction
 	if velocity.x < 0:
@@ -422,8 +432,9 @@ func airProcess() -> void:
 	
 	# Allow the player to change the duration of the jump by releasing the jump
 	# button early
-	if not Input.is_action_pressed("jump") and canShort:
-		velocity = Vector2(velocity.x, maxf(velocity.y,-JUMP_SHORT_LIMIT))
+	if not Input.is_action_pressed("jump") and state == CharStates.STATE_JUMP:
+		#velocity = Vector2(velocity.x, maxf(velocity.y,-JUMP_SHORT_LIMIT))
+		velocity.y = maxf(velocity.y,-JUMP_SHORT_LIMIT)
 	
 	# ensure the proper speed of the animated sprites
 	sprite1.speed_scale = 1
@@ -431,17 +442,16 @@ func airProcess() -> void:
 func gndProcess() -> void:
 	# caluclate the ground rotation for the left and right raycast colliders,
 	# respectively
-
+	
 	# calculate the average ground rotation
 	avgGRot = get_floor_angle()
 	
-	# caluculate the average ground level based on the available colliders
+	# calculate the average ground level based on the available colliders
 	
 	# set the rotation and position of Sonic to snap to the ground.
 	rotation = get_floor_angle()
 	
-	up_direction = Vector2.from_angle(rotation)
-	apply_floor_snap()
+	#apply_ground_snap()
 	
 	#position = Vector2(avgGPoint.x + 20 * sin(rotation), avgGPoint.y - 20 * cos(rotation))
 	
@@ -494,6 +504,7 @@ func gndProcess() -> void:
 	velocity = Vector2.from_angle(rotation) * gVel
 	
 	# enter the air state if you run off a ramp, or walk off a cliff, or something
+	
 	#if not VecDist(avgGPoint, position) < 21 or not (LeftCast.is_colliding() and RightCast.is_colliding()):
 	#	state = CharStates.STATE_AIR
 	#	sprite1.rotation = rotation
@@ -507,9 +518,9 @@ func gndProcess() -> void:
 		rolling = false
 	
 	# fall off of walls if you aren't going fast enough
+	
 	#if absf(rotation) >= PI/3 and (absf(gVel) < 0.2 or (not gVel == 0 and not pgVel == 0 and not gVel / absf(gVel) == pgVel / absf(pgVel))):
-	if absf(rotation) >= PI/3 and absf(gVel) < 0.2:
-		
+	elif (absf(rotation) >= PI/3 and absf(gVel) < 0.2) or (gVel != 0 and gVel != pgVel):
 		state = CharStates.STATE_AIR
 		#sprite1.rotation = rotation
 		sprite1.rotation = 0
@@ -519,6 +530,7 @@ func gndProcess() -> void:
 		#position = Vector2(position.x, position.y + 2)
 		#position += Vector2(0.0, 2.0)
 		rolling = false
+		
 		
 	
 	# ensure Sonic is facing the right direction
@@ -531,21 +543,23 @@ func gndProcess() -> void:
 	if state == CharStates.STATE_GROUND:
 		#If he's rolling, he's just rolling, speed is irrelevant
 		if rolling:
-			sprite1.animation = "Roll"
+			sprite1.play("Roll")
 		# set Sonic's sprite based on his ground velocity
 		elif absf(gVel) > 12 / 2:
-			sprite1.animation = "Run4"
+			sprite1.play("Run4")
 		elif absf(gVel) > 10 / 2:
-			sprite1.animation = "Run3"
+			sprite1.play("Run3")
 		elif absf(gVel) > 5 / 2:
-			sprite1.animation = "Run2"
+			sprite1.play("Run2")
 		elif absf(gVel) > 0.02:
-			sprite1.animation = "Walk"
+			sprite1.play("Walk")
 		elif not crouching:
-			sprite1.animation = "idle"
-	else:
-		#Insert standard "fall" animation here
-		sprite1.animation = "Roll" #placeholder
+			sprite1.play("idle")
+	elif state == CharStates.STATE_JUMP:
+		sprite1.play("Roll")
+	elif state == CharStates.STATE_AIR:
+		pass
+		#sprite1.play("Free_falling")
 	
 	if absf(gVel) > 0.02:
 		crouching = false
@@ -557,12 +571,12 @@ func gndProcess() -> void:
 	#crouching
 	if Input.is_action_pressed("ui_down") and absf(gVel) <= 0.02:
 		crouching = true
-		sprite1.animation = "Crouch"
+		sprite1.play("Crouch")
 		sprite1.speed_scale = 1
 		if sprite1.frame > 3:
 			sprite1.speed_scale = 0
 	elif crouching == true:
-		sprite1.animation = "Crouch"
+		sprite1.play("Crouch")
 		sprite1.speed_scale = 1
 		if sprite1.frame >= 6:
 			sprite1.speed_scale = 1
@@ -573,23 +587,21 @@ func gndProcess() -> void:
 	
 	# jumping
 	if Input.is_action_pressed("jump") and not (crouching or spindashing):
-		if not canShort:
-			state = CharStates.STATE_AIR
-			velocity = Vector2(velocity.x + sin(rotation) * JUMP_VELOCITY, velocity.y - cos(rotation) * JUMP_VELOCITY)
+		if not state == CharStates.STATE_JUMP:
+			state = CharStates.STATE_JUMP
+			#velocity = Vector2(velocity.x + sin(rotation) * JUMP_VELOCITY, velocity.y - cos(rotation) * JUMP_VELOCITY)
+			velocity = velocity + Vector2(sin(rotation), -cos(rotation)) * JUMP_VELOCITY
 			sprite1.rotation = rotation
 			rotation = 0
-			sprite1.animation = "Roll"
-			canShort = true
+			sprite1.play("Roll")
 			rolling = false
-	else:
-		canShort = false
 	
 	#spindashing + spindash buildup
 	if (Input.is_action_pressed("jump") and crouching) and not rolling:
 		spindashing = true
 	
 	if spindashing and not rolling:
-		sprite1.animation = "Spindash"
+		sprite1.play("Spindash")
 		sprite1.speed_scale = 1
 		#if a charge is being built up
 		if Input.is_action_just_pressed("jump"):
@@ -611,7 +623,7 @@ func gndProcess() -> void:
 
 func grindProcess() -> void:
 	if tricking:
-		sprite1.animation = "railTrick"
+		sprite1.play("railTrick")
 		sprite1.speed_scale = 1
 		if sprite1.frame > 0:
 			trickingCanStop = true
@@ -622,7 +634,7 @@ func grindProcess() -> void:
 			part.boostValue = 2
 			get_node("/root/Node2D").add_child(part)
 	else:
-		sprite1.animation = "Grind"
+		sprite1.play("Grind")
 	
 	if Input.is_action_just_pressed("stomp") and not tricking:
 		tricking = true
@@ -655,19 +667,17 @@ func grindProcess() -> void:
 		velocity = dirVec * grindVel
 	
 	if Input.is_action_pressed("jump") and not crouching:
-		if not canShort:
-			state = CharStates.STATE_AIR
-			velocity = Vector2(velocity.x + sin(rotation) * JUMP_VELOCITY, velocity.y - cos(rotation) * JUMP_VELOCITY)
+		if not state == CharStates.STATE_JUMP:
+			state = CharStates.STATE_JUMP
+			#velocity = Vector2(velocity.x + sin(rotation) * JUMP_VELOCITY, velocity.y - cos(rotation) * JUMP_VELOCITY)
+			velocity = velocity + Vector2(sin(rotation), -cos(rotation)) * JUMP_VELOCITY
 			sprite1.rotation = rotation
 			rotation = 0
-			sprite1.animation = "Roll"
-			canShort = true
+			sprite1.play("Roll")
 			rolling = false
 			tricking = false
 			trickingCanStop = false
 			RailSound.stop()
-	else:
-		canShort = false
 	boostControl()
 
 
@@ -689,15 +699,19 @@ func _physics_process(_delta:float) -> void:
 	
 	grindParticles.emitting = (state == CharStates.STATE_GRINDING)
 	
+	
+	
 	# run the correct function based on the current air/ground state
 	match state:
 		CharStates.STATE_GRINDING:
 			grindProcess()
-		CharStates.STATE_AIR:
-			airProcess()
-			rolling = false
 		CharStates.STATE_GROUND:
 			gndProcess()
+		CharStates.STATE_AIR:
+			airProcess()
+			#rolling = false
+		CharStates.STATE_JUMP:
+			airProcess()
 	
 	# update the boost line 
 	for i in range(0, TRAIL_LENGTH - 1):
@@ -709,12 +723,12 @@ func _physics_process(_delta:float) -> void:
 	# apply the character's velocity, no matter what state the player is in.
 	
 	#To be honest, I'm not 100% sure why this works, but it does, lol
-	var collision:KinematicCollision2D = move_and_collide(velocity)
-	if is_instance_valid(collision):
-		velocity = velocity.slide(velocity.normalized()).normalized()
+	#var collision:KinematicCollision2D = move_and_collide(velocity.normalized())
+	#if is_instance_valid(collision):
+	#	velocity = velocity.normalized().slide(velocity.normalized())
+	velocity = velocity / _delta
 	
 	move_and_slide()
-	
 	
 	lastPos = position
 	
@@ -788,8 +802,8 @@ func _on_Railgrind(area, curve:Curve2D, origin) -> void:
 			stomping = false
 
 func isAttacking() -> bool:
-	if stomping or boosting or rolling or \
-		(sprite1.animation == "Roll" and state == CharStates.STATE_AIR):
+	if stomping or boosting or rolling or spindashing or \
+		(state == CharStates.STATE_JUMP):
 		return true
 	return false
 
@@ -800,7 +814,7 @@ func hurt_player() -> void:
 		velocity = Vector2(-velocity.x + sin(rotation) * JUMP_VELOCITY, velocity.y - cos(rotation) * JUMP_VELOCITY)
 		rotation = 0
 		position += velocity * 2
-		sprite1.animation = "hurt"
+		sprite1.play("hurt")
 		
 		voiceSound.play_hurt()
 		

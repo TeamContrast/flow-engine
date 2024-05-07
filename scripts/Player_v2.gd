@@ -8,6 +8,24 @@ extends Area2D
 ##Please be patient. :D
 class_name RushPlayer2D
 
+@export_group("Input Mappings")
+##Up on d-pad
+@export var up_button:StringName
+##Down on d-pad
+@export var down_button:StringName
+##Left on d-pad
+@export var left_button:StringName
+##Right on d-pad
+@export var right_button:StringName
+##The jump button
+@export var jump_button:StringName
+##The stomp button
+@export var stomp_button:StringName
+##The boost button
+@export var boost_button:StringName
+##The tricking button
+@export var trick_button:StringName
+
 
 @export_group("Effects & Sounds")
 ## audio streams for Sonic's boost sound
@@ -92,8 +110,11 @@ class_name RushPlayer2D
 
 ## a reference to Sonic's physics collider
 @onready var collider:CollisionShape2D = $"playerCollider"
+
+
 ##The cooldown timer on Sonic's boost
 @onready var boost_cooldown_timer:Timer = $"BoostTimer"
+
 
 # sonic's sprites/renderers
 ### sonic's sprite
@@ -213,6 +234,8 @@ var pgVel:float = 0
 ## whether or not sonic is currently on the "back" layer
 var backLayer:bool = false
 
+
+
 func _ready():
 	# get the UI elements
 	boostBar = get_node("/root/Node2D/CanvasLayer/boostBar")
@@ -232,9 +255,6 @@ func _ready():
 	
 	# set the trail length to whatever the boostLine's size is.
 	TRAIL_LENGTH = boostLine.get_point_count()
-	
-	#make sure the boost timer uses physics frames
-	boost_cooldown_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
 	
 	# reset all game values
 	resetGame()
@@ -264,7 +284,7 @@ func angleDist(rot1:float, rot2:float) -> float:
 
 ##Handles the boosting controls
 func boostControl():
-	if Input.is_action_just_pressed("boost") and boostBar.boostAmount > 0 and can_boost:
+	if Input.is_action_just_pressed(boost_button) and boostBar.boostAmount > 0 and can_boost:
 		# set boosting to true
 		boosting = true
 		can_boost = false
@@ -298,7 +318,7 @@ func boostControl():
 		
 		voiceSound.play_effort()
 		
-	if Input.is_action_pressed("boost") and boosting and boostBar.boostAmount > 0:
+	if Input.is_action_pressed(boost_button) and boosting and boostBar.boostAmount > 0:
 #		if boostSound.stream != boost_sfx:
 #			boostSound.stream = boost_sfx
 #			boostSound.play()
@@ -377,8 +397,8 @@ func airProcess() -> void:
 			avgGPoint = LeftCastPt
 		else:
 			avgGPoint = RightCastPt
-		
-		
+	
+	
 	elif LeftCast.is_colliding():
 		text_label.text += "Left Collision"
 		avgGPoint = LeftCast.get_collision_point() + rot_ang * 8
@@ -391,9 +411,10 @@ func airProcess() -> void:
 	# calculate the average ceiling height based on the collision raycasts
 	# (again, elifs are for cases where only one raycast is successful)
 	if (LeftCastTop.is_colliding() and RightCastTop.is_colliding()):
-		avgTPoint = Vector2(
-			(LeftCastTop.get_collision_point().x + RightCastTop.get_collision_point().x) / 2,
-			(LeftCastTop.get_collision_point().y + RightCastTop.get_collision_point().y) / 2)
+		#avgTPoint = Vector2(
+		#	(LeftCastTop.get_collision_point().x + RightCastTop.get_collision_point().x) / 2,
+		#	(LeftCastTop.get_collision_point().y + RightCastTop.get_collision_point().y) / 2)
+		avgTPoint = (LeftCastTop.get_collision_point() + RightCastTop.get_collision_point()) / 2
 	elif LeftCastTop.is_colliding():
 		#avgTPoint = Vector2(LeftCastTop.get_collision_point().x+cos(rotation)*8,LeftCastTop.get_collision_point().y+sin(rotation)*8)
 		avgTPoint = LeftCastTop.get_collision_point() + rot_ang * 8
@@ -418,16 +439,23 @@ func airProcess() -> void:
 	
 	# air-based movement (using the arrow keys)
 	#Only let the player accelerate if they aren't already at max speed
-	if Input.is_action_pressed("move right") and velocity1.x < MAX_SPEED:
+	if Input.is_action_pressed(right_button) and velocity1.x < MAX_SPEED:
 		velocity1.x += AIR_ACCEL
-	elif Input.is_action_pressed("move left") and velocity1.x > -MAX_SPEED:
+	elif Input.is_action_pressed(left_button) and velocity1.x > -MAX_SPEED:
 		velocity1.x -= AIR_ACCEL
 	
+	#air tricking. Make sure the player is not jumping
+	if state == CharStates.STATE_AIR and not canShort:
+		if Input.is_action_just_pressed(trick_button):
+			if not sprite1.is_connected("animation_finished", rewardBoost):
+				sprite1.connect("animation_finished", rewardBoost, CONNECT_ONE_SHOT)
+			sprite1.play("railTrick") #because there's no formal "air trick" animation
+			voiceSound.play_effort()
 	
 	### STOMPING CONTROLS ###
 	
 	# initiating a stomp
-	if Input.is_action_just_pressed("stomp") and not stomping:
+	if Input.is_action_just_pressed(stomp_button) and not stomping:
 		# set the stomping state, and animation state 
 		stomping = true
 		sprite1.play("Roll")
@@ -487,7 +515,7 @@ func airProcess() -> void:
 	
 	# Allow the player to change the duration of the jump by releasing the jump
 	# button early
-	if not Input.is_action_pressed("jump") and canShort:
+	if not Input.is_action_pressed(jump_button) and canShort:
 		#velocity1 = Vector2(velocity1.x, maxf(velocity1.y,-JUMP_SHORT_LIMIT))
 		velocity1.y = maxf(velocity1.y, -JUMP_SHORT_LIMIT)
 	
@@ -524,7 +552,7 @@ func groundProcess() -> void:
 	position = Vector2(avgGPoint.x + 20 * sin(rotation), avgGPoint.y - 20 * cos(rotation))
 	
 	#If this is negative, the player is pressing left. If positive, they're pressing right.
-	var input_direction:float = Input.get_axis("move left", "move right")
+	var input_direction:float = Input.get_axis(left_button, right_button)
 	
 	if not rolling:
 		# handle rightward acceleration
@@ -630,7 +658,7 @@ func groundProcess() -> void:
 	
 	if not spindashing:
 		#Sonic is either rolling or crouching
-		if Input.is_action_pressed("ui_down"):
+		if Input.is_action_pressed(down_button):
 			if absf(gVel) <= 0.02:
 				#crouch, since Sonic is effectively at a standstill
 				
@@ -655,7 +683,7 @@ func groundProcess() -> void:
 		boostControl()
 	
 	# jumping
-	if Input.is_action_pressed("jump") and not (crouching or spindashing):
+	if Input.is_action_pressed(jump_button) and not (crouching or spindashing):
 		if not canShort:
 			state = CharStates.STATE_AIR
 			velocity1 = Vector2(velocity1.x + sin(rotation) * JUMP_VELOCITY, velocity1.y - cos(rotation) * JUMP_VELOCITY)
@@ -668,21 +696,21 @@ func groundProcess() -> void:
 		canShort = false
 	
 	#initate spindash
-	if (Input.is_action_pressed("jump") and crouching) and not rolling:
+	if (Input.is_action_pressed(jump_button) and crouching) and not rolling:
 		spindashing = true
 		#Mimic how the animation would restart in the classics
 		sprite1.play("Spindash")
 	
 	if spindashing and not rolling:
 		#if a charge is being built up this frame
-		if Input.is_action_just_pressed("jump"):
+		if Input.is_action_just_pressed(jump_button):
 			#accumulate spindash speed
 			spindash_buildup += SPINDASH_ACCUMULATE * (1 if sprite1.flip_h else -1)
 			#cap buildup velocity so Sonic can't rocket off
 			if SPINDASH_CHARGE_CAP > 0:
 				spindash_buildup = clampf(spindash_buildup, -SPINDASH_CHARGE_CAP, SPINDASH_CHARGE_CAP)
 		#charge release
-		if not Input.is_action_pressed("ui_down"):
+		if not Input.is_action_pressed(down_button):
 			spindashing = false
 			rolling = true
 			gVel += spindash_buildup
@@ -693,23 +721,15 @@ func groundProcess() -> void:
 	lRot = rotation
 
 func grindProcess() -> void:
-	if tricking:
-		sprite1.play("railTrick")
-		if sprite1.frame > 0:
-			trickingCanStop = true
-		if sprite1.frame <= 0 and trickingCanStop:
-			tricking = false
-			var part = boostParticle.instantiate()
-			part.position = position 
-			part.boostValue = 2
-			get_node("/root/Node2D").add_child(part)
+	#Handle tricking
+	if Input.is_action_pressed(trick_button) or tricking:
+		tricking = true
+		if not sprite1.is_connected("animation_finished", rewardBoost):
+			sprite1.connect("animation_finished", rewardBoost, CONNECT_ONE_SHOT)
+		sprite1.play("railTrick") #because there's no formal "air trick" animation
+		voiceSound.play_effort()
 	else:
 		sprite1.play("Grind")
-	
-	if Input.is_action_just_pressed("stomp") and not tricking:
-		tricking = true
-		trickingCanStop = false
-		voiceSound.play_effort()
 	
 	grindHeight = sprite1.sprite_frames.get_frame_texture(sprite1.animation, sprite1.frame).get_height() / 2.0
 	
@@ -736,7 +756,7 @@ func grindProcess() -> void:
 	else:
 		velocity1 = dirVec * grindVel
 	
-	if Input.is_action_pressed("jump") and not crouching:
+	if Input.is_action_pressed(jump_button) and not crouching:
 		if not canShort:
 			state = CharStates.STATE_AIR
 			#velocity1 = Vector2(velocity1.x+sin(rotation)*JUMP_VELOCITY,velocity1.y-cos(rotation)*JUMP_VELOCITY)
@@ -860,6 +880,20 @@ func _on_Railgrind(area:Area2D, curve:Curve2D, origin:Vector2) -> void:
 			boostSound.stream = stomp_land_sfx
 			boostSound.play()
 			stomping = false
+
+##This spawns in a boost particle "on demand".
+##If make_check is true, it will make sure Sonic is tricking by checking the animation.
+func rewardBoost(make_check:bool = true) -> void:
+	if make_check:
+		if sprite1.animation == "railTrick":
+			tricking = false
+		else:
+			return
+	
+	var part = boostParticle.instantiate()
+	part.position = position 
+	part.boostValue = 2
+	get_node("/root/Node2D").add_child(part)
 
 func isAttacking() -> bool:
 	if stomping or boosting or rolling or spindashing or \
