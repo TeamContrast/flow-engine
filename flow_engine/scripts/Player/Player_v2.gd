@@ -414,8 +414,6 @@ func airProcess() -> void:
 			avgGPoint = LeftCastPt
 		else:
 			avgGPoint = RightCastPt
-	
-	
 	elif LeftCast.is_colliding():
 		text_label.text += "Left Collision"
 		avgGPoint = LeftCast.get_collision_point() + rot_ang * 8

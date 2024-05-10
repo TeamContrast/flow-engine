@@ -91,7 +91,7 @@
 [ext_resource type="Texture2D" uid="uid://qx3rccsa1pk4" path="res://flow_engine/sprites/sonic/hurt.png" id="54"]
 [ext_resource type="PackedScene" uid="uid://lx52svmfh7qd" path="res://flow_engine/level_items/collectibles/BounceRing.tscn" id="55"]
 [ext_resource type="Texture2D" uid="uid://blq2ku4c3v1ir" path="res://flow_engine/sprites/sonic/railFlip.png" id="56"]
-[ext_resource type="Script" path="res://flow_engine/level_items/voices.gd" id="58"]
+[ext_resource type="Script" path="res://flow_engine/scripts/Player/voices.gd" id="58"]
 [ext_resource type="AudioStream" uid="uid://64vwfvtlfbxg" path="res://flow_engine/audio/sonic/hurt/08_V_SNC_007_b.wav" id="59"]
 [ext_resource type="AudioStream" uid="uid://bap1vkexbx2ib" path="res://flow_engine/audio/sonic/effort/14_V_SNC_013_a.wav" id="60"]
 [ext_resource type="AudioStream" uid="uid://cp2f0v2t3ivan" path="res://flow_engine/audio/sonic/hurt/07_V_SNC_006_a.wav" id="61"]

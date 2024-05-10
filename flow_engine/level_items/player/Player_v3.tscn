@@ -72,7 +72,7 @@
 [ext_resource type="Texture2D" uid="uid://bmcuuwbjfhkdw" path="res://flow_engine/sprites/effects/sonic_boost_3.png" id="51_qk6wt"]
 [ext_resource type="AudioStream" uid="uid://cqkjva8xvechs" path="res://flow_engine/audio/SFX/Boost.wav" id="52_xlokp"]
 [ext_resource type="AudioStream" uid="uid://df6lfljp8rctw" path="res://flow_engine/audio/SFX/rail.wav" id="53_ivkfo"]
-[ext_resource type="Script" path="res://flow_engine/level_items/voices.gd" id="54_wxhed"]
+[ext_resource type="Script" path="res://flow_engine/scripts/Player/voices.gd" id="54_wxhed"]
 [ext_resource type="AudioStream" uid="uid://cp2f0v2t3ivan" path="res://flow_engine/audio/sonic/hurt/07_V_SNC_006_a.wav" id="55_1y8c4"]
 [ext_resource type="AudioStream" uid="uid://64vwfvtlfbxg" path="res://flow_engine/audio/sonic/hurt/08_V_SNC_007_b.wav" id="56_7mnpa"]
 [ext_resource type="AudioStream" uid="uid://cm3bowi4ycvvr" path="res://flow_engine/audio/sonic/hurt/08_V_SNC_008_c.wav" id="57_gqtv5"]
