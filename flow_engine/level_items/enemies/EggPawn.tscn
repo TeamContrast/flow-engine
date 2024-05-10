@@ -1,0 +1,80 @@
+[gd_scene load_steps=13 format=3 uid="uid://bu5ubp8reooki"]
+
+[ext_resource type="Texture2D" uid="uid://w3iyiq5hkh6d" path="res://flow_engine/sprites/enemies/pawnWalk.png" id="1"]
+[ext_resource type="Script" path="res://flow_engine/scripts/enemies/EggPawn.gd" id="2"]
+[ext_resource type="AudioStream" uid="uid://d2mnakmd8hdue" path="res://flow_engine/audio/SFX/boom.wav" id="3"]
+[ext_resource type="PackedScene" uid="uid://ds1qcyx60i86b" path="res://flow_engine/level_items/collectibles/BoostParticle.tscn" id="4"]
+
+[sub_resource type="AtlasTexture" id="1"]
+atlas = ExtResource("1")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="2"]
+atlas = ExtResource("1")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="3"]
+atlas = ExtResource("1")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="4"]
+atlas = ExtResource("1")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="5"]
+atlas = ExtResource("1")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="6"]
+atlas = ExtResource("1")
+region = Rect2(320, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("1")
+}, {
+"duration": 1.0,
+"texture": SubResource("2")
+}, {
+"duration": 1.0,
+"texture": SubResource("3")
+}, {
+"duration": 1.0,
+"texture": SubResource("4")
+}, {
+"duration": 1.0,
+"texture": SubResource("5")
+}, {
+"duration": 1.0,
+"texture": SubResource("6")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="8"]
+radius = 8.94945
+height = 17.8989
+
+[node name="EggPawn" type="Area2D"]
+collision_layer = 16
+collision_mask = 32
+script = ExtResource("2")
+boostParticle = ExtResource("4")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("7")
+autoplay = "default"
+frame = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.187286, -2.24746)
+shape = SubResource("8")
+
+[node name="BoomSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3")
+
+[connection signal="area_entered" from="." to="." method="_on_EggPawn_area_entered"]

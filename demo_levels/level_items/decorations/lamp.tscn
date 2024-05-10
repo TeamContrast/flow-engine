@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Texture2D" uid="uid://bobcmphmywevn" path="res://demo_levels/sprites/lamp2.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://0maion36rdta" path="res://flow_engine/sprites/light.png" id="2"]
+
+[node name="lamp" type="Sprite2D"]
+texture = ExtResource( 1 )
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2( 0.625366, -29.3632 )
+texture = ExtResource( 2 )
+color = Color( 1, 0.964706, 0.803922, 1 )
+shadow_enabled = true
+shadow_color = Color( 0, 0, 0, 1 )
+shadow_gradient_length = 2.5

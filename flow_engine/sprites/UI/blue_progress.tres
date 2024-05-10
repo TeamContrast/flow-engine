@@ -1,0 +1,8 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://dxqntia4117n5"]
+
+[ext_resource type="Texture2D" uid="uid://bpa6sl631gtws" path="res://flow_engine/sprites/UI/boostbar.png" id="1_udjtt"]
+
+[resource]
+atlas = ExtResource("1_udjtt")
+region = Rect2(1, 17, 19, 7)
+filter_clip = true

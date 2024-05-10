@@ -10,9 +10,10 @@ config_version=5
 
 [application]
 
-config/name="ModernSonic1"
+config/name="Flow Engine Template"
+config/description="An engine for creating Sonic Advance/Rush styled 2D Sonic games in Godot 4"
 config/tags=PackedStringArray("2d", "engine", "sonic")
-run/main_scene="res://scenes/ChaosFestival.tscn"
+run/main_scene="res://demo_levels/scenes/ChaosFestival.tscn"
 config/features=PackedStringArray("4.2")
 boot_splash/bg_color=Color(0.141176, 0.141176, 0.141176, 1)
 boot_splash/image="res://icon2.png"
@@ -20,13 +21,17 @@ config/icon="res://icon2.png"
 
 [autoload]
 
-FlowStatSingleton="*res://scripts/Auto_stat_manager.gd"
+FlowStatSingleton="*res://flow_engine/scripts/Auto_stat_manager.gd"
 
 [display]
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="viewport"
+
+[editor]
+
+movie_writer/movie_file="/home/c08o/Coding/Godot/flow-engine-git/build/goofy.avi"
 
 [input]
 
@@ -108,4 +113,4 @@ trick={
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
-environment/defaults/default_environment="res://default_env.tres"
+environment/defaults/default_environment="res://demo_levels/default_env.tres"

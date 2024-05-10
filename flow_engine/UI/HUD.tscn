@@ -1,0 +1,96 @@
+[gd_scene load_steps=5 format=3 uid="uid://bjrx5iv7xjob"]
+
+[ext_resource type="Texture2D" uid="uid://c4hojltnn88p" path="res://flow_engine/sprites/UI/RingCount.png" id="1_qr8yw"]
+[ext_resource type="Script" path="res://flow_engine/scripts/UI/RingCountDisplay.gd" id="2_p3vmr"]
+[ext_resource type="Script" path="res://flow_engine/scripts/UI/BoostBar.gd" id="2_pvpys"]
+[ext_resource type="Texture2D" uid="uid://bbtvesqtpdyda" path="res://flow_engine/sprites/UI/numbers.png" id="3_mt4g3"]
+
+[node name="CanvasLayer" type="CanvasLayer"]
+
+[node name="RingCounter" type="TextureRect" parent="."]
+offset_left = 30.0
+offset_top = 22.0
+offset_right = 87.0
+offset_bottom = 43.0
+scale = Vector2(2, 2)
+texture = ExtResource("1_qr8yw")
+expand_mode = 1
+stretch_mode = 3
+script = ExtResource("2_p3vmr")
+
+[node name="Numbers" type="Control" parent="RingCounter"]
+anchors_preset = 0
+offset_left = 16.5
+offset_top = 2.75
+offset_right = 56.5
+offset_bottom = 42.75
+scale = Vector2(0.5, 0.5)
+
+[node name="Digit 1" type="Control" parent="RingCounter/Numbers"]
+clip_contents = true
+anchors_preset = 0
+offset_left = 5.16151
+offset_top = 0.00311279
+offset_right = 29.1615
+offset_bottom = 24.0031
+
+[node name="TextureRect2" type="TextureRect" parent="RingCounter/Numbers/Digit 1"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 0
+offset_right = 132.0
+offset_bottom = 12.0
+scale = Vector2(2, 2)
+texture = ExtResource("3_mt4g3")
+stretch_mode = 2
+
+[node name="Digit 2" type="Control" parent="RingCounter/Numbers"]
+clip_contents = true
+anchors_preset = 0
+offset_left = 24.9796
+offset_top = 0.213333
+offset_right = 48.9796
+offset_bottom = 24.2133
+
+[node name="TextureRect2" type="TextureRect" parent="RingCounter/Numbers/Digit 2"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 0
+offset_right = 132.0
+offset_bottom = 12.0
+scale = Vector2(2, 2)
+texture = ExtResource("3_mt4g3")
+stretch_mode = 2
+
+[node name="Digit 3" type="Control" parent="RingCounter/Numbers"]
+clip_contents = true
+anchors_preset = 0
+offset_left = 45.0079
+offset_top = -0.207108
+offset_right = 69.0079
+offset_bottom = 23.7929
+
+[node name="TextureRect2" type="TextureRect" parent="RingCounter/Numbers/Digit 3"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 0
+offset_right = 132.0
+offset_bottom = 12.0
+scale = Vector2(2, 2)
+texture = ExtResource("3_mt4g3")
+stretch_mode = 2
+
+[node name="boostBar" type="VBoxContainer" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 40.0
+grow_vertical = 0
+script = ExtResource("2_pvpys")
+
+[node name="Label2" type="Label" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -161.0
+offset_bottom = 23.0
+grow_horizontal = 0
+text = "FLOW ENGINE DEMO"
