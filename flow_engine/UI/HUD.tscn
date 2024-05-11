@@ -77,15 +77,6 @@ scale = Vector2(2, 2)
 texture = ExtResource("3_mt4g3")
 stretch_mode = 2
 
-[node name="boostBar" type="VBoxContainer" parent="."]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -587.0
-offset_right = 40.0
-grow_vertical = 0
-script = ExtResource("2_pvpys")
-
 [node name="Watermark" type="Label" parent="."]
 anchors_preset = 1
 anchor_left = 1.0
@@ -94,3 +85,10 @@ offset_left = -161.0
 offset_bottom = 23.0
 grow_horizontal = 0
 text = "FLOW ENGINE DEMO"
+
+[node name="boostBar" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_pvpys")

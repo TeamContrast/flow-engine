@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://dmuk31tu4u2c7"]
+[gd_scene load_steps=40 format=3 uid="uid://dmuk31tu4u2c7"]
 
 [ext_resource type="PackedScene" uid="uid://b1g7if77ai0ej" path="res://flow_engine/level_items/player/Player.tscn" id="1_v6b6h"]
 [ext_resource type="PackedScene" path="res://demo_levels/level_items/decorations/FallingParticles.tscn" id="2_rfu28"]
@@ -19,6 +19,7 @@
 [ext_resource type="Script" path="res://flow_engine/scripts/UI/RingCountDisplay.gd" id="17_3rhtn"]
 [ext_resource type="Texture2D" uid="uid://3xofpl2h0ntj" path="res://flow_engine/sprites/UI/numbers.png" id="18_d0uxg"]
 [ext_resource type="PackedScene" uid="uid://cl76bbyvrtwsf" path="res://flow_engine/UI/new_boost_bar.tscn" id="19_1cshd"]
+[ext_resource type="Script" path="res://flow_engine/scripts/UI/BoostBar.gd" id="19_hvqk4"]
 
 [sub_resource type="Curve" id="1"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0790698, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -151,9 +152,7 @@ point_count = 5
 
 [sub_resource type="Environment" id="19"]
 background_mode = 4
-glow_enabled = true
 glow_intensity = 0.1
-adjustment_enabled = true
 adjustment_brightness = 0.9
 adjustment_contrast = 1.2
 
@@ -161,7 +160,7 @@ adjustment_contrast = 1.2
 
 [node name="Player" parent="." instance=ExtResource("1_v6b6h")]
 position = Vector2(-2289.76, -76.452)
-boostbar_hud = NodePath("../CanvasLayer/SimpleBoostBar")
+boostbar_hud = NodePath("../CanvasLayer/boostBar")
 ring_counter_hud = NodePath("../CanvasLayer/RingCounter")
 
 [node name="GPUParticles2D" parent="Player" instance=ExtResource("2_rfu28")]
@@ -723,6 +722,17 @@ grow_horizontal = 0
 text = "FLOW ENGINE DEMO"
 
 [node name="SimpleBoostBar" parent="CanvasLayer" instance=ExtResource("19_1cshd")]
+visible = false
+
+[node name="boostBar" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 40.0
+grow_vertical = 0
+script = ExtResource("19_hvqk4")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("19")
