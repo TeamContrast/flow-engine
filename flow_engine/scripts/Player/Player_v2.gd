@@ -31,10 +31,6 @@ class_name RushPlayer2D
 @export var trick_button:StringName
 
 @export_group("Effects & Sounds")
-## the minimum speed/pitch changes on the grinding sound
-@export var RAILSOUND_MINPITCH:float = 0.5
-## the maximum speed/pitch changes on the grinding sound
-@export var RAILSOUND_MAXPITCH:float = 2.0
 ## a reference to a bouncing ring prefab, so we can spawn a bunch of them when
 ## sonic is hurt 
 @export var bounceRing: PackedScene
@@ -49,17 +45,27 @@ class_name RushPlayer2D
 
 @export_group("Running")
 @export_subgroup("Animations")
-##Sonic's walking animation
+##Sonic's walking animation.
 @export var walking_anim:StringName
+##Sonic's first running animation.
+@export var running_1_anim:StringName
+##Sonic's second running animation.
+@export var running_2_anim:StringName
+##Sonic's third running animation.
+@export var running_3_anim:StringName
+##Sonic's fourth, and max speed, running animation.
+@export var running_4_anim:StringName
 @export_subgroup("")
-## sonic's acceleration on his own
+## sonic's acceleration on his own.
 @export var ACCELERATION:float = 0.15 / 4
 ## how much sonic decelerates when skidding.
 @export var SKID_ACCEL:float = 1
-## maximum speed under sonic's own power
-@export var MAX_SPEED:float = 20.0 / 2.0
-## used to dampen Sonic's movement a little bit. Basically poor man's friction
-@export var SPEED_DECAY:float = 0.2 / 2.0
+## minimum speed. If Sonic's speed is below this, he will be considered not moving.
+@export var min_speed:float = 0.02
+## Maximum speed Sonic can reach under his own power.
+@export var MAX_SPEED:float = 10.0 #20.0 / 2.0
+## used to dampen Sonic's movement a little bit. Basically poor man's friction.
+@export var SPEED_DECAY:float = 0.1 #0.2 / 2.0
 
 @export_group("Rolling and Spindashing")
 @export_subgroup("Animations and SFX")
@@ -95,12 +101,14 @@ class_name RushPlayer2D
 ## The cooldown on activating the boost between activations, in seconds. 
 ##Smaller values make it more spammable.
 @export var BOOST_COOLDOWN:float = 0.0
+##The max amount of boost Sonic can have
+@export var BOOST_MAX:float = 20.0
 ##The amount of boost that boosting will cost per physics frame.
 @export var BOOST_COST:float = 0.06
 ##The length of Sonic's boost (or stomp) trail
 @export var TRAIL_LENGTH:int = 40
 
-@export_group("Air")
+@export_group("Air and Jumping")
 @export_subgroup("Animations and SFX")
 ##Sonic's jumping animation
 @export var jump_anim:StringName
@@ -129,12 +137,18 @@ class_name RushPlayer2D
 ##This vector is treated absolutely, so negative values will act like their positive equivalent.
 @export var STATIC_HURT_VEL:Vector2 = Vector2.ONE
 
-@export_group("Tricking")
+@export_group("Tricking and Grinding")
 @export_subgroup("Animations and SFX")
+##The animation that plays when Sonic is on a rail
+@export var rail_grind_anim:StringName
 ##The animation that plays when Sonic tricks on a rail
 @export var rail_trick_anim:StringName
 ##The sound that plays when Sonic tricks on a rail
 @export var rail_trick_sfx:AudioStream
+## the minimum speed/pitch changes on the grinding sound
+@export var RAIL_SOUND_MINPITCH:float = 0.5
+## the maximum speed/pitch changes on the grinding sound
+@export var RAIL_SOUND_MAXPITCH:float = 2.0
 ##The animation that plays when Sonic tricks in midair
 @export var air_trick_anim:StringName
 ##The sound that plays when Sonic tricks in midair
@@ -165,12 +179,11 @@ class_name RushPlayer2D
 ##If enabled, Sonic can stomp by pressing trick when not able to air trick, or
 ##by pressing trick+down while he can air trick
 @export var stomp_enabled:bool = true
-
 ## how fast (in pixels per 1/120th of a second) should sonic stomp
 @export var STOMP_SPEED:float = 20.0 / 2.0
 ## what is the limit to Sonic's horizontal movement when stomping?
 @export var MAX_STOMP_XVEL:float = 2.0 / 2.0
-##How much Sonic will bounce upon landing from a stomp
+##How much Sonic will bounce upon landing from a stomp. Note: Sonic will not bounce on rails.
 @export var STOMP_BOUNCE:float = 0.0
 
 @export_group("Camera")
@@ -190,8 +203,8 @@ class_name RushPlayer2D
 @onready var LeftCastTop:RayCast2D = $"LeftCastTop"
 @onready var RightCastTop:RayCast2D = $"RightCastTop"
 
-## a reference to Sonic's physics collider
-@onready var collider:CollisionShape2D = $"playerCollider"
+# a reference to Sonic's physics collider
+#@onready var collider:CollisionShape2D = $"playerCollider"
 
 ##The cooldown timer on Sonic's boost
 @onready var boost_cooldown_timer:Timer = $"BoostTimer"
@@ -228,6 +241,8 @@ var state:CharStates = CharStates.STATE_AIR
 
 ##An enumeration on Sonic's various states
 enum CharStates {
+	##Sonic is on a rail
+	STATE_GRINDING = 1,
 	##Sonic is on the ground
 	STATE_GROUND = 0,
 	##Sonic is in the air
@@ -241,7 +256,6 @@ var canShort:bool = false
 var crouching:bool = false
 var spindashing:bool = false
 var rolling:bool = false
-var grinding:bool = false
 var stomping:bool = false
 var boosting:bool = false
 var can_boost:bool = true
@@ -305,8 +319,8 @@ func _ready():
 	get_node(ring_counter_hud).linked_player_id = self.get_rid()
 	
 	FlowStatSingleton.add_player(self.get_rid())
-	
-	FlowStatSingleton.setMaxBoost(self.get_rid(), 20.0)
+	#Set max boost. This will also kick off the boost HUD to set itself up.
+	FlowStatSingleton.setMaxBoost(self.get_rid(), BOOST_MAX)
 	
 	# put all child particle systems in parts except for the grind particles
 	for i in get_children():
@@ -351,9 +365,15 @@ func angleDist(rot1:float, rot2:float) -> float:
 func boostControl():
 	#fetch this once to prevent recurring fetches (costly)
 	var boostAmount:float =  FlowStatSingleton.getBoostAmount(self.get_rid())
+	var boost_pressed: bool
 	
-	#if Input.is_action_just_pressed(boost_button) and boostBar.boostAmount > 0 and can_boost:
-	if Input.is_action_just_pressed(boost_button) and boostAmount > 0 and can_boost:
+	#Air boost lock
+	if state == CharStates.STATE_AIR:
+		boost_pressed = AIR_BOOST and Input.is_action_just_pressed(boost_button)
+	else:
+		boost_pressed = Input.is_action_just_pressed(boost_button)
+	
+	if can_boost and boost_pressed and boostAmount > 0:
 		# set boosting to true
 		boosting = true
 		can_boost = false
@@ -383,8 +403,6 @@ func boostControl():
 		# stop moving vertically as much if you are in the air (air boost)
 		#if state == CharStates.STATE_AIR and velocity1.x < ACCELERATION:
 		if state == CharStates.STATE_AIR and absf(velocity1.x) < ACCELERATION:
-			#if velocity1.x < BOOST_SPEED * (1 if sprite1.flip_h else -1):
-			#	velocity1.x = BOOST_SPEED * (1 if sprite1.flip_h else -1)
 			velocity1.x = maxf(velocity1.x, BOOST_SPEED * (1 if sprite1.flip_h else -1))
 			velocity1.y = 0
 		
@@ -400,7 +418,7 @@ func boostControl():
 		var cam_tween:Tween = create_tween()
 		cam_tween.tween_property(cam, "position_smoothing_speed", DEFAULT_CAM_LAG, 1.0)
 		
-		if grinding:
+		if state == CharStates.STATE_GRINDING:
 			# apply boost to a grind
 			grindVel = BOOST_SPEED * (1 if sprite1.flip_h else -1)
 		elif state == CharStates.STATE_GROUND:
@@ -502,6 +520,8 @@ func airProcess() -> void:
 		# play the stomp sound if you were stomping
 		if stomping:
 			boostSound.stream = stomp_land_sfx
+			#TODO: Fix stomp bouncing
+			velocity1.y = -STOMP_BOUNCE
 			boostSound.play()
 			stomping = false
 	
@@ -517,7 +537,8 @@ func airProcess() -> void:
 		if Input.is_action_just_pressed(trick_button):
 			if not sprite1.is_connected("animation_finished", rewardBoost):
 				sprite1.connect("animation_finished", rewardBoost, CONNECT_ONE_SHOT)
-			sprite1.play("railTrick") #because there's no formal "air trick" animation
+			
+			sprite1.play(air_trick_anim)
 			voiceSound.play_effort()
 	
 	### STOMPING CONTROLS ###
@@ -538,7 +559,7 @@ func airProcess() -> void:
 	if stomp_enabled and stomp_pressed and (not stomping):
 		# set the stomping state, and animation state 
 		stomping = true
-		sprite1.play("Roll")
+		sprite1.play(stomp_anim)
 		rotation = 0
 		sprite1.rotation = 0
 		
@@ -670,12 +691,10 @@ func groundProcess() -> void:
 	# left and right wall collision, respectively
 	if LSideCast.is_colliding() and LSideCast.get_collision_point().distance_to(position) < 21 and gVel < 0:
 		gVel = 0
-		#position = LSideCast.get_collision_point() + Vector2(position.x-LSideCast.get_collision_point().x,position.y-LSideCast.get_collision_point().y).normalized()*21
 		position = LSideCast.get_collision_point() + Vector2(position - LSideCast.get_collision_point()).normalized() * 21
 		boosting = false
 	if RSideCast.is_colliding() and RSideCast.get_collision_point().distance_to(position) < 21 and gVel > 0:
 		gVel = 0
-		#position = RSideCast.get_collision_point() + Vector2(position.x-RSideCast.get_collision_point().x,position.y-RSideCast.get_collision_point().y).normalized()*21
 		position = RSideCast.get_collision_point() + Vector2(position - RSideCast.get_collision_point()).normalized() * 21
 		boosting = false 
 	
@@ -711,25 +730,28 @@ func groundProcess() -> void:
 	
 	#Check if Sonic is in the air (and not because he's jumping), and play that anim if so
 	if state == CharStates.STATE_AIR and not canShort:
-		sprite1.play("Free_falling")
+		sprite1.play(freefall_anim)
+	elif rolling:
+		sprite1.play(ball_curl_anim)
 	# set Sonic's sprite based on his ground velocity
+	#TODO: Maybe set these based on fractions of Sonic's speed, 
+	#since his speed could be out of scale with this
 	elif not rolling:
 		if absf(gVel) > 6.0: #12.0 / 2.0
-			sprite1.play("Run4")
+			sprite1.play(running_4_anim)
 		elif absf(gVel) > 5.0: #10.0 / 2.0
-			sprite1.play("Run3")
+			sprite1.play(running_3_anim)
 		elif absf(gVel) > 2.5: #5.0 / 2.0
-			sprite1.play("Run2")
-		elif absf(gVel) > 0.02:
-			sprite1.play("Walk")
+			sprite1.play(running_2_anim)
+		elif absf(gVel) > 1.0: #2.0 / 2.0 ig
+			sprite1.play(running_1_anim)
+		elif absf(gVel) > min_speed:
+			sprite1.play(walking_anim)
 		elif not crouching:
-			sprite1.play("idle")
-	else:
-		sprite1.play("Roll")
-	
+			sprite1.play(idle_anim)
 	
 	#Crouching
-	if absf(gVel) > 0.02:
+	if absf(gVel) > min_speed:
 		crouching = false
 		sprite1.speed_scale = 1
 	else:
@@ -741,26 +763,26 @@ func groundProcess() -> void:
 		if Input.is_action_pressed(down_button):
 			#Sonic is either rolling or crouching
 			
-			if absf(gVel) <= 0.02:
+			if absf(gVel) <= min_speed:
 				#crouch, since Sonic is effectively at a standstill
 				
 				#Only play the anim if he wasn't crouching before, 
 				#to avoid it being played repeatedly
 				if not crouching:
-					sprite1.play("Crouch")
+					sprite1.play(crouch_anim)
 				crouching = true
 			else:
 				#roll, since Sonic is moving
 				crouching = false
 				rolling = true
-				sprite1.play("Roll")
+				sprite1.play(ball_curl_anim)
 		
 		#since the previous check is false in this case, Sonic is no longer crouching
 		else:
 			if crouching == true:
 				sprite1.stop()
 				#sprite1.play("Crouch", -1.0, true)
-				sprite1.play_backwards("Crouch")
+				sprite1.play_backwards(crouch_anim)
 				crouching = false
 			
 			#unroll while moving :nice:
@@ -775,11 +797,10 @@ func groundProcess() -> void:
 	if Input.is_action_pressed(jump_button) and not (crouching or spindashing):
 		if not canShort:
 			state = CharStates.STATE_AIR
-			#velocity1 = Vector2(velocity1.x + sin(rotation) * JUMP_VELOCITY, velocity1.y - cos(rotation) * JUMP_VELOCITY)
 			velocity1 += Vector2(sin(rotation), -cos(rotation)) * JUMP_VELOCITY
 			sprite1.rotation = rotation
 			rotation = 0
-			sprite1.play("Roll")
+			sprite1.play(jump_anim)
 			canShort = true
 			rolling = false
 	else:
@@ -789,7 +810,7 @@ func groundProcess() -> void:
 	if (Input.is_action_pressed(jump_button) and crouching) and not rolling:
 		spindashing = true
 		#Mimic how the animation would restart in the classics
-		sprite1.play("Spindash")
+		sprite1.play(spindash_anim)
 	
 	#if spindashing and not rolling:
 	if spindashing:
@@ -817,10 +838,10 @@ func grindProcess() -> void:
 		tricking = true
 		if not sprite1.is_connected("animation_finished", rewardBoost):
 			sprite1.connect("animation_finished", rewardBoost, CONNECT_ONE_SHOT)
-		sprite1.play("railTrick") #because there's no formal "air trick" animation
+		sprite1.play(rail_trick_anim)
 		voiceSound.play_effort()
 	else:
-		sprite1.play("Grind")
+		sprite1.play(rail_grind_anim)
 	
 	grindHeight = sprite1.sprite_frames.get_frame_texture(sprite1.animation, sprite1.frame).get_height() / 2.0
 	
@@ -831,7 +852,7 @@ func grindProcess() -> void:
 	position = grindCurve.sample_baked(grindOffset) + (Vector2(1 * sin(rotation), -1 * cos(rotation)) * grindHeight) + grindPos
 	
 	
-	RailSound.pitch_scale = lerpf(RAILSOUND_MINPITCH, RAILSOUND_MAXPITCH,\
+	RailSound.pitch_scale = lerpf(RAIL_SOUND_MINPITCH, RAIL_SOUND_MAXPITCH,\
 		absf(grindVel) / BOOST_SPEED)
 	grindVel += sin(rotation) * GRAVITY
 	
@@ -839,11 +860,10 @@ func grindProcess() -> void:
 		grindCurve.sample_baked(grindOffset - 1) == \
 		grindCurve.sample_baked(grindOffset):
 		state = CharStates.STATE_AIR
-		grinding = false
 		tricking = false
 		trickingCanStop = false
 		RailSound.stop()
-		sprite1.play("Free_falling")
+		sprite1.play(freefall_anim)
 	else:
 		velocity1 = dirVec * grindVel
 	
@@ -854,10 +874,9 @@ func grindProcess() -> void:
 			velocity1 = velocity1 + Vector2(sin(rotation), -cos(rotation)) * JUMP_VELOCITY
 			sprite1.rotation = rotation
 			rotation = 0
-			sprite1.play("Roll")
+			sprite1.play(jump_anim)
 			canShort = true
 			rolling = false
-			grinding = false
 			tricking = false
 			trickingCanStop = false
 			RailSound.stop()
@@ -881,10 +900,10 @@ func _physics_process(_delta:float) -> void:
 		if get_tree().reload_current_scene() != OK:
 			push_error("Could not reload current scene!")
 	
-	grindParticles.emitting = grinding
+	grindParticles.emitting = (state == CharStates.STATE_GRINDING)
 	
 	# run the correct function based on the current air/ground state
-	if grinding:
+	if state == CharStates.STATE_GRINDING:
 		grindProcess()
 	elif state == CharStates.STATE_AIR:
 		airProcess()
@@ -950,12 +969,12 @@ func resetGame() -> void:
 ##this function is run whenever sonic hits a rail.
 func _on_Railgrind(curve:Curve2D, origin:Vector2) -> void:
 	# stick to the current rail if you're already grindin
-	if grinding:
+	if state == CharStates.STATE_GRINDING:
 		return
 	
 	# activate grind, if you are going downward
 	if velocity1.y > 0:
-		grinding = true
+		state = CharStates.STATE_GRINDING
 		grindCurve = curve
 		grindPos = origin
 		grindOffset = grindCurve.get_closest_offset(position-grindPos)
@@ -999,7 +1018,7 @@ func hurt_player() -> void:
 			velocity1 = Vector2(-signf(velocity1.x) * absf(STATIC_HURT_VEL.x) + sin(rotation), -signf(velocity1.y) * STATIC_HURT_VEL.y - cos(rotation)) * JUMP_VELOCITY
 		rotation = 0
 		position += velocity1 * 2
-		sprite1.play("hurt")
+		sprite1.play(hurt_anim)
 		
 		voiceSound.play_hurt()
 		
