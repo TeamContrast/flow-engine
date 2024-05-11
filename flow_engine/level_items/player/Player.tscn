@@ -549,7 +549,7 @@ gravity = Vector3(0, 0, 0)
 scale_curve = SubResource("CurveTexture_nbb86")
 color_ramp = SubResource("GradientTexture2D_k6qco")
 
-[node name="Player" type="Area2D"]
+[node name="Player" type="CharacterBody2D"]
 collision_layer = 32
 collision_mask = 81
 script = ExtResource("19")

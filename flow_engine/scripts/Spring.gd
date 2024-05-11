@@ -34,7 +34,8 @@ func animate() -> void:
 	anim.tween_property(self, "scale", Vector2.ONE, 0.1)
 	anim.play()
 
-func _on_Area2D_area_entered(area:Area2D) -> void:
+#func _on_Area2D_area_entered(area:Area2D) -> void:
+func _on_body_entered(area: Node2D) -> void:
 	# if the player collides with the spring
 	# calculate what vector to launch Sonic in
 	var launchVector:Vector2 = Vector2(0, -STRENGTH).rotated(rotation)

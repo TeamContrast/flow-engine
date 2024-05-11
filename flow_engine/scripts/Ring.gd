@@ -20,7 +20,7 @@ var collected:bool = false
 func _ready() -> void:
 	sprite.play("default")
 
-func _on_Ring_area_entered(area:Area2D) -> void:
+func _on_body_entered(body: Node2D) -> void:
 	# collide with the player, if the ring has not yet been collected
 	if not collected:
 		collected = true
@@ -28,7 +28,5 @@ func _on_Ring_area_entered(area:Area2D) -> void:
 		sprite.connect("animation_finished", hide, CONNECT_ONE_SHOT)
 		sprite.play("Sparkle")
 		audio.play()
-		#get_node("/root/Node2D/CanvasLayer/RingCounter").addRing()
-		FlowStatSingleton.addRing(area.get_rid(), 1)
-		#get_node("/root/Node2D/CanvasLayer/boostBar").changeBy(2)
-		FlowStatSingleton.boostChangeBy(area.get_rid(), 2.0)
+		FlowStatSingleton.addRing(body.get_rid(), 1)
+		FlowStatSingleton.boostChangeBy(body.get_rid(), 2.0)

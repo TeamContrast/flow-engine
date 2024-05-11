@@ -29,10 +29,7 @@ func _ready() -> void:
 	# set the collider to use the newly constructed polygon
 	coll.polygon = fullCurve
 
-
-func _on_Area2D_area_entered(area:Area2D):
+func _on_area_2d_body_entered(body: Node2D) -> void:
 	# if the player collides with this rail, call "_on_Railgrind" to let it
 	# know it should be grinding now.
-	
-	if area.name == "Player":
-		area._on_Railgrind(area, curve, global_position)
+	body._on_Railgrind(curve, global_position)

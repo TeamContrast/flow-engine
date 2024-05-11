@@ -1,4 +1,4 @@
-extends Area2D
+extends CharacterBody2D
 
 ##The ABSOLUTELY MASSIVE player controller script for the Flow Engine.
 ##most of the game's physics and logic is within this one 
@@ -946,13 +946,13 @@ func resetGame() -> void:
 	setCollisionLayer(false)
 
 ##this function is run whenever sonic hits a rail.
-func _on_Railgrind(area:Area2D, curve:Curve2D, origin:Vector2) -> void:
+func _on_Railgrind(curve:Curve2D, origin:Vector2) -> void:
 	# stick to the current rail if you're already grindin
 	if grinding:
 		return
 	
 	# activate grind, if you are going downward
-	if self == area and velocity1.y > 0:
+	if velocity1.y > 0:
 		grinding = true
 		grindCurve = curve
 		grindPos = origin

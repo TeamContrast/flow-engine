@@ -77,4 +77,4 @@ shape = SubResource("8")
 [node name="BoomSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("3")
 
-[connection signal="area_entered" from="." to="." method="_on_EggPawn_area_entered"]
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

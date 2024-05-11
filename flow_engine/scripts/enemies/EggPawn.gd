@@ -26,16 +26,17 @@ func _physics_process(_delta: float) -> void:
 		rotation += 0.1
 		splodeVel.y += 0.2
 
-func _on_EggPawn_area_entered(area:Area2D):
+#func _on_EggPawn_area_entered(area:Area2D):
+func _on_body_entered(body: Node2D) -> void:
 	# if the player collides with this egg pawn
 	if alive:
 		# if the player isn't attacking (boosting or jumping) hurt the player
-		if not area.isAttacking():
-			area.hurt_player()
-		elif area.state == -1:
+		if not body.isAttacking():
+			body.hurt_player()
+		elif body.state == -1:
 			# if it is attacking from the air, bounce it back up a bit 
-			area.velocity1.y = -5
-		if area.isAttacking():
+			body.velocity1.y = -5
+		if body.isAttacking():
 #			get_node("/root/Node2D/CanvasLayer/boostBar").changeBy(2)
 			var newNode:Node2D = boostParticle.instantiate()
 			newNode.position = position
@@ -46,7 +47,7 @@ func _on_EggPawn_area_entered(area:Area2D):
 		alive = false
 		
 		# set the velocity to match Sonic's speed, with a few constraints
-		splodeVel = area.get("velocity1") * 1.5
+		splodeVel = body.get("velocity1") * 1.5
 		splodeVel.y = min(splodeVel.y, 10)
 		splodeVel.y -= 7
 		

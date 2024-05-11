@@ -16,3 +16,13 @@ func _tripped(entry:Area2D) -> void:
 				entry.RightLayerOn()
 			2:
 				entry.FlipLayer()
+
+
+func _on_body_entered(body: Node2D) -> void:
+	match layer:
+		0:
+			body.LeftLayerOn()
+		1:
+			body.RightLayerOn()
+		2:
+			body.FlipLayer()
