@@ -18,7 +18,7 @@
 [ext_resource type="Texture2D" uid="uid://c4hojltnn88p" path="res://flow_engine/sprites/UI/RingCount.png" id="16_3psnb"]
 [ext_resource type="Script" path="res://flow_engine/scripts/UI/RingCountDisplay.gd" id="17_3rhtn"]
 [ext_resource type="Texture2D" uid="uid://bbtvesqtpdyda" path="res://flow_engine/sprites/UI/numbers.png" id="18_d0uxg"]
-[ext_resource type="Script" path="res://flow_engine/scripts/UI/BoostBar.gd" id="19_sv274"]
+[ext_resource type="PackedScene" uid="uid://cl76bbyvrtwsf" path="res://flow_engine/UI/new_boost_bar.tscn" id="19_1cshd"]
 
 [sub_resource type="Curve" id="1"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0790698, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -136,7 +136,7 @@ adjustment_contrast = 1.2
 
 [node name="Player" parent="." instance=ExtResource("1_v6b6h")]
 position = Vector2(-2289.76, -76.452)
-boostbar_hud = NodePath("../CanvasLayer/boostBar")
+boostbar_hud = NodePath("../CanvasLayer/SimpleBoostBar")
 ring_counter_hud = NodePath("../CanvasLayer/RingCounter")
 
 [node name="GPUParticles2D" parent="Player" instance=ExtResource("2_rfu28")]
@@ -342,7 +342,6 @@ rotation = -0.00546128
 [node name="Spring2" parent="StageItems" instance=ExtResource("11_t4d0v")]
 position = Vector2(2624.91, -421.545)
 rotation = 2.17182
-DIRECTED = true
 
 [node name="LayerSwitch2" parent="StageItems" instance=ExtResource("12_wt6yd")]
 position = Vector2(2048.48, -276.225)
@@ -399,6 +398,7 @@ rotation = 0.813018
 STRENGTH = 10.0
 
 [node name="BeginningStage" type="StaticBody2D" parent="StageItems"]
+visible = false
 position = Vector2(-3093.18, -28.5207)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StageItems/BeginningStage"]
@@ -495,7 +495,6 @@ layer = 1
 [node name="Spring" parent="StageItems" instance=ExtResource("11_t4d0v")]
 position = Vector2(13246, -793)
 STRENGTH = 20.0
-DIRECTED = true
 
 [node name="DeathPlane" type="Area2D" parent="."]
 position = Vector2(4321.7, 489.486)
@@ -688,16 +687,7 @@ scale = Vector2(2, 2)
 texture = ExtResource("18_d0uxg")
 stretch_mode = 2
 
-[node name="boostBar" type="VBoxContainer" parent="CanvasLayer"]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -40.0
-offset_right = 40.0
-grow_vertical = 0
-script = ExtResource("19_sv274")
-
-[node name="Label2" type="Label" parent="CanvasLayer"]
+[node name="Watermark" type="Label" parent="CanvasLayer"]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -706,7 +696,17 @@ offset_bottom = 23.0
 grow_horizontal = 0
 text = "FLOW ENGINE DEMO"
 
+[node name="SimpleBoostBar" parent="CanvasLayer" instance=ExtResource("19_1cshd")]
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("19")
 
+[connection signal="body_entered" from="NewTileMap/AirRing" to="NewTileMap/AirRing" method="_on_body_entered"]
+[connection signal="body_entered" from="NewTileMap/@Area2D@19332" to="NewTileMap/@Area2D@19332" method="_on_body_entered"]
+[connection signal="body_entered" from="NewTileMap/@Area2D@19333" to="NewTileMap/@Area2D@19333" method="_on_body_entered"]
+[connection signal="body_entered" from="NewTileMap/EggPawn" to="NewTileMap/EggPawn" method="_on_body_entered"]
+[connection signal="body_entered" from="NewTileMap/@Area2D@19334" to="NewTileMap/@Area2D@19334" method="_on_body_entered"]
+[connection signal="body_entered" from="NewTileMap/@Area2D@19335" to="NewTileMap/@Area2D@19335" method="_on_body_entered"]
+[connection signal="body_entered" from="NewTileMap/@Area2D@19336" to="NewTileMap/@Area2D@19336" method="_on_body_entered"]
+[connection signal="body_entered" from="NewTileMap/@Area2D@19337" to="NewTileMap/@Area2D@19337" method="_on_body_entered"]
 [connection signal="area_entered" from="DeathPlane" to="Player" method="_on_DeathPlane_area_entered"]

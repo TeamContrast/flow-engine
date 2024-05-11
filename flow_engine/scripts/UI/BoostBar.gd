@@ -12,8 +12,6 @@ const boost_bar_yellow:AtlasTexture = preload("res://flow_engine/sprites/UI/yell
 ##The texture for the boost bar units when they're full
 const boost_bar_red:AtlasTexture = preload("res://flow_engine/sprites/UI/red_progress.tres")
 
-##The maximum amount of boost for Sonic
-@export var max_boost:float = 60.0
 ##If true, Sonic the boost bar will always be full (infinite boost)
 @export var infiniteBoost:bool = false
 

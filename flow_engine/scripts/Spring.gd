@@ -12,6 +12,7 @@ class_name FlowCharacterLauncher
 @export var DIRECTED:bool = false
 ## add a scaling effect (usually for boost rings)
 @export_group("Animation")
+##If the FlowCharacterLauncher will scale and shrink (animate) when activated
 @export var ringScale: bool = false
 ##How much the spring will expand when animating an activation
 @export var scaling:float = 2.0
@@ -83,3 +84,4 @@ func _on_body_entered(area: Node2D) -> void:
 	#scale the spring, if scaling is active
 	if ringScale:
 		animate()
+

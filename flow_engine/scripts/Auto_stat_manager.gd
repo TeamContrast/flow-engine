@@ -53,15 +53,19 @@ func getBoostAmount(id:RID) -> float:
 func boostChangeBy(id:RID, amount:float) -> void:
 	if last_char.character_id != id:
 		last_char = find_char(id)
-	last_char.boostAmount += amount
+	last_char.boostAmount = minf(last_char.boostAmount + amount, last_char.maxBoost)
 	emit_signal("boost_updated", id)
 
-##Set the maximum boost of a character
+##Set the maximum boost of a character. 
+##This will also fill their boost gauge
 func setMaxBoost(id:RID, maxboost:float) -> void:
 	if last_char.character_id != id:
 		last_char = find_char(id)
 	last_char.maxBoost = maxboost
+	last_char.boostAmount = maxboost
 	emit_signal("boost_updated", id)
+
+
 
 ##Get the ring count of a player
 func getRingCount(id:RID) -> int:

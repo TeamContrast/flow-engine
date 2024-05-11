@@ -306,6 +306,8 @@ func _ready():
 	
 	FlowStatSingleton.add_player(self.get_rid())
 	
+	FlowStatSingleton.setMaxBoost(self.get_rid(), 20.0)
+	
 	# put all child particle systems in parts except for the grind particles
 	for i in get_children():
 		if i is GPUParticles2D and not i == grindParticles:
