@@ -6,7 +6,6 @@ var cVel:Vector2 = initialVel
 @export var boostValue:float = 2.0
 
 var player
-var boostBar
 
 @onready var line:Line2D = $"Line2D"
 var lineLength = 30
@@ -24,7 +23,6 @@ func _ready():
 	initialVel = initialVel.normalized() * speed
 	
 	player = get_node("/root/Node2D/Player")
-	boostBar = get_node("/root/Node2D/CanvasLayer/boostBar")
 	
 	oPos = position
 	lPos = oPos
