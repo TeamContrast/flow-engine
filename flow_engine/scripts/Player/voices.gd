@@ -10,9 +10,9 @@ func _ready():
 	randomize()
 
 func play_hurt():
-	stream = hurt[floor(hurt.size() * randf())]
+	stream = hurt[floori(hurt.size() * randf())]
 	play(0)
 
 func play_effort():
-	stream = effort[floor(effort.size() * randf())]
+	stream = effort[floori(effort.size() * randf())]
 	play(0)

@@ -4,6 +4,8 @@ extends Node
 ##the possibility of multiple players in mind, as to not hamper the possibility of 
 ##multiplayer support
 
+##This is a singleton specifically so that anything in the scene can easily query the stats
+##of the player by their RID, so that specific situational handling can be implemented
 
 ##A struct of sorts to keep track of player stats
 class FlowCharacterSheet:
@@ -14,6 +16,8 @@ class FlowCharacterSheet:
 	var rings:int = 0
 	##The player's boost bar
 	var boostAmount:float
+	##The max amount of boost the player can have
+	var maxBoost:float
 
 ##A signal emitted when rings are updated. Binds the Area2D of the player for checks.
 signal rings_updated
@@ -50,6 +54,13 @@ func boostChangeBy(id:RID, amount:float) -> void:
 	if last_char.character_id != id:
 		last_char = find_char(id)
 	last_char.boostAmount += amount
+	emit_signal("boost_updated", id)
+
+##Set the maximum boost of a character
+func setMaxBoost(id:RID, maxboost:float) -> void:
+	if last_char.character_id != id:
+		last_char = find_char(id)
+	last_char.maxBoost = maxboost
 	emit_signal("boost_updated", id)
 
 ##Get the ring count of a player

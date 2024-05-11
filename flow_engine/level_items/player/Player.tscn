@@ -558,7 +558,6 @@ down_button = &"ui_down"
 left_button = &"move left"
 right_button = &"move right"
 jump_button = &"jump"
-stomp_button = &"stomp"
 boost_button = &"boost"
 trick_button = &"trick"
 bounceRing = ExtResource("55")
@@ -568,6 +567,7 @@ MAX_SPEED = 8.0
 SPEED_DECAY = 0.4
 SPINDASH_ACCUMULATE = 2.0
 SPINDASH_CHARGE_CAP = 16.0
+boost_sfx = ExtResource("17")
 BOOST_SPEED = 14.0
 BOOST_COOLDOWN = 0.5
 GRAVITY = 0.2
@@ -577,7 +577,6 @@ JUMP_SHORT_LIMIT = 0.25
 HURT_VEL_ADD = false
 stomp_sfx = ExtResource("16")
 stomp_land_sfx = ExtResource("18")
-boost_sfx = ExtResource("17")
 STOMP_SPEED = 15.0
 MAX_STOMP_XVEL = 0.0
 
@@ -587,6 +586,7 @@ shape = SubResource("1")
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, -1.05945)
 zoom = Vector2(2, 2)
+process_callback = 0
 position_smoothing_enabled = true
 position_smoothing_speed = 20.0
 drag_horizontal_enabled = true
@@ -606,9 +606,8 @@ scroll_active = false
 
 [node name="PlayerSprites" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("27")
-animation = &"railTrick"
+animation = &"Free_falling"
 autoplay = "idle"
-frame_progress = 0.212736
 flip_h = true
 
 [node name="BoostTimer" type="Timer" parent="."]
@@ -638,7 +637,6 @@ position = Vector2(-6, 0)
 target_position = Vector2(50, 0)
 
 [node name="BoostLine" type="Line2D" parent="."]
-visible = false
 light_mask = 0
 z_index = -2
 points = PackedVector2Array(0, 0, -200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -671,6 +669,7 @@ process_material = SubResource("34")
 randomness = 1.0
 
 [node name="Voice" type="AudioStreamPlayer2D" parent="."]
+area_mask = 7
 script = ExtResource("58")
 hurt = Array[AudioStream]([ExtResource("61"), ExtResource("59"), ExtResource("67"), ExtResource("66"), ExtResource("63")])
 effort = Array[AudioStream]([ExtResource("65"), ExtResource("64"), ExtResource("60"), ExtResource("62")])

@@ -3,7 +3,7 @@ extends Area2D
 ##The ABSOLUTELY MASSIVE player controller script for the Flow Engine.
 ##most of the game's physics and logic is within this one 
 ##script.
-
+##
 ##I'm still working through commenting and refactoring most of this code. 
 ##Please be patient. :D
 class_name RushPlayer2D
@@ -27,7 +27,7 @@ class_name RushPlayer2D
 @export var jump_button:StringName
 ##The boost button
 @export var boost_button:StringName
-##The tricking button
+##The tricking button. This will also act as the stomp button under specific situations.
 @export var trick_button:StringName
 
 @export_group("Effects & Sounds")
@@ -41,7 +41,17 @@ class_name RushPlayer2D
 ##The floaty wisp things that give Sonic boost
 @export var boostParticle: PackedScene
 
+@export_group("Animations")
+##Sonic's idle animation
+@export var idle_anim:StringName
+##Sonic's crouching animation
+@export var crouch_anim:StringName
+
 @export_group("Running")
+@export_subgroup("Animations")
+##Sonic's walking animation
+@export var walking_anim:StringName
+@export_subgroup("")
 ## sonic's acceleration on his own
 @export var ACCELERATION:float = 0.15 / 4
 ## how much sonic decelerates when skidding.
@@ -52,6 +62,18 @@ class_name RushPlayer2D
 @export var SPEED_DECAY:float = 0.2 / 2.0
 
 @export_group("Rolling and Spindashing")
+@export_subgroup("Animations and SFX")
+##The animation that plays when Sonic curls into a ball
+@export var ball_curl_anim:StringName
+##The sound that plays when Sonic curls into a ball
+@export var ball_curl_sfx:AudioStream
+##The animation when Sonic is in the spindash charge state
+@export var spindash_anim:StringName
+##The animation when Sonic actively charges the spindash
+@export var spindash_charge_anim:StringName
+##The sound that plays when Sonic charges a spindash
+@export var spindash_sfx:AudioStream
+@export_subgroup("")
 ##The amount of velocity added from a single spindash charge (jump + down)
 @export var SPINDASH_ACCUMULATE:float = 15.0
 ##The maximum velocity Sonic can build up from charging a Spindash.
@@ -65,15 +87,32 @@ class_name RushPlayer2D
 ##If true, Sonic can unroll and go back to running while moving
 @export var moving_unroll:bool = false
 
-@export_group("Boost")
+@export_group("Boosting")
+## audio stream for Sonic's boost sound
+@export var boost_sfx: AudioStream
 ## the speed of sonic's boost. Generally just a tad higher than MAX_SPEED
 @export var BOOST_SPEED:float = 25.0 / 2.0
-## The cooldown on activating the boost ,in seconds. Smaller values make it more spammable.
+## The cooldown on activating the boost between activations, in seconds. 
+##Smaller values make it more spammable.
 @export var BOOST_COOLDOWN:float = 0.0
-##The amount of boost that boosting will cost per physics frame
+##The amount of boost that boosting will cost per physics frame.
 @export var BOOST_COST:float = 0.06
+##The length of Sonic's boost (or stomp) trail
+@export var TRAIL_LENGTH:int = 40
 
 @export_group("Air")
+@export_subgroup("Animations and SFX")
+##Sonic's jumping animation
+@export var jump_anim:StringName
+##Sonic's jump sound effect
+@export var jump_sfx:AudioStream
+##Sonic's free falling animation (he is in the air but not jumping)
+@export var freefall_anim:StringName
+##Sonic's hurt animation
+@export var hurt_anim:StringName
+##Sonic's hurt sound effect
+@export var hurt_sfx:AudioStream
+@export_subgroup("")
 ## sonic's gravity
 @export var GRAVITY:float = 0.3 / 4
 ## sonic's acceleration in the air.
@@ -91,21 +130,42 @@ class_name RushPlayer2D
 @export var STATIC_HURT_VEL:Vector2 = Vector2.ONE
 
 @export_group("Tricking")
+@export_subgroup("Animations and SFX")
+##The animation that plays when Sonic tricks on a rail
+@export var rail_trick_anim:StringName
+##The sound that plays when Sonic tricks on a rail
+@export var rail_trick_sfx:AudioStream
+##The animation that plays when Sonic tricks in midair
+@export var air_trick_anim:StringName
+##The sound that plays when Sonic tricks in midair
+@export var air_trick_sfx:AudioStream
+@export_subgroup("")
 ##If enabled, Sonic can trick in midair, like in the Rush series
-@export var air_tricking:bool = true
+@export var air_tricking_enabled:bool = true
 ##If enabled, Sonic can trick on rails, like in the Rush series
-@export var rail_tricking:bool = true
+@export var rail_tricking_enabled:bool = true
+##The velocity that Sonic will be sent from a side trick.
+##The x value will automatically be flipped positive or negative to match 
+##the input direction.
+@export var side_trick_vel:Vector2
+##The velocity that Sonic will be sent up from an up trick
+@export var up_trick_vel:float
 
 @export_group("Stomp")
-##If enabled, Sonic can stomp by pressing trick when not able to air trick, or
-##by pressing trick+down while air tricking
-@export var stomp_enabled:bool = true
+@export_subgroup("Animations and SFX")
+##Sonic's stomping animation
+@export var stomp_anim:StringName
 ## audio streams for Sonic's stomp sound
 @export var stomp_sfx: AudioStream
+##Sonic's stomp [i]landing[/i] animation
+@export var stomp_land_anim:StringName
 ## audio streams for Sonic's stomp landing sound
 @export var stomp_land_sfx: AudioStream
-## audio streams for Sonic's boost sound
-@export var boost_sfx: AudioStream
+@export_subgroup("")
+##If enabled, Sonic can stomp by pressing trick when not able to air trick, or
+##by pressing trick+down while he can air trick
+@export var stomp_enabled:bool = true
+
 ## how fast (in pixels per 1/120th of a second) should sonic stomp
 @export var STOMP_SPEED:float = 20.0 / 2.0
 ## what is the limit to Sonic's horizontal movement when stomping?
@@ -133,10 +193,8 @@ class_name RushPlayer2D
 ## a reference to Sonic's physics collider
 @onready var collider:CollisionShape2D = $"playerCollider"
 
-
 ##The cooldown timer on Sonic's boost
 @onready var boost_cooldown_timer:Timer = $"BoostTimer"
-
 
 # sonic's sprites/renderers
 ### sonic's sprite
@@ -160,9 +218,6 @@ class_name RushPlayer2D
 @onready var cam:Camera2D = $"Camera2D"
 ## a reference to the particle node for grinding
 @onready var grindParticles:GPUParticles2D = $"GrindParticles"
-
-## how long is Sonic's boost/stomp trail?
-var TRAIL_LENGTH:int = 40
 
 ## a list of particle systems for Sonic to control with his speed 
 ## used for the confetti in the carnival level, or the falling leaves in leaf storm
@@ -193,8 +248,6 @@ var can_boost:bool = true
 var tricking:bool = false
 
 var trickingCanStop:bool = false
-
-
 
 # flags and values for getting hurt
 var hurt:bool = false
@@ -245,16 +298,11 @@ var pgVel:float = 0
 ## whether or not sonic is currently on the "back" layer
 var backLayer:bool = false
 
-
-
 func _ready():
 	# get the UI elements
 	#Register Sonic to the singleton stat manager
-	#get_node("/root/Node2D/CanvasLayer/boostBar").linked_player_id = self.get_rid()
 	get_node(boostbar_hud).linked_player_id = self.get_rid()
-	#get_node("/root/Node2D/CanvasLayer/RingCounter").linked_player_id = self.get_rid()
 	get_node(ring_counter_hud).linked_player_id = self.get_rid()
-	
 	
 	FlowStatSingleton.add_player(self.get_rid())
 	
@@ -434,15 +482,10 @@ func airProcess() -> void:
 	# calculate the average ceiling height based on the collision raycasts
 	# (again, elifs are for cases where only one raycast is successful)
 	if (LeftCastTop.is_colliding() and RightCastTop.is_colliding()):
-		#avgTPoint = Vector2(
-		#	(LeftCastTop.get_collision_point().x + RightCastTop.get_collision_point().x) / 2,
-		#	(LeftCastTop.get_collision_point().y + RightCastTop.get_collision_point().y) / 2)
 		avgTPoint = (LeftCastTop.get_collision_point() + RightCastTop.get_collision_point()) / 2
 	elif LeftCastTop.is_colliding():
-		#avgTPoint = Vector2(LeftCastTop.get_collision_point().x+cos(rotation)*8,LeftCastTop.get_collision_point().y+sin(rotation)*8)
 		avgTPoint = LeftCastTop.get_collision_point() + rot_ang * 8
 	elif RightCastTop.is_colliding():
-		#avgTPoint = Vector2(RightCastTop.get_collision_point().x-cos(rotation)*8,RightCastTop.get_collision_point().y-sin(rotation)*8)
 		avgTPoint = RightCastTop.get_collision_point() - rot_ang * 8
 	
 	# handle collision with the ground
@@ -480,7 +523,9 @@ func airProcess() -> void:
 	var stomp_pressed:bool = false
 	#Sonic has to be in the air to stomp, obviously
 	if state == CharStates.STATE_AIR:
-		if not canShort:
+		#Check if air_tricking is enabled, because that way, if it's not,
+		#trick_button will basically just be stomp always (else statement)
+		if (not canShort) and air_tricking_enabled:
 			#Sonic *could* be tricking, so only stomp if the player *also* presses down
 			stomp_pressed = Input.is_action_pressed(trick_button) and Input.is_action_pressed(down_button) 
 		else:
@@ -488,7 +533,7 @@ func airProcess() -> void:
 			stomp_pressed = Input.is_action_pressed(trick_button)
 	
 	# initiating a stomp
-	if stomp_enabled and stomp_pressed and not stomping:
+	if stomp_enabled and stomp_pressed and (not stomping):
 		# set the stomping state, and animation state 
 		stomping = true
 		sprite1.play("Roll")
@@ -860,7 +905,7 @@ func _physics_process(_delta:float) -> void:
 	
 	if parts:
 		for i:GPUParticles2D in parts:
-			i.process_material.direction = Vector3(velocity1.x,velocity1.y,0)
+			i.process_material.direction = Vector3(velocity1.x, velocity1.y, 0)
 			
 			#i.process_material.initial_velocity = velocity1.length() * 20
 			

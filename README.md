@@ -27,7 +27,7 @@ Keyboard:
 
 * X - Boost 
 
-* S - Trick
+* D - Trick
 
 * R - Reset position
 

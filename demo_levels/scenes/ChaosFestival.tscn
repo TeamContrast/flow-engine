@@ -136,7 +136,6 @@ adjustment_contrast = 1.2
 
 [node name="Player" parent="." instance=ExtResource("1_v6b6h")]
 position = Vector2(-2289.76, -76.452)
-collision_mask = 5
 boostbar_hud = NodePath("../CanvasLayer/boostBar")
 ring_counter_hud = NodePath("../CanvasLayer/RingCounter")
 
@@ -710,12 +709,4 @@ text = "FLOW ENGINE DEMO"
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("19")
 
-[connection signal="area_entered" from="NewTileMap/AirRing" to="NewTileMap/AirRing" method="_on_Area2D_area_entered"]
-[connection signal="area_entered" from="NewTileMap/@Area2D@29459" to="NewTileMap/@Area2D@29459" method="_on_Area2D_area_entered"]
-[connection signal="area_entered" from="NewTileMap/@Area2D@29460" to="NewTileMap/@Area2D@29460" method="_on_Area2D_area_entered"]
-[connection signal="area_entered" from="NewTileMap/EggPawn" to="NewTileMap/EggPawn" method="_on_EggPawn_area_entered"]
-[connection signal="area_entered" from="NewTileMap/@Area2D@29461" to="NewTileMap/@Area2D@29461" method="_on_EggPawn_area_entered"]
-[connection signal="area_entered" from="NewTileMap/@Area2D@29462" to="NewTileMap/@Area2D@29462" method="_on_Area2D_area_entered"]
-[connection signal="area_entered" from="NewTileMap/@Area2D@29463" to="NewTileMap/@Area2D@29463" method="_on_Area2D_area_entered"]
-[connection signal="area_entered" from="NewTileMap/@Area2D@29464" to="NewTileMap/@Area2D@29464" method="_on_Area2D_area_entered"]
 [connection signal="area_entered" from="DeathPlane" to="Player" method="_on_DeathPlane_area_entered"]
