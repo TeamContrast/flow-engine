@@ -213,12 +213,10 @@ OVERRIDE_MOMENTUM = false
 [node name="Spring3" parent="StageItems" instance=ExtResource("56")]
 position = Vector2(4328.07, 1247.02)
 STRENGTH = 15.0
-DIRECTED = true
 
 [node name="Spring4" parent="StageItems" instance=ExtResource("56")]
 position = Vector2(10507, 609)
 STRENGTH = 15.0
-DIRECTED = true
 
 [node name="Rail" parent="." instance=ExtResource("6")]
 position = Vector2(3008.69, 286.934)

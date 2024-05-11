@@ -17,7 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://cf6bcc7vtumen" path="res://flow_engine/level_items/collectibles/Ring.tscn" id="15_8pwn4"]
 [ext_resource type="Texture2D" uid="uid://buux3hk4t7qjx" path="res://flow_engine/sprites/UI/RingCount.png" id="16_3psnb"]
 [ext_resource type="Script" path="res://flow_engine/scripts/UI/RingCountDisplay.gd" id="17_3rhtn"]
-[ext_resource type="Texture2D" uid="uid://bbtvesqtpdyda" path="res://flow_engine/sprites/UI/numbers.png" id="18_d0uxg"]
+[ext_resource type="Texture2D" uid="uid://3xofpl2h0ntj" path="res://flow_engine/sprites/UI/numbers.png" id="18_d0uxg"]
 [ext_resource type="PackedScene" uid="uid://cl76bbyvrtwsf" path="res://flow_engine/UI/new_boost_bar.tscn" id="19_1cshd"]
 
 [sub_resource type="Curve" id="1"]
@@ -727,12 +727,4 @@ text = "FLOW ENGINE DEMO"
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("19")
 
-[connection signal="body_entered" from="NewTileMap/AirRing" to="NewTileMap/AirRing" method="_on_body_entered"]
-[connection signal="body_entered" from="NewTileMap/@Area2D@19332" to="NewTileMap/@Area2D@19332" method="_on_body_entered"]
-[connection signal="body_entered" from="NewTileMap/@Area2D@19333" to="NewTileMap/@Area2D@19333" method="_on_body_entered"]
-[connection signal="body_entered" from="NewTileMap/EggPawn" to="NewTileMap/EggPawn" method="_on_body_entered"]
-[connection signal="body_entered" from="NewTileMap/@Area2D@19334" to="NewTileMap/@Area2D@19334" method="_on_body_entered"]
-[connection signal="body_entered" from="NewTileMap/@Area2D@19335" to="NewTileMap/@Area2D@19335" method="_on_body_entered"]
-[connection signal="body_entered" from="NewTileMap/@Area2D@19336" to="NewTileMap/@Area2D@19336" method="_on_body_entered"]
-[connection signal="body_entered" from="NewTileMap/@Area2D@19337" to="NewTileMap/@Area2D@19337" method="_on_body_entered"]
 [connection signal="area_entered" from="DeathPlane" to="Player" method="_on_DeathPlane_area_entered"]
