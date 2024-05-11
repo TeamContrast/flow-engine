@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://bjrx5iv7xjob"]
 
-[ext_resource type="Texture2D" uid="uid://c4hojltnn88p" path="res://flow_engine/sprites/UI/RingCount.png" id="1_qr8yw"]
+[ext_resource type="Texture2D" uid="uid://buux3hk4t7qjx" path="res://flow_engine/sprites/UI/RingCount.png" id="1_qr8yw"]
 [ext_resource type="Script" path="res://flow_engine/scripts/UI/RingCountDisplay.gd" id="2_p3vmr"]
 [ext_resource type="Script" path="res://flow_engine/scripts/UI/BoostBar.gd" id="2_pvpys"]
-[ext_resource type="Texture2D" uid="uid://bbtvesqtpdyda" path="res://flow_engine/sprites/UI/numbers.png" id="3_mt4g3"]
+[ext_resource type="Texture2D" uid="uid://3xofpl2h0ntj" path="res://flow_engine/sprites/UI/numbers.png" id="3_mt4g3"]
 
 [node name="CanvasLayer" type="CanvasLayer"]
 
@@ -81,7 +81,7 @@ stretch_mode = 2
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -40.0
+offset_top = -587.0
 offset_right = 40.0
 grow_vertical = 0
 script = ExtResource("2_pvpys")

@@ -1,10 +1,10 @@
 [gd_scene load_steps=21 format=3 uid="uid://b61cjen7h1as6"]
 
 [ext_resource type="PackedScene" uid="uid://b1g7if77ai0ej" path="res://flow_engine/level_items/player/Player.tscn" id="1"]
-[ext_resource type="AudioStream" uid="uid://ca43c8fovedtl" path="res://demo_levels/audio/GardianPalace3.ogg" id="3"]
+[ext_resource type="AudioStream" uid="uid://cel0ct1k0gpt4" path="res://demo_levels/audio/GardianPalace3.ogg" id="3"]
 [ext_resource type="TileSet" uid="uid://eyk0i4txa7cv" path="res://demo_levels/level_tiles/flow_engine_demo_tileset.tres" id="3_jv5i8"]
-[ext_resource type="Texture2D" uid="uid://ddli4q1qm0h7g" path="res://demo_levels/sprites/backgrounds/Festival/Castle.png" id="4"]
-[ext_resource type="Texture2D" uid="uid://tfvy5cbxdptw" path="res://demo_levels/sprites/backgrounds/Festival/Villa.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://dsigcv2todbw1" path="res://demo_levels/sprites/backgrounds/Festival/Castle.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://do7x0buwd8f1g" path="res://demo_levels/sprites/backgrounds/Festival/Villa.png" id="5"]
 [ext_resource type="PackedScene" path="res://demo_levels/level_items/decorations/FallingParticles.tscn" id="6"]
 [ext_resource type="Script" path="res://flow_engine/scripts/AudioPlayer.gd" id="9"]
 [ext_resource type="PackedScene" uid="uid://bjrx5iv7xjob" path="res://flow_engine/UI/HUD.tscn" id="15"]
@@ -84,6 +84,8 @@ size = Vector2(18000, 200)
 
 [node name="Player" parent="." instance=ExtResource("1")]
 position = Vector2(-2289.76, -76.452)
+boostbar_hud = NodePath("../CanvasLayer/boostBar")
+ring_counter_hud = NodePath("../CanvasLayer/RingCounter")
 
 [node name="GPUParticles2D" parent="Player" instance=ExtResource("6")]
 visible = false
@@ -121,6 +123,7 @@ layer_0/tile_data = PackedInt32Array(65489, 0, 0, 65490, 0, 0, 65491, 0, 0, 6549
 
 [node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3")
+autoplay = true
 script = ExtResource("9")
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
@@ -193,3 +196,5 @@ shape = SubResource("12")
 [node name="CanvasLayer" parent="." instance=ExtResource("15")]
 
 [connection signal="area_entered" from="DeathPlane" to="Player" method="_on_DeathPlane_area_entered"]
+
+[editable path="CanvasLayer"]

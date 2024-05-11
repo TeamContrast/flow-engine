@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://3mb1clgjh6s7"]
 
-[ext_resource type="Texture2D" uid="uid://b6o01namct3ea" path="res://flow_engine/sprites/StageElements/BoostRing.png" id="1"]
-[ext_resource type="AudioStream" uid="uid://b1kckpfviktj1" path="res://flow_engine/audio/SFX/airBoostRing.wav" id="2"]
+[ext_resource type="Texture2D" uid="uid://brqywvi0ge1d5" path="res://flow_engine/sprites/StageElements/BoostRing.png" id="1"]
+[ext_resource type="AudioStream" uid="uid://dbbemwmnsrg0s" path="res://flow_engine/audio/SFX/airBoostRing.wav" id="2"]
 [ext_resource type="Script" path="res://flow_engine/scripts/Spring.gd" id="3"]
 
 [sub_resource type="SpriteFrames" id="1"]

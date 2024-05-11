@@ -1,9 +1,9 @@
 [gd_resource type="TileSet" load_steps=20 format=3 uid="uid://eyk0i4txa7cv"]
 
-[ext_resource type="Texture2D" uid="uid://bxkfjbj2bgvog" path="res://demo_levels/level_tiles/leaf_storm_atlas.png" id="1_hxyqd"]
-[ext_resource type="Texture2D" uid="uid://dsis8fkmwxmox" path="res://demo_levels/level_tiles/sky_terrace_atlas.png" id="2_qakt4"]
+[ext_resource type="Texture2D" uid="uid://dq7d2wkei2csy" path="res://demo_levels/level_tiles/leaf_storm_atlas.png" id="1_hxyqd"]
+[ext_resource type="Texture2D" uid="uid://c8y8c2a3ljsrj" path="res://demo_levels/level_tiles/sky_terrace_atlas.png" id="2_qakt4"]
 [ext_resource type="PackedScene" uid="uid://3mb1clgjh6s7" path="res://flow_engine/level_items/interactables/AirRing.tscn" id="3_6kxlc"]
-[ext_resource type="Texture2D" uid="uid://bs5m56qbjk3ku" path="res://demo_levels/level_tiles/wall_atlas.png" id="3_tbvsh"]
+[ext_resource type="Texture2D" uid="uid://dircf8ar2jnd6" path="res://demo_levels/level_tiles/wall_atlas.png" id="3_tbvsh"]
 [ext_resource type="PackedScene" uid="uid://btp3o5f52try8" path="res://flow_engine/level_items/interactables/LayerSwitch.tscn" id="5_5o0ck"]
 [ext_resource type="PackedScene" uid="uid://c4jj7csmiaevf" path="res://flow_engine/level_items/interactables/Spring.tscn" id="5_yomn6"]
 [ext_resource type="PackedScene" uid="uid://bu5ubp8reooki" path="res://flow_engine/level_items/enemies/EggPawn.tscn" id="7_8h3p8"]

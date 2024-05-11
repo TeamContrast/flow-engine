@@ -1,8 +1,8 @@
 [gd_scene load_steps=13 format=3 uid="uid://bu5ubp8reooki"]
 
-[ext_resource type="Texture2D" uid="uid://w3iyiq5hkh6d" path="res://flow_engine/sprites/enemies/pawnWalk.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://dkm2svcfr1agh" path="res://flow_engine/sprites/enemies/pawnWalk.png" id="1"]
 [ext_resource type="Script" path="res://flow_engine/scripts/enemies/EggPawn.gd" id="2"]
-[ext_resource type="AudioStream" uid="uid://d2mnakmd8hdue" path="res://flow_engine/audio/SFX/boom.wav" id="3"]
+[ext_resource type="AudioStream" uid="uid://bohj0v4c6jb3x" path="res://flow_engine/audio/SFX/boom.wav" id="3"]
 [ext_resource type="PackedScene" uid="uid://ds1qcyx60i86b" path="res://flow_engine/level_items/collectibles/BoostParticle.tscn" id="4"]
 
 [sub_resource type="AtlasTexture" id="1"]
@@ -76,5 +76,6 @@ shape = SubResource("8")
 
 [node name="BoomSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("3")
+max_distance = 20000.0
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

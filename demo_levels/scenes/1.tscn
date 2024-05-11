@@ -6,8 +6,8 @@
 [ext_resource type="TileSet" uid="uid://eyk0i4txa7cv" path="res://demo_levels/level_tiles/flow_engine_demo_tileset.tres" id="4_gr02y"]
 [ext_resource type="PackedScene" uid="uid://cgvkxjgy6c1pc" path="res://flow_engine/level_items/interactables/Rail.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://bjrx5iv7xjob" path="res://flow_engine/UI/HUD.tscn" id="9_r8j3i"]
-[ext_resource type="AudioStream" uid="uid://dtkg5wpds5xo1" path="res://demo_levels/audio/JehJehRocket.ogg" id="51"]
-[ext_resource type="Texture2D" uid="uid://drjpvy2o8ya80" path="res://demo_levels/sprites/backgrounds/back.png" id="52"]
+[ext_resource type="AudioStream" uid="uid://cdk04ggo5n0d1" path="res://demo_levels/audio/JehJehRocket.ogg" id="51"]
+[ext_resource type="Texture2D" uid="uid://bpui336p4q8qr" path="res://demo_levels/sprites/backgrounds/back.png" id="52"]
 [ext_resource type="PackedScene" uid="uid://c4jj7csmiaevf" path="res://flow_engine/level_items/interactables/Spring.tscn" id="56"]
 
 [sub_resource type="Curve" id="1"]
