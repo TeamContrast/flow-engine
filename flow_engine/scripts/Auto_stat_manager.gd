@@ -8,8 +8,8 @@ extends Node
 ##A struct of sorts to keep track of player stats
 class FlowCharacterSheet:
 	extends Resource
-	##A reference to the player themselves, used for checks
-	var area:Area2D = null
+	##The player's RID, used for checks
+	var character_id:RID
 	##The player's ring count
 	var rings:int = 0
 	##The player's boost bar
@@ -25,42 +25,42 @@ var last_char:FlowCharacterSheet
 ##An array of all players
 var all_chars:Array[FlowCharacterSheet]
 
-func add_player(area:Area2D) -> void:
-	var new_char:FlowCharacterSheet = find_char(area)
-	if new_char.area == null:
-		new_char.area = area
+func add_player(id:RID) -> void:
+	var new_char:FlowCharacterSheet = find_char(id)
+	if not new_char.character_id.is_valid():
+		new_char.character_id = id
 		all_chars.append(new_char)
 		last_char = new_char
 		print("Character added!")
 
-func find_char(area:Area2D) -> FlowCharacterSheet:
+func find_char(id:RID) -> FlowCharacterSheet:
 	for players in all_chars:
-		if players.area == area:
+		if players.character_id == id:
 			return players
 	return FlowCharacterSheet.new()
 
 ##Get the boost amount of a player
-func getBoostAmount(area:Area2D) -> float:
-	if last_char.area != area:
-		last_char = find_char(area)
+func getBoostAmount(id:RID) -> float:
+	if last_char.character_id != id:
+		last_char = find_char(id)
 	return last_char.boostAmount
 
 ##This adds amount of boost to area player
-func boostChangeBy(area:Area2D, amount:float) -> void:
-	if last_char.area != area:
-		last_char = find_char(area)
+func boostChangeBy(id:RID, amount:float) -> void:
+	if last_char.character_id != id:
+		last_char = find_char(id)
 	last_char.boostAmount += amount
-	emit_signal("boost_updated", area)
+	emit_signal("boost_updated", id)
 
-##Get the ring count ofa player
-func getRingCount(area:Area2D) -> int:
-	if last_char.area != area:
-		last_char = find_char(area)
+##Get the ring count of a player
+func getRingCount(id:RID) -> int:
+	if last_char.character_id != id:
+		last_char = find_char(id)
 	return last_char.rings
 
 ##This adds amount rings to area player
-func addRing(area:Area2D, amount:int) -> void:
-	if last_char.area != area:
-		last_char = find_char(area)
+func addRing(id:RID, amount:int) -> void:
+	if last_char.character_id != id:
+		last_char = find_char(id)
 	last_char.rings += amount
-	emit_signal("rings_updated", area)
+	emit_signal("rings_updated", id)

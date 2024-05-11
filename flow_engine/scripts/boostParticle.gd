@@ -39,7 +39,7 @@ func _physics_process(delta: float) -> void:
 		timer = 1
 		speed += delta * 10
 
-	cVel = initialVel.lerp((player.position-position).normalized() * speed, timer)
+	cVel = initialVel.lerp((player.position - position).normalized() * speed, timer)
 	
 	position = oPos.lerp(player.position, timer)
 	
@@ -51,7 +51,8 @@ func _physics_process(delta: float) -> void:
 	line.points[0] = Vector2.ZERO
 	
 	if timer >= 1 and position.distance_to(player.position) <= speed:
-		boostBar.changeBy(boostValue)
+		FlowStatSingleton.boostChangeBy(player.get_rid(), boostValue)
+		#boostBar.changeBy(boostValue)
 		queue_free()
 	
 	lPos = position

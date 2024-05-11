@@ -86,9 +86,9 @@ func _on_Ring_area_entered(area:Area2D) -> void:
 		# play the ring sfx
 		audio.play()
 		# add a ring to the total
-		FlowStatSingleton.addRing(area, 1)
+		FlowStatSingleton.addRing(area.get_rid(), 1)
 		#get_node("/root/Node2D/CanvasLayer/RingCounter").addRing()
 		#give a reward for collecting it if it's not a dropped ring
 		if not dropped:
 			#get_node("/root/Node2D/CanvasLayer/boostBar").changeBy(boost_reward)
-			FlowStatSingleton.boostChangeBy(area, boost_reward)
+			FlowStatSingleton.boostChangeBy(area.get_rid(), boost_reward)

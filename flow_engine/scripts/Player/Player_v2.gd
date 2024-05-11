@@ -8,6 +8,12 @@ extends Area2D
 ##Please be patient. :D
 class_name RushPlayer2D
 
+@export_group("Linked HUD")
+##The boost bar for Sonic
+@export var boostbar_hud:NodePath
+##The ring counter for Sonic
+@export var ring_counter_hud:NodePath
+
 @export_group("Input Mappings")
 ##Up on d-pad
 @export var up_button:StringName
@@ -19,21 +25,16 @@ class_name RushPlayer2D
 @export var right_button:StringName
 ##The jump button
 @export var jump_button:StringName
-##The stomp button
-@export var stomp_button:StringName
 ##The boost button
 @export var boost_button:StringName
 ##The tricking button
 @export var trick_button:StringName
 
-
 @export_group("Effects & Sounds")
-## audio streams for Sonic's boost sound
-@export var boost_sfx: AudioStream
-## audio streams for Sonic's stomp sound
-@export var stomp_sfx: AudioStream
-## audio streams for Sonic's stomp landing sound
-@export var stomp_land_sfx: AudioStream
+## the minimum speed/pitch changes on the grinding sound
+@export var RAILSOUND_MINPITCH:float = 0.5
+## the maximum speed/pitch changes on the grinding sound
+@export var RAILSOUND_MAXPITCH:float = 2.0
 ## a reference to a bouncing ring prefab, so we can spawn a bunch of them when
 ## sonic is hurt 
 @export var bounceRing: PackedScene
@@ -49,11 +50,11 @@ class_name RushPlayer2D
 @export var MAX_SPEED:float = 20.0 / 2.0
 ## used to dampen Sonic's movement a little bit. Basically poor man's friction
 @export var SPEED_DECAY:float = 0.2 / 2.0
-##The amount of velocity added from a single spindash charge (jump + down)
 
 @export_group("Rolling and Spindashing")
+##The amount of velocity added from a single spindash charge (jump + down)
 @export var SPINDASH_ACCUMULATE:float = 15.0
-##The maximum velocity Sonic can build up from charging a Spindash
+##The maximum velocity Sonic can build up from charging a Spindash.
 @export var SPINDASH_CHARGE_CAP:float = 0.0
 ##The initial charge of the spindash when initiated.
 @export var INITIAL_SPINDASH_CHARGE:float 
@@ -96,6 +97,15 @@ class_name RushPlayer2D
 @export var rail_tricking:bool = true
 
 @export_group("Stomp")
+##If enabled, Sonic can stomp by pressing trick when not able to air trick, or
+##by pressing trick+down while air tricking
+@export var stomp_enabled:bool = true
+## audio streams for Sonic's stomp sound
+@export var stomp_sfx: AudioStream
+## audio streams for Sonic's stomp landing sound
+@export var stomp_land_sfx: AudioStream
+## audio streams for Sonic's boost sound
+@export var boost_sfx: AudioStream
 ## how fast (in pixels per 1/120th of a second) should sonic stomp
 @export var STOMP_SPEED:float = 20.0 / 2.0
 ## what is the limit to Sonic's horizontal movement when stomping?
@@ -136,12 +146,6 @@ class_name RushPlayer2D
 ## the line renderer for boosting and stomping
 @onready var boostLine:Line2D = $"BoostLine"
 
-
-## holds a reference to the boost UI bar
-@onready var boostBar:Control
-## holds a reference to the ring counter UI item
-@onready var ringCounter:TextureRect
-
 ## the audio stream player with the boost sound
 @onready var boostSound:AudioStreamPlayer = $"BoostSound"
 ## the audio stream player with the rail grinding sound
@@ -154,7 +158,7 @@ class_name RushPlayer2D
 
 ## a reference to the scene's camera
 @onready var cam:Camera2D = $"Camera2D"
-## a reference to the particle node for griding
+## a reference to the particle node for grinding
 @onready var grindParticles:GPUParticles2D = $"GrindParticles"
 
 ## how long is Sonic's boost/stomp trail?
@@ -211,11 +215,6 @@ var grindHeight:float = 16
 ##The amount of velocity built up by the spindash before release
 var spindash_buildup:float = 0
 
-## the minimum speed/pitch changes on the grinding sound
-var RAILSOUND_MINPITCH:float = 0.5
-## the maximum speed/pitch changes on the grinding sound
-var RAILSOUND_MAXPITCH:float = 2.0
-
 ##average Ground position between the two foot raycasts
 var avgGPoint:Vector2 = Vector2.ZERO 
 ##average top position between the two head raycasts
@@ -250,10 +249,14 @@ var backLayer:bool = false
 
 func _ready():
 	# get the UI elements
-	boostBar = get_node("/root/Node2D/CanvasLayer/boostBar")
-	ringCounter = get_node("/root/Node2D/CanvasLayer/RingCounter")
+	#Register Sonic to the singleton stat manager
+	#get_node("/root/Node2D/CanvasLayer/boostBar").linked_player_id = self.get_rid()
+	get_node(boostbar_hud).linked_player_id = self.get_rid()
+	#get_node("/root/Node2D/CanvasLayer/RingCounter").linked_player_id = self.get_rid()
+	get_node(ring_counter_hud).linked_player_id = self.get_rid()
 	
-	FlowStatSingleton.add_player(self)
+	
+	FlowStatSingleton.add_player(self.get_rid())
 	
 	# put all child particle systems in parts except for the grind particles
 	for i in get_children():
@@ -296,7 +299,11 @@ func angleDist(rot1:float, rot2:float) -> float:
 
 ##Handles the boosting controls
 func boostControl():
-	if Input.is_action_just_pressed(boost_button) and boostBar.boostAmount > 0 and can_boost:
+	#fetch this once to prevent recurring fetches (costly)
+	var boostAmount:float =  FlowStatSingleton.getBoostAmount(self.get_rid())
+	
+	#if Input.is_action_just_pressed(boost_button) and boostBar.boostAmount > 0 and can_boost:
+	if Input.is_action_just_pressed(boost_button) and boostAmount > 0 and can_boost:
 		# set boosting to true
 		boosting = true
 		can_boost = false
@@ -333,7 +340,7 @@ func boostControl():
 		
 		voiceSound.play_effort()
 	
-	if Input.is_action_pressed(boost_button) and boosting and boostBar.boostAmount > 0:
+	if Input.is_action_pressed(boost_button) and boosting and boostAmount > 0:
 #		if boostSound.stream != boost_sfx:
 #			boostSound.stream = boost_sfx
 #			boostSound.play()
@@ -370,7 +377,8 @@ func boostControl():
 		boostLine.rotation = -rotation
 		
 		# decrease boost value while boosting
-		boostBar.changeBy(-BOOST_COST)
+		#boostBar.changeBy(-BOOST_COST)
+		FlowStatSingleton.boostChangeBy(self.get_rid(), -BOOST_COST)
 	else:
 		# the camera lag should be normal while not boosting
 		cam.set_position_smoothing_speed(DEFAULT_CAM_LAG)
@@ -469,8 +477,18 @@ func airProcess() -> void:
 	
 	### STOMPING CONTROLS ###
 	
+	var stomp_pressed:bool = false
+	#Sonic has to be in the air to stomp, obviously
+	if state == CharStates.STATE_AIR:
+		if not canShort:
+			#Sonic *could* be tricking, so only stomp if the player *also* presses down
+			stomp_pressed = Input.is_action_pressed(trick_button) and Input.is_action_pressed(down_button) 
+		else:
+			#Sonic can't trick here, so trick may as well instantly initiate stomp
+			stomp_pressed = Input.is_action_pressed(trick_button)
+	
 	# initiating a stomp
-	if Input.is_action_just_pressed(stomp_button) and not stomping:
+	if stomp_enabled and stomp_pressed and not stomping:
 		# set the stomping state, and animation state 
 		stomping = true
 		sprite1.play("Roll")
@@ -942,9 +960,11 @@ func hurt_player() -> void:
 		var angle:float = 101.25
 		var n:bool = false
 		var speed:int = 4
+		var ringCount:int = FlowStatSingleton.getRingCount(self.get_rid())
 		
-		while t < mini(ringCounter.ringCount, 32):
-			var currentRing = bounceRing.instantiate()
+		
+		while t < mini(ringCount, 32):
+			var currentRing:Node2D = bounceRing.instantiate()
 			currentRing.velocity1 = Vector2(-sin(angle) * speed, cos(angle) * speed) / 2
 			currentRing.position = position
 			if n:
@@ -956,4 +976,7 @@ func hurt_player() -> void:
 				speed = 2
 				angle = 101.25
 			get_node("/root/Node2D").call_deferred("add_child", currentRing)
-		ringCounter.ringCount = 0
+		
+		#Remove the rings we had from the ring counter
+		FlowStatSingleton.addRing(self.get_rid(), -ringCount)
+

@@ -12,7 +12,6 @@ const boost_bar_yellow:AtlasTexture = preload("res://flow_engine/sprites/UI/yell
 ##The texture for the boost bar units when they're full
 const boost_bar_red:AtlasTexture = preload("res://flow_engine/sprites/UI/red_progress.tres")
 
-@export var boostAmount:float = 20
 ##The maximum amount of boost for Sonic
 @export var max_boost:float = 60.0
 ##If true, Sonic the boost bar will always be full (infinite boost)
@@ -26,17 +25,37 @@ var initial_unit_scale:Vector2
 
 var texture_cached:TextureRect = TextureRect.new()
 
+var linked_player_id:RID 
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	texture_cached.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	texture_cached.expand_mode = TextureRect.EXPAND_FIT_HEIGHT_PROPORTIONAL
 	texture_cached.texture = boost_bar_red
+	
+	#Connect to the singleton to look for a player to link to
+	FlowStatSingleton.connect("boost_updated", setupBoostBar)
+
+func setupBoostBar(id:RID) -> void:
+	#make sure this is the right player
+	if id != linked_player_id:
+		return
+	#setup the boost bar to reflect the boost amount of the character
+	var boostAmount:float = FlowStatSingleton.getBoostAmount(id)
 	for i in range(boostAmount):
 		add_child(texture_cached.duplicate())
 	initial_unit_scale = get_child(0).scale
-	updateBoostBar()
+	
+	#Detach from setup now that we're set up, and connect to update signals
+	FlowStatSingleton.disconnect("boost_updated", setupBoostBar)
+	FlowStatSingleton.connect("boost_updated", updateBoostBar)
 
-func updateBoostBar() -> void:
+func updateBoostBar(id:RID) -> void:
+	if id != linked_player_id:
+		return
+	
+	var boostAmount:float = FlowStatSingleton.getBoostAmount(id)
+	
 	if visualBar < boostAmount and visualBar <= 60:
 		visualBar += 0.5
 		get_child(floorf(fmod(visualBar - 2, get_child_count()))).scale.x = 4
@@ -71,6 +90,6 @@ func updateBoostBar() -> void:
 		index += 1
 		#i.scale.x = lerpf(i.scale.x, 2.0, 0.2)
 
-func changeBy(x:float) -> void:
-	boostAmount += x
-	updateBoostBar()
+#func changeBy(x:float) -> void:
+#	boostAmount += x
+#	updateBoostBar()

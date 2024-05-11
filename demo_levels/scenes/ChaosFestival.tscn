@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://dmuk31tu4u2c7"]
+[gd_scene load_steps=39 format=3 uid="uid://dmuk31tu4u2c7"]
 
 [ext_resource type="PackedScene" uid="uid://b1g7if77ai0ej" path="res://flow_engine/level_items/player/Player.tscn" id="1_v6b6h"]
 [ext_resource type="PackedScene" path="res://demo_levels/level_items/decorations/FallingParticles.tscn" id="2_rfu28"]
@@ -15,7 +15,10 @@
 [ext_resource type="PackedScene" uid="uid://bu5ubp8reooki" path="res://flow_engine/level_items/enemies/EggPawn.tscn" id="13_gwxjh"]
 [ext_resource type="Script" path="res://flow_engine/scripts/RingArray.gd" id="14_fwiv0"]
 [ext_resource type="PackedScene" uid="uid://cf6bcc7vtumen" path="res://flow_engine/level_items/collectibles/Ring.tscn" id="15_8pwn4"]
-[ext_resource type="PackedScene" uid="uid://bjrx5iv7xjob" path="res://flow_engine/UI/HUD.tscn" id="16_ixeti"]
+[ext_resource type="Texture2D" uid="uid://c4hojltnn88p" path="res://flow_engine/sprites/UI/RingCount.png" id="16_3psnb"]
+[ext_resource type="Script" path="res://flow_engine/scripts/UI/RingCountDisplay.gd" id="17_3rhtn"]
+[ext_resource type="Texture2D" uid="uid://bbtvesqtpdyda" path="res://flow_engine/sprites/UI/numbers.png" id="18_d0uxg"]
+[ext_resource type="Script" path="res://flow_engine/scripts/UI/BoostBar.gd" id="19_sv274"]
 
 [sub_resource type="Curve" id="1"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0790698, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -134,6 +137,8 @@ adjustment_contrast = 1.2
 [node name="Player" parent="." instance=ExtResource("1_v6b6h")]
 position = Vector2(-2289.76, -76.452)
 collision_mask = 5
+boostbar_hud = NodePath("../CanvasLayer/boostBar")
+ring_counter_hud = NodePath("../CanvasLayer/RingCounter")
 
 [node name="GPUParticles2D" parent="Player" instance=ExtResource("2_rfu28")]
 amount = 25
@@ -612,9 +617,105 @@ script = ExtResource("14_fwiv0")
 count = 8
 ringSource = ExtResource("15_8pwn4")
 
-[node name="CanvasLayer" parent="." instance=ExtResource("16_ixeti")]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="RingCounter" type="TextureRect" parent="CanvasLayer"]
+offset_left = 30.0
+offset_top = 22.0
+offset_right = 87.0
+offset_bottom = 43.0
+scale = Vector2(2, 2)
+texture = ExtResource("16_3psnb")
+expand_mode = 1
+stretch_mode = 3
+script = ExtResource("17_3rhtn")
+
+[node name="Numbers" type="Control" parent="CanvasLayer/RingCounter"]
+anchors_preset = 0
+offset_left = 16.5
+offset_top = 2.75
+offset_right = 56.5
+offset_bottom = 42.75
+scale = Vector2(0.5, 0.5)
+
+[node name="Digit 1" type="Control" parent="CanvasLayer/RingCounter/Numbers"]
+clip_contents = true
+anchors_preset = 0
+offset_left = 5.16151
+offset_top = 0.00311279
+offset_right = 29.1615
+offset_bottom = 24.0031
+
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/RingCounter/Numbers/Digit 1"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 0
+offset_right = 132.0
+offset_bottom = 12.0
+scale = Vector2(2, 2)
+texture = ExtResource("18_d0uxg")
+stretch_mode = 2
+
+[node name="Digit 2" type="Control" parent="CanvasLayer/RingCounter/Numbers"]
+clip_contents = true
+anchors_preset = 0
+offset_left = 24.9796
+offset_top = 0.213333
+offset_right = 48.9796
+offset_bottom = 24.2133
+
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/RingCounter/Numbers/Digit 2"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 0
+offset_right = 132.0
+offset_bottom = 12.0
+scale = Vector2(2, 2)
+texture = ExtResource("18_d0uxg")
+stretch_mode = 2
+
+[node name="Digit 3" type="Control" parent="CanvasLayer/RingCounter/Numbers"]
+clip_contents = true
+anchors_preset = 0
+offset_left = 45.0079
+offset_top = -0.207108
+offset_right = 69.0079
+offset_bottom = 23.7929
+
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/RingCounter/Numbers/Digit 3"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 0
+offset_right = 132.0
+offset_bottom = 12.0
+scale = Vector2(2, 2)
+texture = ExtResource("18_d0uxg")
+stretch_mode = 2
+
+[node name="boostBar" type="VBoxContainer" parent="CanvasLayer"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 40.0
+grow_vertical = 0
+script = ExtResource("19_sv274")
+
+[node name="Label2" type="Label" parent="CanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -161.0
+offset_bottom = 23.0
+grow_horizontal = 0
+text = "FLOW ENGINE DEMO"
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("19")
 
+[connection signal="area_entered" from="NewTileMap/AirRing" to="NewTileMap/AirRing" method="_on_Area2D_area_entered"]
+[connection signal="area_entered" from="NewTileMap/@Area2D@29459" to="NewTileMap/@Area2D@29459" method="_on_Area2D_area_entered"]
+[connection signal="area_entered" from="NewTileMap/@Area2D@29460" to="NewTileMap/@Area2D@29460" method="_on_Area2D_area_entered"]
+[connection signal="area_entered" from="NewTileMap/EggPawn" to="NewTileMap/EggPawn" method="_on_EggPawn_area_entered"]
+[connection signal="area_entered" from="NewTileMap/@Area2D@29461" to="NewTileMap/@Area2D@29461" method="_on_EggPawn_area_entered"]
+[connection signal="area_entered" from="NewTileMap/@Area2D@29462" to="NewTileMap/@Area2D@29462" method="_on_Area2D_area_entered"]
+[connection signal="area_entered" from="NewTileMap/@Area2D@29463" to="NewTileMap/@Area2D@29463" method="_on_Area2D_area_entered"]
+[connection signal="area_entered" from="NewTileMap/@Area2D@29464" to="NewTileMap/@Area2D@29464" method="_on_Area2D_area_entered"]
 [connection signal="area_entered" from="DeathPlane" to="Player" method="_on_DeathPlane_area_entered"]
