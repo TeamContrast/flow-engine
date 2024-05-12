@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://1vdciq8nlt3a"]
+
+[ext_resource type="Shader" uid="uid://c4u0grwm21aug" path="res://crop_texture_shader.tres" id="1_q2vu4"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_8cs58"]
+load_path = "res://.godot/imported/boostbar.png-52abab99867e07ad4abaff534a40c85f.ctex"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_25g83"]
+resource_local_to_scene = true
+shader = ExtResource("1_q2vu4")
+shader_parameter/uv_offset = null
+shader_parameter/uv_scale = Vector2(1, 0.25)
+shader_parameter/atlas = SubResource("CompressedTexture2D_8cs58")
+
+[node name="Boost_bar_segment" type="ColorRect"]
+material = SubResource("ShaderMaterial_25g83")
+offset_right = 22.0
+offset_bottom = 16.0

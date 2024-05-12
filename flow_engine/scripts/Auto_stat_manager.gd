@@ -49,6 +49,11 @@ func getBoostAmount(id:RID) -> float:
 		last_char = find_char(id)
 	return last_char.boostAmount
 
+func getBoostMax(id:RID) -> float:
+	if last_char.character_id != id:
+		last_char = find_char(id)
+	return last_char.maxBoost
+
 ##This adds amount of boost to area player
 func boostChangeBy(id:RID, amount:float) -> void:
 	if last_char.character_id != id:
