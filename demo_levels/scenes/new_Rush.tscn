@@ -1,15 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://cyuuigjv7kget"]
+[gd_scene load_steps=3 format=3 uid="uid://cyuuigjv7kget"]
 
 [ext_resource type="PackedScene" uid="uid://bjrx5iv7xjob" path="res://flow_engine/UI/HUD.tscn" id="1_sbguy"]
-[ext_resource type="PackedScene" uid="uid://dxbun362nq7y5" path="res://flow_engine/level_items/player/Player_v3.tscn" id="2_rsbxg"]
 [ext_resource type="TileSet" uid="uid://eyk0i4txa7cv" path="res://demo_levels/level_tiles/flow_engine_demo_tileset.tres" id="3_umwfl"]
 
 [node name="Node2D" type="Node2D"]
 
 [node name="CanvasLayer" parent="." instance=ExtResource("1_sbguy")]
-
-[node name="Player" parent="." instance=ExtResource("2_rsbxg")]
-position = Vector2(362, 47)
 
 [node name="TileMap" type="TileMap" parent="."]
 position = Vector2(-200, 0)

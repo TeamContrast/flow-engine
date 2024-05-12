@@ -299,6 +299,8 @@ var startpos:Vector2 = Vector2.ZERO
 ## the layer on which sonic starts
 var startLayer:int = 0
 
+##Godot's physics ticks per second. Stored for one-time retrieval 
+var physics_tick:int = 60
 ## sonic's current velocity
 var velocity1:Vector2 = Vector2.ZERO
 ##Sonic's last position
@@ -331,6 +333,8 @@ func _ready():
 	startpos = position
 	startLayer = collision_layer
 	setCollisionLayer(false)
+	
+	physics_tick = ProjectSettings.get_setting("physics/common/physics_ticks_per_second")
 	
 	# set the trail length to whatever the boostLine's size is.
 	TRAIL_LENGTH = boostLine.get_point_count()
@@ -445,7 +449,6 @@ func boostControl():
 		boostLine.rotation = -rotation
 		
 		# decrease boost value while boosting
-		#boostBar.changeBy(-BOOST_COST)
 		FlowStatSingleton.boostChangeBy(self.get_rid(), -BOOST_COST)
 	else:
 		# the camera lag should be normal while not boosting
@@ -468,16 +471,17 @@ func airProcess() -> void:
 	velocity1.y += GRAVITY
 	
 	# get the angle of the point for the left and right floor raycasts
-	langle = -atan2(LeftCast.get_collision_normal().x, LeftCast.get_collision_normal().y)-PI
+	langle = -atan2(LeftCast.get_collision_normal().x, LeftCast.get_collision_normal().y) - PI
 	langle = limitAngle(langle)
-	rangle = -atan2(RightCast.get_collision_normal().x,RightCast.get_collision_normal().y)-PI
+	
+	rangle = -atan2(RightCast.get_collision_normal().x,RightCast.get_collision_normal().y) - PI
 	rangle = limitAngle(rangle)
 	
 	# calculate the average ground rotation (averaged between the points)
 	avgGRot = (langle + rangle) / 2
 	
 	# set a default avgGPoint
-	avgGPoint = Vector2(-INF,-INF)
+	avgGPoint = Vector2(-INF, -INF)
 	
 	# calculate the average ground point (the elifs are for cases where one 
 	# raycast cannot find a collider)
@@ -921,7 +925,14 @@ func _physics_process(_delta:float) -> void:
 	# apply the character's velocity, no matter what state the player is in.
 	#position = Vector2(position.x+velocity1.x,position.y+velocity1.y)
 	#position = position + velocity1
-	position += velocity1
+	#position += velocity1
+	
+	#Godot does physics in pixels per second. Because flow engine is pixels per (physics) 
+	#frame, we have to multiply velocity1 by the physics tick per second to get the 
+	#pixels per second velocity desired
+	velocity = velocity1 * physics_tick
+	move_and_slide()
+	
 	lastPos = position
 	
 	if parts:
