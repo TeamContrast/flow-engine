@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://ds1qcyx60i86b"]
 
-[ext_resource type="Script" path="res://flow_engine/scripts/boostParticle.gd" id="1"]
-[ext_resource type="Texture2D" uid="uid://0maion36rdta" path="res://flow_engine/sprites/light.png" id="2"]
+[ext_resource type="Script" path="res://flow_engine/scripts/interactables/boostParticle.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://le1nwb3wm6fe" path="res://flow_engine/sprites/light.png" id="2"]
 
 [sub_resource type="Curve" id="3"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]

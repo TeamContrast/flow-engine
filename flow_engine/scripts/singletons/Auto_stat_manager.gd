@@ -35,13 +35,19 @@ func add_player(id:RID) -> void:
 		new_char.character_id = id
 		all_chars.append(new_char)
 		last_char = new_char
-		print("Character added!")
 
 func find_char(id:RID) -> FlowCharacterSheet:
 	for players in all_chars:
 		if players.character_id == id:
 			return players
 	return FlowCharacterSheet.new()
+
+func player_exists(id:RID) -> bool:
+	var player:FlowCharacterSheet = find_char(id)
+	if player.character_id.is_valid():
+		return true
+	else:
+		return false
 
 ##Get the boost amount of a player
 func getBoostAmount(id:RID) -> float:
@@ -69,8 +75,6 @@ func setMaxBoost(id:RID, maxboost:float) -> void:
 	last_char.maxBoost = maxboost
 	last_char.boostAmount = maxboost
 	emit_signal("boost_updated", id)
-
-
 
 ##Get the ring count of a player
 func getRingCount(id:RID) -> int:

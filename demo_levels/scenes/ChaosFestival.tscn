@@ -13,7 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://c4jj7csmiaevf" path="res://flow_engine/level_items/interactables/Spring.tscn" id="11_t4d0v"]
 [ext_resource type="PackedScene" uid="uid://btp3o5f52try8" path="res://flow_engine/level_items/interactables/LayerSwitch.tscn" id="12_wt6yd"]
 [ext_resource type="PackedScene" uid="uid://bu5ubp8reooki" path="res://flow_engine/level_items/enemies/EggPawn.tscn" id="13_gwxjh"]
-[ext_resource type="Script" path="res://flow_engine/scripts/RingArray.gd" id="14_fwiv0"]
+[ext_resource type="Script" path="res://flow_engine/scripts/interactables/RingArray.gd" id="14_fwiv0"]
 [ext_resource type="PackedScene" uid="uid://cf6bcc7vtumen" path="res://flow_engine/level_items/collectibles/Ring.tscn" id="15_8pwn4"]
 [ext_resource type="Texture2D" uid="uid://buux3hk4t7qjx" path="res://flow_engine/sprites/UI/RingCount.png" id="16_3psnb"]
 [ext_resource type="Script" path="res://flow_engine/scripts/UI/RingCountDisplay.gd" id="17_3rhtn"]
@@ -738,4 +738,12 @@ script = ExtResource("19_hvqk4")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("19")
 
+[connection signal="body_entered" from="NewTileMap/AirRing" to="NewTileMap/AirRing" method="_on_body_entered"]
+[connection signal="body_entered" from="NewTileMap/@Area2D@20651" to="NewTileMap/@Area2D@20651" method="_on_body_entered"]
+[connection signal="body_entered" from="NewTileMap/@Area2D@20652" to="NewTileMap/@Area2D@20652" method="_on_body_entered"]
+[connection signal="body_entered" from="NewTileMap/EggPawn" to="NewTileMap/EggPawn" method="_on_body_entered"]
+[connection signal="body_entered" from="NewTileMap/@Area2D@20653" to="NewTileMap/@Area2D@20653" method="_on_body_entered"]
+[connection signal="body_entered" from="NewTileMap/@Area2D@20654" to="NewTileMap/@Area2D@20654" method="_on_body_entered"]
+[connection signal="body_entered" from="NewTileMap/@Area2D@20655" to="NewTileMap/@Area2D@20655" method="_on_body_entered"]
+[connection signal="body_entered" from="NewTileMap/@Area2D@20656" to="NewTileMap/@Area2D@20656" method="_on_body_entered"]
 [connection signal="area_entered" from="DeathPlane" to="Player" method="_on_DeathPlane_area_entered"]

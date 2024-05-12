@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://cl76bbyvrtwsf"]
 
-[ext_resource type="Script" path="res://flow_engine/scripts/new_boost_bar.gd" id="1_h6ipl"]
+[ext_resource type="Script" path="res://flow_engine/scripts/UI/new_boost_bar.gd" id="1_h6ipl"]
 
 [sub_resource type="Gradient" id="Gradient_ivjop"]
 colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 1)
