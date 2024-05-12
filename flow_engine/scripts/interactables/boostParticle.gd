@@ -8,7 +8,7 @@ var cVel:Vector2 = initialVel
 var player
 
 @onready var line:Line2D = $"Line2D"
-var lineLength = 30
+var lineLength:int = 30
 
 var speed:float = 10.0
 
@@ -24,11 +24,17 @@ func _ready():
 	
 	player = get_node("/root/Node2D/Player")
 	
+	$PointLight2D.enabled = GraphicsSingleton.real_time_lighting
+	GraphicsSingleton.connect("lighting_changed", toggle_light)
+	
 	oPos = position
 	lPos = oPos
 	
 	for i in range(lineLength):
 		line.points[i] = Vector2.ZERO
+
+func toggle_light() -> void:
+	$PointLight2D.enabled = GraphicsSingleton.real_time_lighting
 
 func _physics_process(delta: float) -> void:
 	if timer < 1:

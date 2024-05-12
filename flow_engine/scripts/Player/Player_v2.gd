@@ -329,6 +329,9 @@ func _ready():
 		if i is GPUParticles2D and not i == grindParticles:
 			parts.append(i)
 	
+	#connect to the graphics singleton for graphics toggling
+	GraphicsSingleton.connect("particle_effects_changed", toggle_parts)
+	
 	# set the start position and layer
 	startpos = position
 	startLayer = collision_layer
@@ -904,7 +907,7 @@ func _physics_process(_delta:float) -> void:
 		if get_tree().reload_current_scene() != OK:
 			push_error("Could not reload current scene!")
 	
-	grindParticles.emitting = (state == CharStates.STATE_GRINDING)
+	grindParticles.emitting = (state == CharStates.STATE_GRINDING) and GraphicsSingleton.particle_effects
 	
 	# run the correct function based on the current air/ground state
 	if state == CharStates.STATE_GRINDING:
@@ -935,13 +938,18 @@ func _physics_process(_delta:float) -> void:
 	
 	lastPos = position
 	
-	if parts:
+	if parts and GraphicsSingleton.particle_effects:
 		for i:GPUParticles2D in parts:
 			i.process_material.direction = Vector3(velocity1.x, velocity1.y, 0)
 			
 			#i.process_material.initial_velocity = velocity1.length() * 20
 			
 			i.rotation = -rotation
+
+##Disable parts
+func toggle_parts() -> void:
+	for effects in parts:
+		effects.emitting = GraphicsSingleton.particle_effects
 
 ##shortcut to change the collision mask for every raycast node connected to
 ## sonic at the same time. Value is true for loop_right, false for loop_left
