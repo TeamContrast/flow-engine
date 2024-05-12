@@ -29,10 +29,6 @@ window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="viewport"
 
-[editor]
-
-movie_writer/movie_file="/home/c08o/Coding/Godot/flow-engine-git/build/goofy.avi"
-
 [input]
 
 ui_left={
