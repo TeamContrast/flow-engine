@@ -16,21 +16,21 @@ class_name RushPlayer2D
 
 @export_group("Input Mappings")
 ##Up on d-pad
-@export var up_button:StringName
+@export var BUTTON_UP:StringName
 ##Down on d-pad
-@export var down_button:StringName
+@export var BUTTON_DOWN:StringName
 ##Left on d-pad
-@export var left_button:StringName
+@export var BUTTON_LEFT:StringName
 ##Right on d-pad
-@export var right_button:StringName
+@export var BUTTON_RIGHT:StringName
 ##The jump button
-@export var jump_button:StringName
+@export var BUTTON_JUMP:StringName
 ##The boost button
-@export var boost_button:StringName
+@export var BUTTON_BOOST:StringName
 ##The tricking button. This will also act as the stomp button under specific situations.
-@export var trick_button:StringName
+@export var BUTTON_TRICK:StringName
 
-@export_group("Effects & Sounds")
+@export_group("Special Objects")
 ## a reference to a bouncing ring prefab, so we can spawn a bunch of them when
 ## sonic is hurt 
 @export var bounceRing: PackedScene
@@ -38,64 +38,94 @@ class_name RushPlayer2D
 @export var boostParticle: PackedScene
 
 @export_group("Animations")
+@export_subgroup("Standstill")
 ##Sonic's idle animation
-@export var idle_anim:StringName
+@export var ANIM_IDLE:StringName
 ##Sonic's crouching animation
-@export var crouch_anim:StringName
+@export var ANIM_CROUCH:StringName
+##The animation when Sonic is in the spindash charge state
+@export var ANIM_SPINDASH:StringName
+##The animation when Sonic actively charges the spindash
+@export var ANIM_SPINDASH_CHARGE:StringName
+@export_subgroup("Running")
+##Sonic's walking animation.
+@export var ANIM_WALK:StringName
+##Sonic's first running animation.
+@export var ANIM_RUN_1:StringName
+##Sonic's second running animation.
+@export var ANIM_RUN_2:StringName
+##Sonic's third running animation.
+@export var ANIM_RUN_3:StringName
+##Sonic's fourth, and max speed, running animation.
+@export var ANIM_RUN_MAXSPEED:StringName
+##The animation that plays when Sonic curls into a ball
+@export var ANIM_CURL_UP:StringName
+@export_subgroup("Air and Jumping")
+##Sonic's jumping animation
+@export var ANIM_JUMP:StringName
+##Sonic's free falling animation (he is in the air but not jumping)
+@export var ANIM_FREE_FALL:StringName
+##Sonic's hurt animation
+@export var ANIM_HURT:StringName
+##Sonic's stomping animation
+@export var ANIM_STOMP:StringName
+##Sonic's stomp [i]landing[/i] animation
+@export var ANIM_STOMP_LAND:StringName
+@export_subgroup("Tricking and Rail Grinding")
+##The animation that plays when Sonic is on a rail
+@export var ANIM_RAIL_GRIND:StringName
+##The animation that plays when Sonic tricks on a rail
+@export var ANIM_RAIL_TRICK:StringName
+##The animation that plays when Sonic tricks in midair
+@export var ANIM_AIR_TRICK:StringName
+
+@export_group("Sound Effects")
+##The sound that plays when Sonic curls into a ball
+@export var SFX_CURL_UP:AudioStream
+##The sound that plays when Sonic charges a spindash
+@export var SFX_SPINDASH:AudioStream
+## audio stream for Sonic's boost sound
+@export var SFX_BOOST: AudioStream
+##Sonic's jump sound effect
+@export var SFX_JUMP:AudioStream
+##Sonic's hurt sound effect
+@export var SFX_HURT:AudioStream
+##The sound that plays when Sonic tricks on a rail
+@export var SFX_RAIL_TRICK:AudioStream
+## the minimum speed/pitch changes on the grinding sound
+@export var RAIL_SOUND_MINPITCH:float = 0.5
+## the maximum speed/pitch changes on the grinding sound
+@export var RAIL_SOUND_MAXPITCH:float = 2.0
+##The sound that plays when Sonic tricks in midair
+@export var SFX_AIR_TRICK:AudioStream
+## audio streams for Sonic's stomp sound
+@export var SFX_STOMP: AudioStream
+## audio streams for Sonic's stomp landing sound
+@export var SFX_STOMP_LAND: AudioStream
 
 @export_group("Running")
-@export_subgroup("Animations")
-##Sonic's walking animation.
-@export var walking_anim:StringName
-##Sonic's first running animation.
-@export var running_1_anim:StringName
-##Sonic's second running animation.
-@export var running_2_anim:StringName
-##Sonic's third running animation.
-@export var running_3_anim:StringName
-##Sonic's fourth, and max speed, running animation.
-@export var running_4_anim:StringName
-@export_subgroup("")
 ## sonic's acceleration on his own.
 @export var ACCELERATION:float = 0.15 / 4
 ## how much sonic decelerates when skidding.
 @export var SKID_ACCEL:float = 1
 ## minimum speed. If Sonic's speed is below this, he will be considered not moving.
-@export var min_speed:float = 0.02
+@export var MIN_SPEED:float = 0.02
 ## Maximum speed Sonic can reach under his own power.
 @export var MAX_SPEED:float = 10.0 #20.0 / 2.0
 ## used to dampen Sonic's movement a little bit. Basically poor man's friction.
 @export var SPEED_DECAY:float = 0.1 #0.2 / 2.0
 
 @export_group("Rolling and Spindashing")
-@export_subgroup("Animations and SFX")
-##The animation that plays when Sonic curls into a ball
-@export var ball_curl_anim:StringName
-##The sound that plays when Sonic curls into a ball
-@export var ball_curl_sfx:AudioStream
-##The animation when Sonic is in the spindash charge state
-@export var spindash_anim:StringName
-##The animation when Sonic actively charges the spindash
-@export var spindash_charge_anim:StringName
-##The sound that plays when Sonic charges a spindash
-@export var spindash_sfx:AudioStream
-@export_subgroup("")
 ##The amount of velocity added from a single spindash charge (jump + down)
 @export var SPINDASH_ACCUMULATE:float = 15.0
 ##The maximum velocity Sonic can build up from charging a Spindash.
 @export var SPINDASH_CHARGE_CAP:float = 0.0
 ##The initial charge of the spindash when initiated.
 @export var INITIAL_SPINDASH_CHARGE:float 
-##How fast Sonic will speed up when rolling downhill
-@export var downhill_roll:float 
-##How fast Sonic will slow down when rolling uphill
-@export var uphill_roll:float
 ##If true, Sonic can unroll and go back to running while moving
-@export var moving_unroll:bool = false
+@export var ENABLED_MOVING_UNCURL:bool = false
 
 @export_group("Boosting")
-## audio stream for Sonic's boost sound
-@export var boost_sfx: AudioStream
 ## the speed of sonic's boost. Generally just a tad higher than MAX_SPEED
 @export var BOOST_SPEED:float = 25.0 / 2.0
 ## The cooldown on activating the boost between activations, in seconds. 
@@ -109,22 +139,10 @@ class_name RushPlayer2D
 @export var TRAIL_LENGTH:int = 40
 
 @export_group("Air and Jumping")
-@export_subgroup("Animations and SFX")
-##Sonic's jumping animation
-@export var jump_anim:StringName
-##Sonic's jump sound effect
-@export var jump_sfx:AudioStream
-##Sonic's free falling animation (he is in the air but not jumping)
-@export var freefall_anim:StringName
-##Sonic's hurt animation
-@export var hurt_anim:StringName
-##Sonic's hurt sound effect
-@export var hurt_sfx:AudioStream
-@export_subgroup("")
 ## sonic's gravity
-@export var GRAVITY:float = 0.3 / 4
+@export var GRAVITY:float = 0.075 #0.3 / 4
 ## sonic's acceleration in the air.
-@export var AIR_ACCEL:float = 0.1 / 4
+@export var AIR_ACCEL:float = 0.025 #0.1 / 4
 ## what velocity should sonic jump at?
 @export var JUMP_VELOCITY:float = 3.5
 ## what is the Velocity that sonic should slow to when releasing the jump button?
@@ -138,47 +156,21 @@ class_name RushPlayer2D
 @export var STATIC_HURT_VEL:Vector2 = Vector2.ONE
 
 @export_group("Tricking and Grinding")
-@export_subgroup("Animations and SFX")
-##The animation that plays when Sonic is on a rail
-@export var rail_grind_anim:StringName
-##The animation that plays when Sonic tricks on a rail
-@export var rail_trick_anim:StringName
-##The sound that plays when Sonic tricks on a rail
-@export var rail_trick_sfx:AudioStream
-## the minimum speed/pitch changes on the grinding sound
-@export var RAIL_SOUND_MINPITCH:float = 0.5
-## the maximum speed/pitch changes on the grinding sound
-@export var RAIL_SOUND_MAXPITCH:float = 2.0
-##The animation that plays when Sonic tricks in midair
-@export var air_trick_anim:StringName
-##The sound that plays when Sonic tricks in midair
-@export var air_trick_sfx:AudioStream
-@export_subgroup("")
 ##If enabled, Sonic can trick in midair, like in the Rush series
-@export var air_tricking_enabled:bool = true
+@export var ENABLED_AIR_TRICKING:bool = true
 ##If enabled, Sonic can trick on rails, like in the Rush series
-@export var rail_tricking_enabled:bool = true
+@export var ENABLED_RAIL_TRICKING:bool = true
 ##The velocity that Sonic will be sent from a side trick.
 ##The x value will automatically be flipped positive or negative to match 
 ##the input direction.
-@export var side_trick_vel:Vector2
+@export var VELOCITY_TRICK_SIDE:Vector2
 ##The velocity that Sonic will be sent up from an up trick
-@export var up_trick_vel:float
+@export var VELOCITY_TRICK_UP:float
 
 @export_group("Stomp")
-@export_subgroup("Animations and SFX")
-##Sonic's stomping animation
-@export var stomp_anim:StringName
-## audio streams for Sonic's stomp sound
-@export var stomp_sfx: AudioStream
-##Sonic's stomp [i]landing[/i] animation
-@export var stomp_land_anim:StringName
-## audio streams for Sonic's stomp landing sound
-@export var stomp_land_sfx: AudioStream
-@export_subgroup("")
 ##If enabled, Sonic can stomp by pressing trick when not able to air trick, or
 ##by pressing trick+down while he can air trick
-@export var stomp_enabled:bool = true
+@export var ENABLED_STOMP:bool = true
 ## how fast (in pixels per 1/120th of a second) should sonic stomp
 @export var STOMP_SPEED:float = 20.0 / 2.0
 ## what is the limit to Sonic's horizontal movement when stomping?
@@ -210,7 +202,7 @@ class_name RushPlayer2D
 @onready var boost_cooldown_timer:Timer = $"BoostTimer"
 
 # sonic's sprites/renderers
-### sonic's sprite
+## sonic's sprite
 @onready var sprite1:AnimatedSprite2D = $"PlayerSprites"
 ## the sprite that appears over sonic while boosting
 @onready var boostSprite:AnimatedSprite2D = $"BoostSprite"
@@ -376,9 +368,9 @@ func boostControl():
 	
 	#Air boost lock
 	if state == CharStates.STATE_AIR:
-		boost_pressed = AIR_BOOST and Input.is_action_just_pressed(boost_button)
+		boost_pressed = AIR_BOOST and Input.is_action_just_pressed(BUTTON_BOOST)
 	else:
-		boost_pressed = Input.is_action_just_pressed(boost_button)
+		boost_pressed = Input.is_action_just_pressed(BUTTON_BOOST)
 	
 	if can_boost and boost_pressed and boostAmount > 0:
 		# set boosting to true
@@ -401,7 +393,7 @@ func boostControl():
 			boostLine.points[i] = Vector2.ZERO
 		
 		# play the boost sfx
-		boostSound.stream = boost_sfx
+		boostSound.stream = SFX_BOOST
 		boostSound.play()
 		
 		# set the camera smoothing to the initial boost lag
@@ -415,9 +407,9 @@ func boostControl():
 		
 		voiceSound.play_effort()
 	
-	if Input.is_action_pressed(boost_button) and boosting and boostAmount > 0:
-#		if boostSound.stream != boost_sfx:
-#			boostSound.stream = boost_sfx
+	if Input.is_action_pressed(BUTTON_BOOST) and boosting and boostAmount > 0:
+#		if boostSound.stream != SFX_BOOST:
+#			boostSound.stream = SFX_BOOST
 #			boostSound.play()
 		
 		# linearly interpolate the camera's "boost lag" back down to the normal (non-boost) value
@@ -458,7 +450,7 @@ func boostControl():
 		cam.set_position_smoothing_speed(DEFAULT_CAM_LAG)
 		
 		# stop the boost sound, if it is playing
-		if boostSound.stream == boost_sfx:
+		if boostSound.stream == SFX_BOOST:
 			boostSound.stop()
 		
 		# disable all visual boost indicators
@@ -526,7 +518,7 @@ func airProcess() -> void:
 		
 		# play the stomp sound if you were stomping
 		if stomping:
-			boostSound.stream = stomp_land_sfx
+			boostSound.stream = SFX_STOMP_LAND
 			#TODO: Fix stomp bouncing
 			velocity1.y = -STOMP_BOUNCE
 			boostSound.play()
@@ -534,18 +526,18 @@ func airProcess() -> void:
 	
 	# air-based movement (using the arrow keys)
 	#Only let the player accelerate if they aren't already at max speed
-	if Input.is_action_pressed(right_button) and velocity1.x < MAX_SPEED:
+	if Input.is_action_pressed(BUTTON_RIGHT) and velocity1.x < MAX_SPEED:
 		velocity1.x += AIR_ACCEL
-	elif Input.is_action_pressed(left_button) and velocity1.x > -MAX_SPEED:
+	elif Input.is_action_pressed(BUTTON_LEFT) and velocity1.x > -MAX_SPEED:
 		velocity1.x -= AIR_ACCEL
 	
 	#air tricking. Make sure the player is not jumping (or stomping)
 	if state == CharStates.STATE_AIR and not canShort and not stomping:
-		if Input.is_action_just_pressed(trick_button):
+		if Input.is_action_just_pressed(BUTTON_TRICK):
 			if not sprite1.is_connected("animation_finished", rewardBoost):
 				sprite1.connect("animation_finished", rewardBoost, CONNECT_ONE_SHOT)
 			
-			sprite1.play(air_trick_anim)
+			sprite1.play(ANIM_AIR_TRICK)
 			voiceSound.play_effort()
 	
 	### STOMPING CONTROLS ###
@@ -554,19 +546,19 @@ func airProcess() -> void:
 	#Sonic has to be in the air to stomp, obviously
 	if state == CharStates.STATE_AIR:
 		#Check if air_tricking is enabled, because that way, if it's not,
-		#trick_button will basically just be stomp always (else statement)
-		if (not canShort) and air_tricking_enabled:
+		#BUTTON_TRICK will basically just be stomp always (else statement)
+		if (not canShort) and ENABLED_AIR_TRICKING:
 			#Sonic *could* be tricking, so only stomp if the player *also* presses down
-			stomp_pressed = Input.is_action_pressed(trick_button) and Input.is_action_pressed(down_button) 
+			stomp_pressed = Input.is_action_pressed(BUTTON_TRICK) and Input.is_action_pressed(BUTTON_DOWN) 
 		else:
 			#Sonic can't trick here, so trick may as well instantly initiate stomp
-			stomp_pressed = Input.is_action_pressed(trick_button)
+			stomp_pressed = Input.is_action_pressed(BUTTON_TRICK)
 	
 	# initiating a stomp
-	if stomp_enabled and stomp_pressed and (not stomping):
+	if ENABLED_STOMP and stomp_pressed and (not stomping):
 		# set the stomping state, and animation state 
 		stomping = true
-		sprite1.play(stomp_anim)
+		sprite1.play(ANIM_STOMP)
 		rotation = 0
 		sprite1.rotation = 0
 		
@@ -575,7 +567,7 @@ func airProcess() -> void:
 			boostLine.points[i] = Vector2.ZERO
 		
 		# play sound 
-		boostSound.stream = stomp_sfx
+		boostSound.stream = SFX_STOMP
 		boostSound.play()
 	
 	# for every frame while a stomp is occuring...
@@ -623,7 +615,7 @@ func airProcess() -> void:
 	
 	# Allow the player to change the duration of the jump by releasing the jump
 	# button early
-	if not Input.is_action_pressed(jump_button) and canShort:
+	if not Input.is_action_pressed(BUTTON_JUMP) and canShort:
 		#velocity1 = Vector2(velocity1.x, maxf(velocity1.y,-JUMP_SHORT_LIMIT))
 		velocity1.y = maxf(velocity1.y, -JUMP_SHORT_LIMIT)
 	
@@ -660,7 +652,7 @@ func groundProcess() -> void:
 	position = Vector2(avgGPoint.x + 20 * sin(rotation), avgGPoint.y - 20 * cos(rotation))
 	
 	#If this is negative, the player is pressing left. If positive, they're pressing right.
-	var input_direction:float = Input.get_axis(left_button, right_button)
+	var input_direction:float = Input.get_axis(BUTTON_LEFT, BUTTON_RIGHT)
 	
 	if not rolling:
 		# handle rightward acceleration
@@ -737,28 +729,32 @@ func groundProcess() -> void:
 	
 	#Check if Sonic is in the air (and not because he's jumping), and play that anim if so
 	if state == CharStates.STATE_AIR and not canShort:
-		sprite1.play(freefall_anim)
+		sprite1.play(ANIM_FREE_FALL)
 	elif rolling:
-		sprite1.play(ball_curl_anim)
+		sprite1.play(ANIM_CURL_UP)
 	# set Sonic's sprite based on his ground velocity
 	#TODO: Maybe set these based on fractions of Sonic's speed, 
 	#since his speed could be out of scale with this
 	elif not rolling:
-		if absf(gVel) > 6.0: #12.0 / 2.0
-			sprite1.play(running_4_anim)
-		elif absf(gVel) > 5.0: #10.0 / 2.0
-			sprite1.play(running_3_anim)
-		elif absf(gVel) > 2.5: #5.0 / 2.0
-			sprite1.play(running_2_anim)
-		elif absf(gVel) > 1.0: #2.0 / 2.0 ig
-			sprite1.play(running_1_anim)
-		elif absf(gVel) > min_speed:
-			sprite1.play(walking_anim)
+		#if absf(gVel) > 6.0: #12.0 / 2.0
+		if absf(gVel) > MAX_SPEED: # > 100% speed
+			sprite1.play(ANIM_RUN_MAXSPEED)
+		#elif absf(gVel) > 5.0: #10.0 / 2.0
+		elif absf(gVel) > (MAX_SPEED * 0.5): # > 50% speed
+			sprite1.play(ANIM_RUN_3)
+		#elif absf(gVel) > 2.5: #5.0 / 2.0
+		elif absf(gVel) > (MAX_SPEED * 0.25): # > 25% speed
+			sprite1.play(ANIM_RUN_2)
+		#elif absf(gVel) > 1.0: #2.0 / 2.0 ig
+		elif absf(gVel) > (MAX_SPEED * 0.1): # > 10% speed
+			sprite1.play(ANIM_RUN_1)
+		elif absf(gVel) > MIN_SPEED: #moving at all
+			sprite1.play(ANIM_WALK)
 		elif not crouching:
-			sprite1.play(idle_anim)
+			sprite1.play(ANIM_IDLE)
 	
 	#Crouching
-	if absf(gVel) > min_speed:
+	if absf(gVel) > MIN_SPEED:
 		crouching = false
 		sprite1.speed_scale = 1
 	else:
@@ -767,33 +763,33 @@ func groundProcess() -> void:
 	
 	
 	if not spindashing:
-		if Input.is_action_pressed(down_button):
+		if Input.is_action_pressed(BUTTON_DOWN):
 			#Sonic is either rolling or crouching
 			
-			if absf(gVel) <= min_speed:
+			if absf(gVel) <= MIN_SPEED:
 				#crouch, since Sonic is effectively at a standstill
 				
 				#Only play the anim if he wasn't crouching before, 
 				#to avoid it being played repeatedly
 				if not crouching:
-					sprite1.play(crouch_anim)
+					sprite1.play(ANIM_CROUCH)
 				crouching = true
 			else:
 				#roll, since Sonic is moving
 				crouching = false
 				rolling = true
-				sprite1.play(ball_curl_anim)
+				sprite1.play(ANIM_CURL_UP)
 		
 		#since the previous check is false in this case, Sonic is no longer crouching
 		else:
 			if crouching == true:
 				sprite1.stop()
 				#sprite1.play("Crouch", -1.0, true)
-				sprite1.play_backwards(crouch_anim)
+				sprite1.play_backwards(ANIM_CROUCH)
 				crouching = false
 			
 			#unroll while moving :nice:
-			if Input.is_action_pressed(up_button) and rolling and moving_unroll:
+			if Input.is_action_pressed(BUTTON_UP) and rolling and ENABLED_MOVING_UNCURL:
 				rolling = false
 	
 	# run boost controls, but only if you aren't spindashing or rolling
@@ -801,35 +797,35 @@ func groundProcess() -> void:
 		boostControl()
 	
 	# jumping
-	if Input.is_action_pressed(jump_button) and not (crouching or spindashing):
+	if Input.is_action_pressed(BUTTON_JUMP) and not (crouching or spindashing):
 		if not canShort:
 			state = CharStates.STATE_AIR
 			velocity1 += Vector2(sin(rotation), -cos(rotation)) * JUMP_VELOCITY
 			sprite1.rotation = rotation
 			rotation = 0
-			sprite1.play(jump_anim)
+			sprite1.play(ANIM_JUMP)
 			canShort = true
 			rolling = false
 	else:
 		canShort = false
 	
 	#initate spindash
-	if (Input.is_action_pressed(jump_button) and crouching) and not rolling:
+	if (Input.is_action_pressed(BUTTON_JUMP) and crouching) and not rolling:
 		spindashing = true
 		#Mimic how the animation would restart in the classics
-		sprite1.play(spindash_anim)
+		sprite1.play(ANIM_SPINDASH)
 	
 	#if spindashing and not rolling:
 	if spindashing:
 		#if a charge is being built up this frame
-		if Input.is_action_just_pressed(jump_button):
+		if Input.is_action_just_pressed(BUTTON_JUMP):
 			#accumulate spindash speed
 			spindash_buildup += SPINDASH_ACCUMULATE * (1 if sprite1.flip_h else -1)
 			#cap buildup velocity so Sonic can't rocket off
 			if SPINDASH_CHARGE_CAP > 0:
 				spindash_buildup = clampf(spindash_buildup, -SPINDASH_CHARGE_CAP, SPINDASH_CHARGE_CAP)
 		#charge release
-		if not Input.is_action_pressed(down_button):
+		if not Input.is_action_pressed(BUTTON_DOWN):
 			spindashing = false
 			rolling = true
 			gVel += spindash_buildup
@@ -841,14 +837,14 @@ func groundProcess() -> void:
 
 func grindProcess() -> void:
 	#Handle tricking
-	if Input.is_action_pressed(trick_button) or tricking:
+	if Input.is_action_pressed(BUTTON_TRICK) or tricking:
 		tricking = true
 		if not sprite1.is_connected("animation_finished", rewardBoost):
 			sprite1.connect("animation_finished", rewardBoost, CONNECT_ONE_SHOT)
-		sprite1.play(rail_trick_anim)
+		sprite1.play(ANIM_RAIL_TRICK)
 		voiceSound.play_effort()
 	else:
-		sprite1.play(rail_grind_anim)
+		sprite1.play(ANIM_RAIL_GRIND)
 	
 	grindHeight = sprite1.sprite_frames.get_frame_texture(sprite1.animation, sprite1.frame).get_height() / 2.0
 	
@@ -870,18 +866,18 @@ func grindProcess() -> void:
 		tricking = false
 		trickingCanStop = false
 		RailSound.stop()
-		sprite1.play(freefall_anim)
+		sprite1.play(ANIM_FREE_FALL)
 	else:
 		velocity1 = dirVec * grindVel
 	
-	if Input.is_action_pressed(jump_button) and not crouching:
+	if Input.is_action_pressed(BUTTON_JUMP) and not crouching:
 		if not canShort:
 			state = CharStates.STATE_AIR
 			#velocity1 = Vector2(velocity1.x+sin(rotation)*JUMP_VELOCITY,velocity1.y-cos(rotation)*JUMP_VELOCITY)
 			velocity1 = velocity1 + Vector2(sin(rotation), -cos(rotation)) * JUMP_VELOCITY
 			sprite1.rotation = rotation
 			rotation = 0
-			sprite1.play(jump_anim)
+			sprite1.play(ANIM_JUMP)
 			canShort = true
 			rolling = false
 			tricking = false
@@ -1003,7 +999,7 @@ func _on_Railgrind(curve:Curve2D, origin:Vector2) -> void:
 		
 		# play the sound if you were stomping
 		if stomping:
-			boostSound.stream = stomp_land_sfx
+			boostSound.stream = SFX_STOMP_LAND
 			boostSound.play()
 			stomping = false
 
@@ -1037,7 +1033,7 @@ func hurt_player() -> void:
 			velocity1 = Vector2(-signf(velocity1.x) * absf(STATIC_HURT_VEL.x) + sin(rotation), -signf(velocity1.y) * STATIC_HURT_VEL.y - cos(rotation)) * JUMP_VELOCITY
 		rotation = 0
 		position += velocity1 * 2
-		sprite1.play(hurt_anim)
+		sprite1.play(ANIM_HURT)
 		
 		voiceSound.play_hurt()
 		

@@ -3,7 +3,9 @@
 [ext_resource type="Texture2D" uid="uid://df3yyfxdurvyu" path="res://flow_engine/sprites/sonic/sonic_run4_7.png" id="1"]
 [ext_resource type="Texture2D" uid="uid://c65r37kreniby" path="res://flow_engine/sprites/effects/sonic_boost_2.png" id="2"]
 [ext_resource type="Texture2D" uid="uid://dwfxs512hhh3" path="res://flow_engine/sprites/sonic/sonic_run4_3.png" id="3"]
+[ext_resource type="AudioStream" uid="uid://dofm65re4t22p" path="res://flow_engine/audio/SFX/stomping.wav" id="4_0lvdo"]
 [ext_resource type="Texture2D" uid="uid://dyjt0ufijccpi" path="res://flow_engine/sprites/sonic/sonic_run4_6.png" id="5"]
+[ext_resource type="AudioStream" uid="uid://cyamtrc2sg8kn" path="res://flow_engine/audio/SFX/stomping_land.wav" id="5_tvhxo"]
 [ext_resource type="PackedScene" uid="uid://ds1qcyx60i86b" path="res://flow_engine/level_items/collectibles/BoostParticle.tscn" id="6_swxbo"]
 [ext_resource type="Texture2D" uid="uid://b5cfrofjijfjv" path="res://flow_engine/sprites/sonic/sonic_run4_2.png" id="7"]
 [ext_resource type="Texture2D" uid="uid://bd6p2m5y4g84i" path="res://flow_engine/sprites/sonic/atlas_textures/crouch/crouch_1.tres" id="7_56dh1"]
@@ -33,13 +35,11 @@
 [ext_resource type="Texture2D" uid="uid://cry2vc3isj3j3" path="res://flow_engine/sprites/effects/sonic_boost_3.png" id="15"]
 [ext_resource type="Texture2D" uid="uid://eft20a3oa4ly" path="res://flow_engine/sprites/sonic/atlas_textures/run_2/run_2_1.tres" id="15_jmy7v"]
 [ext_resource type="Texture2D" uid="uid://dksyoqn1gy1xc" path="res://flow_engine/sprites/sonic/atlas_textures/idle/idle_7.tres" id="15_piv3r"]
-[ext_resource type="AudioStream" uid="uid://dofm65re4t22p" path="res://flow_engine/audio/SFX/stomping.wav" id="16"]
 [ext_resource type="Texture2D" uid="uid://b8uimr2o7teys" path="res://flow_engine/sprites/sonic/atlas_textures/run_2/run_2_2.tres" id="16_7o3wn"]
 [ext_resource type="Texture2D" uid="uid://bdpwaffm7k0dr" path="res://flow_engine/sprites/sonic/atlas_textures/roll/roll_1.tres" id="16_vaqoe"]
 [ext_resource type="AudioStream" uid="uid://dmbeb2uqfbmsv" path="res://flow_engine/audio/SFX/Boost.wav" id="17"]
 [ext_resource type="Texture2D" uid="uid://kk8k025uedjk" path="res://flow_engine/sprites/sonic/atlas_textures/roll/roll_2.tres" id="17_hk6tk"]
 [ext_resource type="Texture2D" uid="uid://7h0ko2nglhvc" path="res://flow_engine/sprites/sonic/atlas_textures/run_2/run_2_3.tres" id="17_pltyi"]
-[ext_resource type="AudioStream" uid="uid://cyamtrc2sg8kn" path="res://flow_engine/audio/SFX/stomping_land.wav" id="18"]
 [ext_resource type="Texture2D" uid="uid://bhbhd01sb0boc" path="res://flow_engine/sprites/sonic/atlas_textures/roll/roll_3.tres" id="18_k3wjg"]
 [ext_resource type="Texture2D" uid="uid://ch7pwlwiyd3a6" path="res://flow_engine/sprites/sonic/atlas_textures/run_2/run_2_4.tres" id="18_sdckx"]
 [ext_resource type="Script" path="res://flow_engine/scripts/Player/Player_v2.gd" id="19"]
@@ -561,46 +561,48 @@ collision_mask = 81
 floor_stop_on_slope = false
 floor_constant_speed = true
 script = ExtResource("19")
-up_button = &"ui_up"
-down_button = &"ui_down"
-left_button = &"move left"
-right_button = &"move right"
-jump_button = &"jump"
-boost_button = &"boost"
-trick_button = &"trick"
+BUTTON_UP = &"ui_up"
+BUTTON_DOWN = &"ui_down"
+BUTTON_LEFT = &"move left"
+BUTTON_RIGHT = &"move right"
+BUTTON_JUMP = &"jump"
+BUTTON_BOOST = &"boost"
+BUTTON_TRICK = &"trick"
 bounceRing = ExtResource("55")
 boostParticle = ExtResource("6_swxbo")
-idle_anim = &"idle"
-crouch_anim = &"Crouch"
-walking_anim = &"Walk"
-running_2_anim = &"Run2"
-running_3_anim = &"Run3"
-running_4_anim = &"Run4"
+ANIM_IDLE = &"idle"
+ANIM_CROUCH = &"Crouch"
+ANIM_SPINDASH = &"Spindash"
+ANIM_WALK = &"Walk"
+ANIM_RUN_1 = &"Run1"
+ANIM_RUN_2 = &"Run2"
+ANIM_RUN_3 = &"Run3"
+ANIM_RUN_MAXSPEED = &"Run4"
+ANIM_CURL_UP = &"Roll"
+ANIM_JUMP = &"Roll"
+ANIM_FREE_FALL = &"Free_falling"
+ANIM_HURT = &"hurt"
+ANIM_STOMP = &"Roll"
+ANIM_RAIL_GRIND = &"Grind"
+ANIM_RAIL_TRICK = &"railTrick"
+ANIM_AIR_TRICK = &"railTrick"
+SFX_BOOST = ExtResource("17")
+SFX_STOMP = ExtResource("4_0lvdo")
+SFX_STOMP_LAND = ExtResource("5_tvhxo")
 ACCELERATION = 0.05
 MAX_SPEED = 8.0
 SPEED_DECAY = 0.4
-ball_curl_anim = &"Roll"
-spindash_anim = &"Spindash"
 SPINDASH_ACCUMULATE = 2.0
 SPINDASH_CHARGE_CAP = 16.0
-boost_sfx = ExtResource("17")
 BOOST_SPEED = 14.0
 BOOST_COOLDOWN = 0.5
 BOOST_MAX = 40.0
-jump_anim = &"Roll"
-freefall_anim = &"Free_falling"
-hurt_anim = &"hurt"
 GRAVITY = 0.2
 AIR_ACCEL = 0.05
 JUMP_VELOCITY = 5.5
 JUMP_SHORT_LIMIT = 0.25
+AIR_BOOST = false
 HURT_VEL_ADD = false
-rail_grind_anim = &"Grind"
-rail_trick_anim = &"railTrick"
-air_trick_anim = &"railTrick"
-stomp_anim = &"Roll"
-stomp_sfx = ExtResource("16")
-stomp_land_sfx = ExtResource("18")
 STOMP_SPEED = 15.0
 MAX_STOMP_XVEL = 0.0
 
@@ -630,7 +632,7 @@ scroll_active = false
 
 [node name="PlayerSprites" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("27")
-animation = &"Walk"
+animation = &"Run1"
 autoplay = "idle"
 flip_h = true
 

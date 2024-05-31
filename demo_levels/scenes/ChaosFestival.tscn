@@ -162,7 +162,6 @@ adjustment_contrast = 1.2
 position = Vector2(-2289.76, -76.452)
 boostbar_hud = NodePath("../CanvasLayer/boostBar")
 ring_counter_hud = NodePath("../CanvasLayer/RingCounter")
-AIR_BOOST = false
 
 [node name="GPUParticles2D" parent="Player" instance=ExtResource("2_rfu28")]
 amount = 25
