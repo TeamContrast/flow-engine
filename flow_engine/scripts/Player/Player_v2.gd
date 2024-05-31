@@ -199,7 +199,7 @@ class_name RushPlayer2D
 #@onready var collider:CollisionShape2D = $"playerCollider"
 
 ##The cooldown timer on Sonic's boost
-@onready var boost_cooldown_timer:Timer = $"BoostTimer"
+@onready var boostCooldownTimer:Timer = $"BoostTimer"
 
 # sonic's sprites/renderers
 ## sonic's sprite
@@ -212,12 +212,12 @@ class_name RushPlayer2D
 ## the audio stream player with the boost sound
 @onready var boostSound:AudioStreamPlayer = $"BoostSound"
 ## the audio stream player with the rail grinding sound
-@onready var RailSound:AudioStreamPlayer = $"RailSound"
+@onready var railSound:AudioStreamPlayer = $"RailSound"
 ## the audio stream player with the character's voices
 @onready var voiceSound:AudioStreamPlayer2D = $"Voice"
 
 ## a little text label attached to sonic for debugging
-@onready var text_label:RichTextLabel = $"Camera2D/RichTextLabel"
+@onready var debugLabel:RichTextLabel = $"Camera2D/RichTextLabel"
 
 ## a reference to the scene's camera
 @onready var cam:Camera2D = $"Camera2D"
@@ -250,7 +250,7 @@ var spindashing:bool = false
 var rolling:bool = false
 var stomping:bool = false
 var boosting:bool = false
-var can_boost:bool = true
+var canBoost:bool = true
 var tricking:bool = false
 
 var trickingCanStop:bool = false
@@ -272,7 +272,7 @@ var grindVel:float = 0.0
 var grindHeight:float = 16
 
 ##The amount of velocity built up by the spindash before release
-var spindash_buildup:float = 0
+var spindashBuildup:float = 0
 
 ##average Ground position between the two foot raycasts
 var avgGPoint:Vector2 = Vector2.ZERO 
@@ -281,18 +281,18 @@ var avgTPoint:Vector2 = Vector2.ZERO
 ## average ground rotation between the two foot raycasts
 var avgGRot:float = 0
 ## the angle of the left foot raycast
-var langle:float = 0
+var lAngle:float = 0
 ## the angle of the right foot raycast
-var rangle:float = 0
+var rAngle:float = 0
 ## Sonic's rotation during the last frame
 var lRot:float = 0
 ## the position at which sonic starts the level
-var startpos:Vector2 = Vector2.ZERO
+var startPos:Vector2 = Vector2.ZERO
 ## the layer on which sonic starts
 var startLayer:int = 0
 
 ##Godot's physics ticks per second. Stored for one-time retrieval 
-var physics_tick:int = 60
+var physicsTick:int = 60
 ## sonic's current velocity
 var velocity1:Vector2 = Vector2.ZERO
 ##Sonic's last position
@@ -325,11 +325,11 @@ func _ready():
 	GraphicsSingleton.connect("particle_effects_changed", toggle_parts)
 	
 	# set the start position and layer
-	startpos = position
+	startPos = position
 	startLayer = collision_layer
 	setCollisionLayer(false)
 	
-	physics_tick = ProjectSettings.get_setting("physics/common/physics_ticks_per_second")
+	physicsTick = ProjectSettings.get_setting("physics/common/physics_ticks_per_second")
 	
 	# set the trail length to whatever the boostLine's size is.
 	TRAIL_LENGTH = boostLine.get_point_count()
@@ -372,21 +372,21 @@ func boostControl():
 	else:
 		boost_pressed = Input.is_action_just_pressed(BUTTON_BOOST)
 	
-	if can_boost and boost_pressed and boostAmount > 0:
+	if canBoost and boost_pressed and boostAmount > 0:
 		# set boosting to true
 		boosting = true
-		can_boost = false
+		canBoost = false
 		
 		#Begin boost timer
-		if not boost_cooldown_timer.is_connected("timeout", set.bind("can_boost", true)):
-			#This will set can_boost back to true when the timer is done
-			boost_cooldown_timer.connect("timeout", set.bind("can_boost", true), CONNECT_ONE_SHOT)
+		if not boostCooldownTimer.is_connected("timeout", set.bind("canBoost", true)):
+			#This will set canBoost back to true when the timer is done
+			boostCooldownTimer.connect("timeout", set.bind("canBoost", true), CONNECT_ONE_SHOT)
 		
 		#This is to get around the fact that the timer will default to 1 second when 0 is provided for time
 		if BOOST_COOLDOWN > 0:
-			boost_cooldown_timer.start(BOOST_COOLDOWN)
+			boostCooldownTimer.start(BOOST_COOLDOWN)
 		else:
-			can_boost = true
+			canBoost = true
 		
 		# reset the boost line points
 		for i in range(0, TRAIL_LENGTH):
@@ -466,14 +466,14 @@ func airProcess() -> void:
 	velocity1.y += GRAVITY
 	
 	# get the angle of the point for the left and right floor raycasts
-	langle = -atan2(LeftCast.get_collision_normal().x, LeftCast.get_collision_normal().y) - PI
-	langle = limitAngle(langle)
+	lAngle = -atan2(LeftCast.get_collision_normal().x, LeftCast.get_collision_normal().y) - PI
+	lAngle = limitAngle(lAngle)
 	
-	rangle = -atan2(RightCast.get_collision_normal().x,RightCast.get_collision_normal().y) - PI
-	rangle = limitAngle(rangle)
+	rAngle = -atan2(RightCast.get_collision_normal().x,RightCast.get_collision_normal().y) - PI
+	rAngle = limitAngle(rAngle)
 	
 	# calculate the average ground rotation (averaged between the points)
-	avgGRot = (langle + rangle) / 2
+	avgGRot = (lAngle + rAngle) / 2
 	
 	# set a default avgGPoint
 	avgGPoint = Vector2(-INF, -INF)
@@ -482,7 +482,7 @@ func airProcess() -> void:
 	# raycast cannot find a collider)
 	var rot_ang:Vector2 = Vector2.from_angle(rotation)
 	if (LeftCast.is_colliding() and RightCast.is_colliding()):
-		text_label.text += "Left & Right Collision"
+		debugLabel.text += "Left & Right Collision"
 		var LeftCastPt:Vector2 = LeftCast.get_collision_point() + rot_ang * 8
 		var RightCastPt:Vector2 = RightCast.get_collision_point() - rot_ang * 8
 		if position.distance_to(LeftCastPt) < position.distance_to(RightCastPt):
@@ -490,13 +490,13 @@ func airProcess() -> void:
 		else:
 			avgGPoint = RightCastPt
 	elif LeftCast.is_colliding():
-		text_label.text += "Left Collision"
+		debugLabel.text += "Left Collision"
 		avgGPoint = LeftCast.get_collision_point() + rot_ang * 8
-		avgGRot = langle
+		avgGRot = lAngle
 	elif RightCast.is_colliding():
-		text_label.text += "Right Collision"
+		debugLabel.text += "Right Collision"
 		avgGPoint = RightCast.get_collision_point() - rot_ang * 8
-		avgGRot = rangle
+		avgGRot = rAngle
 	
 	# calculate the average ceiling height based on the collision raycasts
 	# (again, elifs are for cases where only one raycast is successful)
@@ -625,16 +625,16 @@ func airProcess() -> void:
 func groundProcess() -> void:
 	# caluclate the ground rotation for the left and right raycast colliders,
 	# respectively
-	langle = -atan2(LeftCast.get_collision_normal().x,LeftCast.get_collision_normal().y)-PI
-	langle = limitAngle(langle)
-	rangle = -atan2(RightCast.get_collision_normal().x,RightCast.get_collision_normal().y)-PI
-	rangle = limitAngle(rangle)
+	lAngle = -atan2(LeftCast.get_collision_normal().x,LeftCast.get_collision_normal().y)-PI
+	lAngle = limitAngle(lAngle)
+	rAngle = -atan2(RightCast.get_collision_normal().x,RightCast.get_collision_normal().y)-PI
+	rAngle = limitAngle(rAngle)
 	
 	# calculate the average ground rotation
-	if absf(langle - rangle) < PI:
-		avgGRot = limitAngle((langle + rangle) / 2)
+	if absf(lAngle - rAngle) < PI:
+		avgGRot = limitAngle((lAngle + rAngle) / 2)
 	else:
-		avgGRot = limitAngle((langle + rangle + PI * 2) / 2)
+		avgGRot = limitAngle((lAngle + rAngle + PI * 2) / 2)
 	
 	# calculate the average ground level based on the available colliders
 	if (LeftCast.is_colliding() and RightCast.is_colliding()):
@@ -642,10 +642,10 @@ func groundProcess() -> void:
 		#((acos(LeftCast.get_collision_normal().y/1)+PI)+(acos(RightCast.get_collision_normal().y/1)+PI))/2
 	elif LeftCast.is_colliding():
 		avgGPoint = Vector2(LeftCast.get_collision_point().x + cos(rotation) * 8, LeftCast.get_collision_point().y + sin(rotation) * 8)
-		avgGRot = langle
+		avgGRot = lAngle
 	elif RightCast.is_colliding():
 		avgGPoint = Vector2(RightCast.get_collision_point().x-cos(rotation)*8,RightCast.get_collision_point().y-sin(rotation)*8)
-		avgGRot = rangle
+		avgGRot = rAngle
 	
 	# set the rotation and position of Sonic to snap to the ground.
 	rotation = avgGRot
@@ -820,16 +820,16 @@ func groundProcess() -> void:
 		#if a charge is being built up this frame
 		if Input.is_action_just_pressed(BUTTON_JUMP):
 			#accumulate spindash speed
-			spindash_buildup += SPINDASH_ACCUMULATE * (1 if sprite1.flip_h else -1)
+			spindashBuildup += SPINDASH_ACCUMULATE * (1 if sprite1.flip_h else -1)
 			#cap buildup velocity so Sonic can't rocket off
 			if SPINDASH_CHARGE_CAP > 0:
-				spindash_buildup = clampf(spindash_buildup, -SPINDASH_CHARGE_CAP, SPINDASH_CHARGE_CAP)
+				spindashBuildup = clampf(spindashBuildup, -SPINDASH_CHARGE_CAP, SPINDASH_CHARGE_CAP)
 		#charge release
 		if not Input.is_action_pressed(BUTTON_DOWN):
 			spindashing = false
 			rolling = true
-			gVel += spindash_buildup
-			spindash_buildup = 0
+			gVel += spindashBuildup
+			spindashBuildup = 0
 	
 	# set the previous ground velocity and last rotation for next frame
 	pgVel = gVel
@@ -855,7 +855,7 @@ func grindProcess() -> void:
 	position = grindCurve.sample_baked(grindOffset) + (Vector2(1 * sin(rotation), -1 * cos(rotation)) * grindHeight) + grindPos
 	
 	
-	RailSound.pitch_scale = lerpf(RAIL_SOUND_MINPITCH, RAIL_SOUND_MAXPITCH,\
+	railSound.pitch_scale = lerpf(RAIL_SOUND_MINPITCH, RAIL_SOUND_MAXPITCH,\
 		absf(grindVel) / BOOST_SPEED)
 	grindVel += sin(rotation) * GRAVITY
 	
@@ -865,7 +865,7 @@ func grindProcess() -> void:
 		state = CharStates.STATE_AIR
 		tricking = false
 		trickingCanStop = false
-		RailSound.stop()
+		railSound.stop()
 		sprite1.play(ANIM_FREE_FALL)
 	else:
 		velocity1 = dirVec * grindVel
@@ -882,7 +882,7 @@ func grindProcess() -> void:
 			rolling = false
 			tricking = false
 			trickingCanStop = false
-			RailSound.stop()
+			railSound.stop()
 	else:
 		canShort = false
 	boostControl()
@@ -929,7 +929,7 @@ func _physics_process(_delta:float) -> void:
 	#Godot does physics in pixels per second. Because flow engine is pixels per (physics) 
 	#frame, we have to multiply velocity1 by the physics tick per second to get the 
 	#pixels per second velocity desired
-	velocity = velocity1 * physics_tick
+	velocity = velocity1 * physicsTick
 	move_and_slide()
 	
 	lastPos = position
@@ -978,7 +978,7 @@ func _on_DeathPlane_area_entered(area:Node) -> void:
 func resetGame() -> void:
 	velocity1 = Vector2.ZERO
 	state = CharStates.STATE_AIR
-	position = startpos
+	position = startPos
 	setCollisionLayer(false)
 
 ##this function is run whenever sonic hits a rail.
@@ -995,7 +995,7 @@ func _on_Railgrind(curve:Curve2D, origin:Vector2) -> void:
 		grindOffset = grindCurve.get_closest_offset(position-grindPos)
 		grindVel = velocity1.x
 		
-		RailSound.play()
+		railSound.play()
 		
 		# play the sound if you were stomping
 		if stomping:
