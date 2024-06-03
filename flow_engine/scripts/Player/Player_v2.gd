@@ -405,6 +405,11 @@ func boostControl():
 			velocity1.x = maxf(velocity1.x, BOOST_SPEED * (1 if sprite1.flip_h else -1))
 			velocity1.y = 0
 		
+		#Tween version of the camera lerp should only be started once, or else it behaves too quickly
+		#TODO: properly calculate tween duration using FPS, physics tick, and CAM_LAG_SLIDE
+		#var cam_tween:Tween = create_tween()
+		#cam_tween.tween_property(cam, "position_smoothing_speed", DEFAULT_CAM_LAG, 1.0)
+		
 		voiceSound.play_effort()
 	
 	if Input.is_action_pressed(BUTTON_BOOST) and boosting and boostAmount > 0:
@@ -413,9 +418,7 @@ func boostControl():
 #			boostSound.play()
 		
 		# linearly interpolate the camera's "boost lag" back down to the normal (non-boost) value
-		#cam.set_position_smoothing_speed(lerpf(cam.get_position_smoothing_speed(), DEFAULT_CAM_LAG, CAM_LAG_SLIDE))
-		var cam_tween:Tween = create_tween()
-		cam_tween.tween_property(cam, "position_smoothing_speed", DEFAULT_CAM_LAG, 1.0)
+		cam.set_position_smoothing_speed(lerpf(cam.get_position_smoothing_speed(), DEFAULT_CAM_LAG, CAM_LAG_SLIDE))
 		
 		if state == CharStates.STATE_GRINDING:
 			# apply boost to a grind
@@ -811,9 +814,11 @@ func groundProcess() -> void:
 	
 	#initate spindash
 	if (Input.is_action_pressed(BUTTON_JUMP) and crouching) and not rolling:
-		spindashing = true
 		#Mimic how the animation would restart in the classics
 		sprite1.play(ANIM_SPINDASH)
+		if not spindashing:
+			spindashBuildup = INITIAL_SPINDASH_CHARGE
+		spindashing = true
 	
 	#if spindashing and not rolling:
 	if spindashing:
